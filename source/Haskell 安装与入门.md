@@ -102,7 +102,7 @@ GHCi, version x.x.x: http://www.haskell.org/ghc/  :? for help
 Prelude> 
 ```
 
-首行解释器显示了GHCi的版本，`Prelude>`提示符代表GHCi默认的初始环境，它是一个定义了一系列类型和函数的库，用户可以直接在解释其中使用其中的定义的内容。
+首行解释器显示了GHCi的版本，`Prelude>`提示符代表GHCi默认的初始环境，它是一个定义了一系列类型和函数的库，用户可以直接在解释器中使用其中定义的内容。
 
 ### GHCi 常用命令
 
@@ -115,8 +115,36 @@ Prelude>
 - `:?` : 输出帮助信息
 - `:type` / `:t` : 查看函数或值的类型
 - `:info` / `:i` : 查看定义的详细信息
+- `:set` : 设置
+
+更多命令和细节在后续章节中会体现。
 
 ### 使用GHCi
+
+下面举一些简单的示例以便读者尝试并熟悉，后续部分讲解将基于GHCi进行。
+
+```bash
+Prelude> 1 + 1 
+2
+Prelude> True && False 
+False
+Prelude> putStrLn "Hello GHCi"
+Hello GHCi
+Prelude>:{
+| add :: Int -> Int -> Int 
+| add a b = a + b    
+:}
+```
+
+## 关于注释
+
+Haskell中使用`--`开头作为单行注释，使用`{-`与`-}`包裹多行注释，对于多行注释，有一种特殊的情形就是当需要声明语言扩展与编译器选项或参数时，需要在文件首处给出声明，并使用`{-#`和`#-}`包裹。读者此处只需了解即可。
+
+
+
+
+
+
 
 
 
