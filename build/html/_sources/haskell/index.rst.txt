@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Alfred's Textbook !
+Haskell TextBook
 ===================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: 目录:
 
-   haskell/index
+   Haskell 安装与入门
 

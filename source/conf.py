@@ -10,7 +10,7 @@ from recommonmark.transform import AutoStructify
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Haskell'
+project = 'TextBook'
 copyright = '2024, Alfred Xiang'
 author = 'Alfred Xiang'
 release = 'v0.1'
@@ -36,6 +36,8 @@ html_static_path = ['_static']
 def setup(app):
         app.add_config_value('recommonmark_config', {
             'enable_math':True,
-            'enable_inline_math':True},True)
+            'enable_inline_math':True,
+            'auto_toc_tree_section': '目录',
+            'enable_auto_toc_tree': True},True)
         app.add_transform(AutoStructify)
 
