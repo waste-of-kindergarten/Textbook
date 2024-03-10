@@ -1,7 +1,3 @@
-.. toctree::
-
-    数据类型与函数
-
 # Haskell 安装与入门
 
 ## 介绍
@@ -138,10 +134,10 @@ Prelude> True && False
 False
 Prelude> putStrLn "Hello GHCi"
 Hello GHCi
-Prelude>:{
-| add :: Int -> Int -> Int 
-| add a b = a + b    
-:}
+Prelude> :{
+Prelude| add :: Int -> Int -> Int 
+Prelude| add a b = a + b    
+Prelude| :}
 Prelude> add 1 2 
 3
 ```

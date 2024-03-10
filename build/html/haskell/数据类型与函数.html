@@ -120,29 +120,29 @@
 <h2>Haskell 类型系统特性<a class="headerlink" href="#haskell" title="此标题的永久链接"></a></h2>
 <section id="id2">
 <h3>类型签名<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
-<p>一个类型签名将一个名称与一个类型绑定在一起，例如：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;:type<span class="w"> </span><span class="o">(</span>+<span class="o">)</span>
-<span class="o">(</span>+<span class="o">)</span><span class="w"> </span>::<span class="w"> </span>Num<span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>a<span class="w"> </span>-&gt;<span class="w"> </span>a<span class="w"> </span>-&gt;<span class="w"> </span>a
+<p>一个类型签名将一个名称与一个类型绑定在一起，例如上一章最末定义的<code class="docutils literal notranslate"><span class="pre">add</span></code>函数：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;:type<span class="w"> </span>add
+add<span class="w"> </span>::<span class="w"> </span>Int<span class="w"> </span>-&gt;<span class="w"> </span>Int<span class="w"> </span>-&gt;<span class="w"> </span>Int
 </pre></div>
 </div>
 </section>
 <section id="id3">
 <h3>强类型<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
 <p>Haskell具有强类型系统，具体体现在该类型系统会拒绝任何无意义的表达式，也不会自动地将值从一个类型转换为另一个类型。在Haskell中遵守类型规则的表达式被称为“良类型的”(well-typed)。</p>
-<p>强类型的好处在于可以在代码真正引发问题之前捕获错误。</p>
+<p>强类型的好处在于可以在代码真正引发问题之前捕获错误<a class="reference external" href="#ref1">[1]</a>。</p>
 </section>
 <section id="id4">
 <h3>静态类型<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
 <p>静态类型指类型系统可以在编译的时候清楚每个值和表达式的类型，与之相对的是动态类型，其在运行时确定类型。</p>
-<p>Haskell对强类型和静态类型的支持使得程序不可能发生运行时的错误，但作为代价，需要更多的努力来满足这些特性对程序代码的苛刻要求。</p>
+<p>Haskell对强类型和静态类型的支持使得程序不可能发生运行时的错误，但作为代价，需要更多的努力来满足这些特性对程序代码的苛刻要求<a class="reference external" href="#ref1">[1]</a>。</p>
 </section>
 <section id="id5">
 <h3>类型推导<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
-<p>Haskell编译器可以自动推断出程序中近乎所有表达式的类型（偶尔需要人为提供额外的信息），这个过程被称为类型推导。</p>
+<p>Haskell编译器可以自动推断出程序中近乎所有表达式的类型（偶尔需要人为提供额外的信息），这个过程被称为类型推导<a class="reference external" href="#ref1">[1]</a>。</p>
 </section>
 <section id="id6">
 <h3>纯度<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
-<p>如果一个函数在引用上是透明的，即不依赖于其参数以外的任何事物，则称其为纯函数或者无副作用的。纯函数对应于数学意义上的函数，在任何时间上使用相同的参数将导致相同的结果 <a class="reference external" href="#ref1">[1]</a> 。与之相对的是非纯函数或者有副作用的函数，例如含有输入输出的函数。</p>
+<p>如果一个函数在引用上是透明的，即不依赖于其参数以外的任何事物，则称其为纯函数或者无副作用的。纯函数对应于数学意义上的函数，在任何时间上使用相同的参数将导致相同的结果 <a class="reference external" href="#ref2">[2]</a> 。与之相对的是非纯函数或者有副作用的函数，例如含有输入输出的函数。</p>
 </section>
 </section>
 <section id="id7">
@@ -150,7 +150,7 @@
 <p>Haskell中内置了许多基础且有用的类型，下面给出了部分常用的数据类型。</p>
 <section id="bool">
 <h3>布尔类型（Bool）<a class="headerlink" href="#bool" title="此标题的永久链接"></a></h3>
-<p>布尔类型是一个只有<code class="docutils literal notranslate"><span class="pre">True</span></code>和<code class="docutils literal notranslate"><span class="pre">False</span></code>两个值的数据类型，Haskell为布尔类型提供了与<code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code>,或<code class="docutils literal notranslate"><span class="pre">||</span></code>,非(<code class="docutils literal notranslate"><span class="pre">not</span></code>)三种逻辑运算。</p>
+<p>布尔类型是一个只有<code class="docutils literal notranslate"><span class="pre">True</span></code>和<code class="docutils literal notranslate"><span class="pre">False</span></code>两个值的数据类型，Haskell为布尔类型提供了与<code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code>,或<code class="docutils literal notranslate"><span class="pre">||</span></code>,非<code class="docutils literal notranslate"><span class="pre">not</span></code>三种逻辑运算。</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:type<span class="w"> </span>True<span class="w"> </span>
 True<span class="w"> </span>::<span class="w"> </span>Bool<span class="w"> </span>
 Prelude&gt;<span class="w"> </span>True<span class="w"> </span><span class="o">||</span><span class="w"> </span>False<span class="w"> </span>
@@ -167,11 +167,11 @@ True
 <p>字符类型是有单引号包裹的字符的类型，字符类型支持ASCII码中的所有字符，对于键盘上没有的字符可以使用反斜杠加数字表示。</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="s1">&#39;a&#39;</span>
 <span class="s1">&#39;a&#39;</span><span class="w"> </span>::<span class="w"> </span>Char
-Prelude&gt;<span class="w"> </span><span class="s1">&#39;\100&#39;</span>
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\100&#39;</span><span class="w"> </span>--<span class="w"> </span>十进制表示
 <span class="s1">&#39;d&#39;</span>
-Prelude&gt;<span class="w"> </span><span class="s1">&#39;\o144&#39;</span>
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\o144&#39;</span><span class="w"> </span>--<span class="w"> </span>八进制表示
 <span class="s1">&#39;d&#39;</span>
-Prelude&gt;<span class="w"> </span><span class="s1">&#39;\x64&#39;</span>
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\x64&#39;</span><span class="w"> </span>--<span class="w"> </span>十六进制表示
 <span class="s1">&#39;d&#39;</span>
 </pre></div>
 </div>
@@ -314,7 +314,7 @@ Prelude&gt;:type<span class="w"> </span><span class="s2">&quot;hello&quot;</span
 </pre></div>
 </div>
 <p>根据代数数据类型的定义，我们可以看到，对于一个类型为<code class="docutils literal notranslate"><span class="pre">Figure</span></code>的值，它必然是圆形，长方形和三角形中之一，并由若干浮点数类型的积组成。</p>
-<p>在上述的定义中，<code class="docutils literal notranslate"><span class="pre">Figure</span></code>作为类型，被称 <em><strong>类型构造器(Type Constructor)</strong></em> ; 而<code class="docutils literal notranslate"><span class="pre">Circle</span></code>,<code class="docutils literal notranslate"><span class="pre">Rectangle</span></code>,<code class="docutils literal notranslate"><span class="pre">Triangle</span></code>用于构造实际的值，被称为 <em><strong>数据构造器(Data Constructor)</strong></em> 或者 <em><strong>值构造器(Value Constructor)</strong></em><a class="reference external" href="#ref2">[2]</a>。</p>
+<p>在上述的定义中，<code class="docutils literal notranslate"><span class="pre">Figure</span></code>作为类型，被称 <em><strong>类型构造器(Type Constructor)</strong></em> ; 而<code class="docutils literal notranslate"><span class="pre">Circle</span></code>,<code class="docutils literal notranslate"><span class="pre">Rectangle</span></code>,<code class="docutils literal notranslate"><span class="pre">Triangle</span></code>用于构造实际的值，被称为 <em><strong>数据构造器(Data Constructor)</strong></em> 或者 <em><strong>值构造器(Value Constructor)</strong></em><a class="reference external" href="#ref3">[3]</a>。</p>
 <p>尝试构造一些值：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code1.hs
 <span class="o">[</span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="o">]</span><span class="w"> </span>Compiling<span class="w"> </span>Main<span class="w">             </span><span class="o">(</span><span class="w"> </span>code1.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
@@ -334,7 +334,7 @@ Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="o">
 <section id="id9">
 <h3>定义别名<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
 <p>有的时候，我们希望类型可以表达更多的信息。例如圆形中包含了类型为浮点数的直径，但从<code class="docutils literal notranslate"><span class="pre">Circle</span> <span class="pre">Double</span></code>中我们可能并不能非常直观地看出<code class="docutils literal notranslate"><span class="pre">Double</span></code>到底指的什么。类似地，长方形和三角形也造成了同样的疑惑。</p>
-<p>基于此，我们构造类型的别名，也称 <em><strong>上下文别名(Context Alias)</strong></em> <a class="reference external" href="#ref3">[3]</a>。</p>
+<p>基于此，我们构造类型的别名，也称 <em><strong>上下文别名(Context Alias)</strong></em> <a class="reference external" href="#ref4">[4]</a>。</p>
 <div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
 <span class="c1">-- 圆形直径</span>
 <span class="kr">type</span><span class="w"> </span><span class="kt">Diameter</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
@@ -388,7 +388,7 @@ Prelude&gt;<span class="w"> </span>getSide1<span class="w"> </span>Triangle<span
 </pre></div>
 </div>
 <blockquote>
-<div><p>看起来<code class="docutils literal notranslate"><span class="pre">newtype</span></code>并不如<code class="docutils literal notranslate"><span class="pre">data</span></code>好用，但对于编译器来说却有帮助，<code class="docutils literal notranslate"><span class="pre">newtype</span></code>的限制实际上意味着新类型与原类型是同构的，这样在编译时检查类型后，在运行时这两个类型被视为相同的<a class="reference external" href="#ref4">[4]</a>。</p>
+<div><p>看起来<code class="docutils literal notranslate"><span class="pre">newtype</span></code>并不如<code class="docutils literal notranslate"><span class="pre">data</span></code>好用，但对于编译器来说却有帮助，<code class="docutils literal notranslate"><span class="pre">newtype</span></code>的限制实际上意味着新类型与原类型是同构的，这样在编译时检查类型后，在运行时这两个类型被视为相同的<a class="reference external" href="#ref5">[5]</a>。</p>
 </div></blockquote>
 </section>
 <section id="id12">
@@ -406,10 +406,12 @@ Prelude&gt;<span class="w"> </span>Succ<span class="w"> </span><span class="o">(
 Succ<span class="w"> </span><span class="o">(</span>Succ<span class="w"> </span>Nat<span class="o">)</span><span class="w"> </span>
 </pre></div>
 </div>
-<p id="ref1">[1] Pure. (2021, November 5). HaskellWiki, . Retrieved 11:54, March 8, 2024 from https://wiki.haskell.org/index.php?title=Pure&oldid=64830.</p>
-<p id="ref2">[2] Algebraic data type. (2023, May 22). HaskellWiki, . Retrieved 11:12, March 10, 2024 from https://wiki.haskell.org/index.php?title=Algebraic_data_type&oldid=65617.</p>
-<p id="ref3">[3] Context alias. (2021, July 24). HaskellWiki, . Retrieved 11:31, March 10, 2024 from https://wiki.haskell.org/index.php?title=Context_alias&oldid=64617.</p>
-<p id="ref4">[4] Newtype. (2016, May 22). HaskellWiki, . Retrieved 12:55, March 10, 2024 from https://wiki.haskell.org/index.php?title=Newtype&oldid=60788.</p></section>
+<p id="ref1">[1] O’Sullivan, B., Goerzen, J., & Stewart, D. (2008). Real World Haskell (1st ed.). O’Reilly Media, Inc.
+</p>
+<p id="ref2">[2] Pure. (2021, November 5). HaskellWiki, . Retrieved 11:54, March 8, 2024 from https://wiki.haskell.org/index.php?title=Pure&oldid=64830.</p>
+<p id="ref3">[3] Algebraic data type. (2023, May 22). HaskellWiki, . Retrieved 11:12, March 10, 2024 from https://wiki.haskell.org/index.php?title=Algebraic_data_type&oldid=65617.</p>
+<p id="ref4">[4] Context alias. (2021, July 24). HaskellWiki, . Retrieved 11:31, March 10, 2024 from https://wiki.haskell.org/index.php?title=Context_alias&oldid=64617.</p>
+<p id="ref5">[5] Newtype. (2016, May 22). HaskellWiki, . Retrieved 12:55, March 10, 2024 from https://wiki.haskell.org/index.php?title=Newtype&oldid=60788.</p></section>
 </section>
 </section>
 
