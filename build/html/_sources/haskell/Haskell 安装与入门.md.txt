@@ -66,12 +66,15 @@ curl --proto '=https' --tlsv1.2 -sSf https://mirrors.ustc.edu.cn/ghcup/sh/bootst
 source ~/.bashrc
 ```
 
-使用`ghcup tui`就可以查看当前HLS,cabal,stack,ghc安装的版本。
+使用`ghcup tui`就可以查看当前HLS,cabal,Stack,GHC安装的版本。
 
 > 提示： 
 > - HLS(Haskell Language Server)是Haskell的语言服务器，可以用于代码补全或者报告错误等；
-> - cabal和stack 用于包管理和构建Haskell软件项目； 
-> - ghc(Glasgow Haskell Compiler)是Haskell主要编译器。
+> - cabal和Stack 用于包管理和构建Haskell软件项目； 
+> - GHC(Glasgow Haskell Compiler)是Haskell主要编译器,内含ghc,ghci,runghc:
+>   + ghc用于编译脚本代码
+>   + ghci是一个交互解释器和调试器
+>   + runghc是一个以脚本形式运行代码的程序，无需事先编译 
 
 ### 编程环境
 
@@ -135,10 +138,10 @@ False
 Prelude> putStrLn "Hello GHCi"
 Hello GHCi
 Prelude> :{
-Prelude| add :: Int -> Int -> Int 
-Prelude| add a b = a + b    
+Prelude| add :: (Int,Int) -> Int 
+Prelude| add (a,b) = a + b    
 Prelude| :}
-Prelude> add 1 2 
+Prelude> add (1,2)
 3
 ```
 

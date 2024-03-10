@@ -150,13 +150,19 @@ curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/.bashrc
 </pre></div>
 </div>
-<p>使用<code class="docutils literal notranslate"><span class="pre">ghcup</span> <span class="pre">tui</span></code>就可以查看当前HLS,cabal,stack,ghc安装的版本。</p>
+<p>使用<code class="docutils literal notranslate"><span class="pre">ghcup</span> <span class="pre">tui</span></code>就可以查看当前HLS,cabal,Stack,GHC安装的版本。</p>
 <blockquote>
 <div><p>提示：</p>
 <ul class="simple">
 <li><p>HLS(Haskell Language Server)是Haskell的语言服务器，可以用于代码补全或者报告错误等；</p></li>
-<li><p>cabal和stack 用于包管理和构建Haskell软件项目；</p></li>
-<li><p>ghc(Glasgow Haskell Compiler)是Haskell主要编译器。</p></li>
+<li><p>cabal和Stack 用于包管理和构建Haskell软件项目；</p></li>
+<li><p>GHC(Glasgow Haskell Compiler)是Haskell主要编译器,内含ghc,ghci,runghc:</p>
+<ul>
+<li><p>ghc用于编译脚本代码</p></li>
+<li><p>ghci是一个交互解释器和调试器</p></li>
+<li><p>runghc是一个以脚本形式运行代码的程序，无需事先编译</p></li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
 </section>
@@ -217,10 +223,10 @@ False
 Prelude&gt;<span class="w"> </span>putStrLn<span class="w"> </span><span class="s2">&quot;Hello GHCi&quot;</span>
 Hello<span class="w"> </span>GHCi
 Prelude&gt;<span class="w"> </span>:<span class="o">{</span>
-Prelude<span class="p">|</span><span class="w"> </span>add<span class="w"> </span>::<span class="w"> </span>Int<span class="w"> </span>-&gt;<span class="w"> </span>Int<span class="w"> </span>-&gt;<span class="w"> </span>Int<span class="w"> </span>
-Prelude<span class="p">|</span><span class="w"> </span>add<span class="w"> </span>a<span class="w"> </span><span class="nv">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>a<span class="w"> </span>+<span class="w"> </span>b<span class="w">    </span>
+Prelude<span class="p">|</span><span class="w"> </span>add<span class="w"> </span>::<span class="w"> </span><span class="o">(</span>Int,Int<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>Int<span class="w"> </span>
+Prelude<span class="p">|</span><span class="w"> </span>add<span class="w"> </span><span class="o">(</span>a,b<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>a<span class="w"> </span>+<span class="w"> </span>b<span class="w">    </span>
 Prelude<span class="p">|</span><span class="w"> </span>:<span class="o">}</span>
-Prelude&gt;<span class="w"> </span>add<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>
+Prelude&gt;<span class="w"> </span>add<span class="w"> </span><span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
 <span class="m">3</span>
 </pre></div>
 </div>

@@ -35,3 +35,9 @@ newtype NewInt = NewInt Int
 newtype NewInt' = NewInt' { getInt :: Int }
 
 data Nat = Zero | Succ Nat deriving (Show)
+
+add :: (Int, Int) -> Int
+add (a,b) = a + b 
+
+add' :: Int -> Int -> Int 
+add' a b = a + b
