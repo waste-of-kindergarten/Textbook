@@ -7,8 +7,9 @@ Haskell TextBook
 ===================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: 目录:
 
    Haskell 安装与入门
+   数据类型与函数
 

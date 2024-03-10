@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据类型与函数 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="Haskell 安装与入门" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">数据类型与函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#haskell">Haskell 类型系统特性</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">类型签名</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">强类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">静态类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">类型推导</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">纯度</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">常用数据类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bool">布尔类型（Bool）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#char">字符类型（Char）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#int">有符号整型（Int）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#word">无符号整型（Word）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integer">任意精度整数类型（Integer）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#float-double">浮点数类型（Float,Double）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rational">有理数类型（Rational）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list">列表(List)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#string">字符串类型 （String）</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">定义数据类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#algebraic-data-type">代数数据类型(Algebraic Data Type)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">定义别名</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">记录语法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">新类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">定义递归类型</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">数据类型与函数</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/haskell/数据类型与函数.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>数据类型与函数<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<section id="haskell">
+<h2>Haskell 类型系统特性<a class="headerlink" href="#haskell" title="此标题的永久链接"></a></h2>
+<section id="id2">
+<h3>类型签名<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<p>一个类型签名将一个名称与一个类型绑定在一起，例如：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;:type<span class="w"> </span><span class="o">(</span>+<span class="o">)</span>
+<span class="o">(</span>+<span class="o">)</span><span class="w"> </span>::<span class="w"> </span>Num<span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>a<span class="w"> </span>-&gt;<span class="w"> </span>a<span class="w"> </span>-&gt;<span class="w"> </span>a
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>强类型<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>Haskell具有强类型系统，具体体现在该类型系统会拒绝任何无意义的表达式，也不会自动地将值从一个类型转换为另一个类型。在Haskell中遵守类型规则的表达式被称为“良类型的”(well-typed)。</p>
+<p>强类型的好处在于可以在代码真正引发问题之前捕获错误。</p>
+</section>
+<section id="id4">
+<h3>静态类型<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>静态类型指类型系统可以在编译的时候清楚每个值和表达式的类型，与之相对的是动态类型，其在运行时确定类型。</p>
+<p>Haskell对强类型和静态类型的支持使得程序不可能发生运行时的错误，但作为代价，需要更多的努力来满足这些特性对程序代码的苛刻要求。</p>
+</section>
+<section id="id5">
+<h3>类型推导<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>Haskell编译器可以自动推断出程序中近乎所有表达式的类型（偶尔需要人为提供额外的信息），这个过程被称为类型推导。</p>
+</section>
+<section id="id6">
+<h3>纯度<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<p>如果一个函数在引用上是透明的，即不依赖于其参数以外的任何事物，则称其为纯函数或者无副作用的。纯函数对应于数学意义上的函数，在任何时间上使用相同的参数将导致相同的结果 <a class="reference external" href="#ref1">[1]</a> 。与之相对的是非纯函数或者有副作用的函数，例如含有输入输出的函数。</p>
+</section>
+</section>
+<section id="id7">
+<h2>常用数据类型<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<p>Haskell中内置了许多基础且有用的类型，下面给出了部分常用的数据类型。</p>
+<section id="bool">
+<h3>布尔类型（Bool）<a class="headerlink" href="#bool" title="此标题的永久链接"></a></h3>
+<p>布尔类型是一个只有<code class="docutils literal notranslate"><span class="pre">True</span></code>和<code class="docutils literal notranslate"><span class="pre">False</span></code>两个值的数据类型，Haskell为布尔类型提供了与<code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code>,或<code class="docutils literal notranslate"><span class="pre">||</span></code>,非(<code class="docutils literal notranslate"><span class="pre">not</span></code>)三种逻辑运算。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:type<span class="w"> </span>True<span class="w"> </span>
+True<span class="w"> </span>::<span class="w"> </span>Bool<span class="w"> </span>
+Prelude&gt;<span class="w"> </span>True<span class="w"> </span><span class="o">||</span><span class="w"> </span>False<span class="w"> </span>
+True<span class="w"> </span>
+Prelude&gt;<span class="w"> </span>True<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>False<span class="w"> </span>
+False
+Prelude&gt;<span class="w"> </span>not<span class="w"> </span>False
+True
+</pre></div>
+</div>
+</section>
+<section id="char">
+<h3>字符类型（Char）<a class="headerlink" href="#char" title="此标题的永久链接"></a></h3>
+<p>字符类型是有单引号包裹的字符的类型，字符类型支持ASCII码中的所有字符，对于键盘上没有的字符可以使用反斜杠加数字表示。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="s1">&#39;a&#39;</span>
+<span class="s1">&#39;a&#39;</span><span class="w"> </span>::<span class="w"> </span>Char
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\100&#39;</span>
+<span class="s1">&#39;d&#39;</span>
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\o144&#39;</span>
+<span class="s1">&#39;d&#39;</span>
+Prelude&gt;<span class="w"> </span><span class="s1">&#39;\x64&#39;</span>
+<span class="s1">&#39;d&#39;</span>
+</pre></div>
+</div>
+<p>部分特殊的ASCII码需要用反斜杠转义表达，常用的转义字符有:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\b</td>
+<td>退格符</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>换行符</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>制表符</td>
+</tr>
+<tr>
+<td>\&amp;</td>
+<td>空格符</td>
+</tr>
+<tr>
+<td>\</td>
+<td>反斜杠</td>
+</tr>
+<tr>
+<td>\"</td>
+<td>双引号</td>
+</tr>
+<tr>
+<td>\'</td>
+<td>单引号</td>
+</tr>
+</tbody>
+</table><p>除ASCII码外，Haskell也支持汉字或其他语言的字符，GHCi会返回相应的Unicode码。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="s1">&#39;你&#39;</span>
+<span class="s1">&#39;\20329&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="int">
+<h3>有符号整型（Int）<a class="headerlink" href="#int" title="此标题的永久链接"></a></h3>
+<p>对于64位系统，有符号整型值的范围为<span class="math notranslate nohighlight">\( -2^{63} \sim 2^{63} - 1 \)</span>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">63</span><span class="w"> </span>-<span class="w"> </span><span class="m">1</span><span class="w"> </span>::<span class="w"> </span>Int
+<span class="m">9223372036854775807</span>
+Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">63</span><span class="w"> </span>::<span class="w"> </span>Int
+-9223372036854775808
+Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">64</span><span class="w"> </span>::<span class="w"> </span>Int<span class="w"> </span>
+<span class="m">0</span>
+</pre></div>
+</div>
+<p>可以看到当声明的<code class="docutils literal notranslate"><span class="pre">Int</span></code>类型值超出范围后，得到的取值是错误的。</p>
+</section>
+<section id="word">
+<h3>无符号整型（Word）<a class="headerlink" href="#word" title="此标题的永久链接"></a></h3>
+<p>对于64位系统，无符号整型值的范围为<span class="math notranslate nohighlight">\( 0 \sim 2^{64} - 1 \)</span>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">64</span><span class="w"> </span>-<span class="w"> </span><span class="m">1</span><span class="w"> </span>::<span class="w"> </span>Word
+<span class="m">18446744073709551615</span>
+Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">64</span><span class="w"> </span>::<span class="w"> </span>Word
+<span class="m">18446744073709551616</span>
+Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">65</span><span class="w"> </span>::<span class="w"> </span>Word<span class="w"> </span>
+<span class="m">0</span>
+</pre></div>
+</div>
+<p>当声明的<code class="docutils literal notranslate"><span class="pre">Word</span></code>类型超出范围后，也会得到错误的值。</p>
+</section>
+<section id="integer">
+<h3>任意精度整数类型（Integer）<a class="headerlink" href="#integer" title="此标题的永久链接"></a></h3>
+<p>与Int不同，任意精度整数类型理论上可以表示任意大小的整数，在实际的计算机上，只有内存是限制其范围的因素。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">100</span>
+<span class="m">1267650600228229401496703205376</span>
+Prelude&gt;<span class="w"> </span><span class="m">2</span><span class="w"> </span>^<span class="w"> </span><span class="m">1000</span>
+<span class="m">10715086071862673209484250490600018105614048117055336074437503883703510511249361224931983788156958581275946729175531468251871452856923140435984577574698574803934567774824230985421074605062371141877954182153046474983581941267398767559165543946077062914571196477686542167660429831652624386837205668069376</span>
+</pre></div>
+</div>
+</section>
+<section id="float-double">
+<h3>浮点数类型（Float,Double）<a class="headerlink" href="#float-double" title="此标题的永久链接"></a></h3>
+<p>Haskell中有单精度浮点数类型和双精度浮点数类型，这与其他语言无大差异。</p>
+</section>
+<section id="rational">
+<h3>有理数类型（Rational）<a class="headerlink" href="#rational" title="此标题的永久链接"></a></h3>
+<p>有理数类型是由两个任意精度的整数表示的（根据定义，有理数可以表示为两个整数相除）。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="m">1</span>/3<span class="w"> </span>::<span class="w"> </span>Rational
+<span class="m">1</span><span class="w"> </span>%<span class="w"> </span><span class="m">3</span><span class="w"> </span>
+Prelude&gt;<span class="w"> </span><span class="m">3</span>.14<span class="w"> </span>::<span class="w"> </span>Rational
+<span class="m">157</span><span class="w"> </span>%<span class="w"> </span><span class="m">50</span>
+</pre></div>
+</div>
+</section>
+<section id="list">
+<h3>列表(List)<a class="headerlink" href="#list" title="此标题的永久链接"></a></h3>
+<p>列表是Haskell中非常常见的数据类型，可以容纳若干相同类型的数据。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="o">[]</span>
+<span class="o">[]</span><span class="w"> </span>::<span class="w"> </span><span class="o">[</span>a<span class="o">]</span>
+Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="o">[</span><span class="s1">&#39;h&#39;</span>,<span class="s1">&#39;e&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;o&#39;</span><span class="o">]</span>
+<span class="o">[</span><span class="s1">&#39;h&#39;</span>,<span class="s1">&#39;e&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;o&#39;</span><span class="o">]</span><span class="w"> </span>::<span class="w"> </span><span class="o">[</span>Char<span class="o">]</span>
+Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="o">([</span><span class="m">1</span>..5<span class="o">]</span><span class="w"> </span>::<span class="w"> </span><span class="o">[</span>Int<span class="o">])</span>
+<span class="o">([</span><span class="m">1</span>..5<span class="o">]</span><span class="w"> </span>::<span class="w"> </span><span class="o">[</span>Int<span class="o">])</span><span class="w"> </span>::<span class="w"> </span><span class="o">[</span>Int<span class="o">]</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>好奇的读者可能发现最后一个表达式如果不添加显式声明的类型，其显式的类型签名是<code class="docutils literal notranslate"><span class="pre">[1..5]</span> <span class="pre">::</span> <span class="pre">(Num</span> <span class="pre">a,</span> <span class="pre">Enum</span> <span class="pre">a)</span> <span class="pre">=&gt;</span> <span class="pre">[a]</span></code>，这涉及到类型类的知识，将在后续章节展开。</p>
+</div></blockquote>
+</section>
+<section id="string">
+<h3>字符串类型 （String）<a class="headerlink" href="#string" title="此标题的永久链接"></a></h3>
+<p>字符串类型是由若干字符组成，实际上字符串是一种特殊的列表，因此<code class="docutils literal notranslate"><span class="pre">String</span></code>和<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>表述的是同一种类型，<code class="docutils literal notranslate"><span class="pre">String</span></code>只是<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>的别名。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="o">[</span><span class="s1">&#39;h&#39;</span>,<span class="s1">&#39;e&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;l&#39;</span>,<span class="s1">&#39;o&#39;</span><span class="o">]</span>
+<span class="s2">&quot;hello&quot;</span>
+Prelude&gt;:type<span class="w"> </span><span class="s2">&quot;hello&quot;</span>
+<span class="s2">&quot;hello&quot;</span><span class="w"> </span>::<span class="w"> </span>String
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>定义数据类型<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<section id="algebraic-data-type">
+<h3>代数数据类型(Algebraic Data Type)<a class="headerlink" href="#algebraic-data-type" title="此标题的永久链接"></a></h3>
+<p>代数数据类型指由其他类型通过代数操作组合而成的类型，这里的代数操作指：</p>
+<ul class="simple">
+<li><p>和（Sum）: 假设值<code class="docutils literal notranslate"><span class="pre">x</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">A</span></code>类型与<code class="docutils literal notranslate"><span class="pre">B</span></code>类型的和<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">|</span> <span class="pre">B</span></code>，则<code class="docutils literal notranslate"><span class="pre">x</span></code>的类型要么是<code class="docutils literal notranslate"><span class="pre">A</span></code>类型，要么是<code class="docutils literal notranslate"><span class="pre">B</span></code>类型，但不能同时为<code class="docutils literal notranslate"><span class="pre">A</span></code>和<code class="docutils literal notranslate"><span class="pre">B</span></code>类型</p></li>
+<li><p>积（Product）:假设值<code class="docutils literal notranslate"><span class="pre">x</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">A</span></code>类型与<code class="docutils literal notranslate"><span class="pre">B</span></code>类型的积<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">B</span></code>,则<code class="docutils literal notranslate"><span class="pre">x</span></code>是由<code class="docutils literal notranslate"><span class="pre">A</span></code>类型的值和<code class="docutils literal notranslate"><span class="pre">B</span></code>类型的值组成</p></li>
+</ul>
+<p>我们定义一个平面图形类型，包含了若干类别（如圆形，长方形，三角形等）。一个圆形可以由半径确定；一个长方形可以由长和宽确定；一个三角形需要给出三条边的长度才能确定。因此我们给出的定义如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">Figure</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">    </span><span class="kt">Circle</span><span class="w"> </span><span class="kt">Double</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="kt">Double</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span>
+<span class="w">  </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>根据代数数据类型的定义，我们可以看到，对于一个类型为<code class="docutils literal notranslate"><span class="pre">Figure</span></code>的值，它必然是圆形，长方形和三角形中之一，并由若干浮点数类型的积组成。</p>
+<p>在上述的定义中，<code class="docutils literal notranslate"><span class="pre">Figure</span></code>作为类型，被称 <em><strong>类型构造器(Type Constructor)</strong></em> ; 而<code class="docutils literal notranslate"><span class="pre">Circle</span></code>,<code class="docutils literal notranslate"><span class="pre">Rectangle</span></code>,<code class="docutils literal notranslate"><span class="pre">Triangle</span></code>用于构造实际的值，被称为 <em><strong>数据构造器(Data Constructor)</strong></em> 或者 <em><strong>值构造器(Value Constructor)</strong></em><a class="reference external" href="#ref2">[2]</a>。</p>
+<p>尝试构造一些值：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code1.hs
+<span class="o">[</span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="o">]</span><span class="w"> </span>Compiling<span class="w"> </span>Main<span class="w">             </span><span class="o">(</span><span class="w"> </span>code1.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>Circle<span class="w"> </span><span class="m">1</span>
+Circle<span class="w"> </span><span class="m">1</span>.0
+Prelude&gt;<span class="w"> </span>Rectangle<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span>
+Rectangle<span class="w"> </span><span class="m">3</span>.0<span class="w"> </span><span class="m">4</span>.0
+Prelude&gt;<span class="w"> </span>:type<span class="w"> </span><span class="o">(</span>Triangle<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="o">)</span>
+<span class="o">(</span>Triangle<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="o">)</span><span class="w"> </span>::<span class="w"> </span>Figure
+</pre></div>
+</div>
+<blockquote>
+<div><p>读者可能注意到在定义的末端使用了<code class="docutils literal notranslate"><span class="pre">deriving</span></code>派生语法，这里的作用是为了便于将值打印出来,读者可以尝试看看删去<code class="docutils literal notranslate"><span class="pre">deriving</span> <span class="pre">(Show)</span></code>后会发生什么</p>
+</div></blockquote>
+</section>
+<section id="id9">
+<h3>定义别名<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p>有的时候，我们希望类型可以表达更多的信息。例如圆形中包含了类型为浮点数的直径，但从<code class="docutils literal notranslate"><span class="pre">Circle</span> <span class="pre">Double</span></code>中我们可能并不能非常直观地看出<code class="docutils literal notranslate"><span class="pre">Double</span></code>到底指的什么。类似地，长方形和三角形也造成了同样的疑惑。</p>
+<p>基于此，我们构造类型的别名，也称 <em><strong>上下文别名(Context Alias)</strong></em> <a class="reference external" href="#ref3">[3]</a>。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="c1">-- 圆形直径</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Diameter</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="c1">-- 长方形长宽</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Length</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Width</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="c1">-- 三角形三条边长</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side3</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+</pre></div>
+</div>
+<p>这样我们就可以定义一个新的<code class="docutils literal notranslate"><span class="pre">Figure'</span></code>类型，新的定义为我们提供更多的信息。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">Figure&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Circle&#39;</span><span class="w"> </span><span class="kt">Diameter</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;</span><span class="w"> </span><span class="kt">Length</span><span class="w"> </span><span class="kt">Width</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;</span><span class="w"> </span><span class="kt">Side1</span><span class="w"> </span><span class="kt">Side2</span><span class="w"> </span><span class="kt">Side3</span>
+<span class="w">  </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>记录语法<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
+<p>通过<code class="docutils literal notranslate"><span class="pre">Figure</span></code>和<code class="docutils literal notranslate"><span class="pre">Figure'</span></code>类型定义，我们可以很容易地构造一个值，相反地，我们还希望能够从这个值里解构想要的成分。使用 <em><strong>记录语法(Record Syntax)</strong></em> ，定义中每个 <em><strong>域(field)</strong></em> 都绑定了相应解构的函数。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getLength</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Length</span><span class="p">,</span><span class="w"> </span><span class="n">getWidth</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Width</span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">getSide1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">getSide2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">getSide3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side3</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>尝试验证这一点：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>getLength<span class="w"> </span><span class="o">(</span>Rectangle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="o">)</span><span class="w"> </span>
+<span class="m">3</span>.0
+Prelude&gt;<span class="w"> </span>getSide1<span class="w"> </span>Triangle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nv">getSide1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="w"> </span>,<span class="w"> </span><span class="nv">getSide2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="w"> </span>,<span class="w"> </span><span class="nv">getSide3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="o">}</span>
+<span class="m">3</span>.0
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>新类型<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<p><em><strong>新类型(Newtype)</strong></em> <code class="docutils literal notranslate"><span class="pre">newtype</span></code>的创建方法与<code class="docutils literal notranslate"><span class="pre">data</span></code>声明类型的方法大致相同，但比较受限，只有当类型由一个构造函数且只有一个字段时，才可以使用<code class="docutils literal notranslate"><span class="pre">newtype</span></code>。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">NewInt</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">NewInt</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">NewInt&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">NewInt&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getInt</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>看起来<code class="docutils literal notranslate"><span class="pre">newtype</span></code>并不如<code class="docutils literal notranslate"><span class="pre">data</span></code>好用，但对于编译器来说却有帮助，<code class="docutils literal notranslate"><span class="pre">newtype</span></code>的限制实际上意味着新类型与原类型是同构的，这样在编译时检查类型后，在运行时这两个类型被视为相同的<a class="reference external" href="#ref4">[4]</a>。</p>
+</div></blockquote>
+</section>
+<section id="id12">
+<h3>定义递归类型<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h3>
+<p>Haskell允许以递归地形式定义数据类型，一个最典型的例子就是自然数的定义：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code1.hs</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Zero</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Succ</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>一个自然数要么为零，要么为另一个自然数的后继，对于后者，定义中调用了类型本身。</p>
+<p>通过上述递归定义，我们就可以构造自然数了：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>Zero<span class="w"> </span>--<span class="w"> </span><span class="m">0</span>
+Zero
+Prelude&gt;<span class="w"> </span>Succ<span class="w"> </span><span class="o">(</span>Succ<span class="w"> </span>Nat<span class="o">)</span><span class="w"> </span>--<span class="w"> </span><span class="m">2</span>
+Succ<span class="w"> </span><span class="o">(</span>Succ<span class="w"> </span>Nat<span class="o">)</span><span class="w"> </span>
+</pre></div>
+</div>
+<p id="ref1">[1] Pure. (2021, November 5). HaskellWiki, . Retrieved 11:54, March 8, 2024 from https://wiki.haskell.org/index.php?title=Pure&oldid=64830.</p>
+<p id="ref2">[2] Algebraic data type. (2023, May 22). HaskellWiki, . Retrieved 11:12, March 10, 2024 from https://wiki.haskell.org/index.php?title=Algebraic_data_type&oldid=65617.</p>
+<p id="ref3">[3] Context alias. (2021, July 24). HaskellWiki, . Retrieved 11:31, March 10, 2024 from https://wiki.haskell.org/index.php?title=Context_alias&oldid=64617.</p>
+<p id="ref4">[4] Newtype. (2016, May 22). HaskellWiki, . Retrieved 12:55, March 10, 2024 from https://wiki.haskell.org/index.php?title=Newtype&oldid=60788.</p></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html" class="btn btn-neutral float-left" title="Haskell 安装与入门" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

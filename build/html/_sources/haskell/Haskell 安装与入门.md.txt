@@ -1,3 +1,7 @@
+.. toctree::
+
+    数据类型与函数
+
 # Haskell 安装与入门
 
 ## 介绍
@@ -58,7 +62,7 @@ sudo apt install build-essential libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 l
 curl --proto '=https' --tlsv1.2 -sSf https://mirrors.ustc.edu.cn/ghcup/sh/bootstrap-haskell | BOOTSTRAP_HASKELL_YAML=https://mirrors.ustc.edu.cn/ghcup/ghcup-metadata/ghcup-0.0.7.yaml sh
 ```
 
-接下来按照提示以及个人需求进行选择（不确定全部选是），然后安装程序会提示安装必要的包，这里已经提前安装完成，可直接继续，整个安装过程需要等待较长时间。
+接下来按照提示以及个人需求进行选择（不确定全部默认即可），然后安装程序会提示安装必要的包，这里已经提前安装完成，可直接继续，整个安装过程需要等待较长时间。
 
 安装完成后，更新环境变量：
 
@@ -104,6 +108,10 @@ Prelude>
 
 首行解释器显示了GHCi的版本，`Prelude>`提示符代表GHCi默认的初始环境，它是一个定义了一系列类型和函数的库，用户可以直接在解释器中使用其中定义的内容。
 
+> 9.x版本的GHCi解释器提示符为`ghci`，实际上这并没有本质区别（都默认只导入了`Prelude`），读者可以通过`:set prompt "something>"`将提示符替换为任何想要的提示符
+
+> 值得注意的是，在9.x版本开始，GHCi不再显式导入模块,例如在以前的版本导入`Control.Monad`后提示符会变为`Prelude Control.Monad>`，而9.x版本则不会
+
 ### GHCi 常用命令
 
 - `:load` / `:l` :  导入当前路径或者路径下的文件
@@ -134,6 +142,8 @@ Prelude>:{
 | add :: Int -> Int -> Int 
 | add a b = a + b    
 :}
+Prelude> add 1 2 
+3
 ```
 
 ## 关于注释

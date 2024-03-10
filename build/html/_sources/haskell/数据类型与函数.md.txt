@@ -1,0 +1,300 @@
+# 数据类型与函数
+
+## Haskell 类型系统特性
+
+### 类型签名
+
+一个类型签名将一个名称与一个类型绑定在一起，例如：
+
+```bash
+Prelude>:type (+)
+(+) :: Num a => a -> a -> a
+```
+
+### 强类型
+
+Haskell具有强类型系统，具体体现在该类型系统会拒绝任何无意义的表达式，也不会自动地将值从一个类型转换为另一个类型。在Haskell中遵守类型规则的表达式被称为“良类型的”(well-typed)。
+
+强类型的好处在于可以在代码真正引发问题之前捕获错误。
+
+### 静态类型
+
+静态类型指类型系统可以在编译的时候清楚每个值和表达式的类型，与之相对的是动态类型，其在运行时确定类型。
+
+Haskell对强类型和静态类型的支持使得程序不可能发生运行时的错误，但作为代价，需要更多的努力来满足这些特性对程序代码的苛刻要求。
+
+### 类型推导
+
+Haskell编译器可以自动推断出程序中近乎所有表达式的类型（偶尔需要人为提供额外的信息），这个过程被称为类型推导。
+
+### 纯度
+
+如果一个函数在引用上是透明的，即不依赖于其参数以外的任何事物，则称其为纯函数或者无副作用的。纯函数对应于数学意义上的函数，在任何时间上使用相同的参数将导致相同的结果 [[1]](#ref1) 。与之相对的是非纯函数或者有副作用的函数，例如含有输入输出的函数。
+
+## 常用数据类型
+
+Haskell中内置了许多基础且有用的类型，下面给出了部分常用的数据类型。
+
+### 布尔类型（Bool）
+
+布尔类型是一个只有`True`和`False`两个值的数据类型，Haskell为布尔类型提供了与`&&`,或`||`,非(`not`)三种逻辑运算。
+
+```bash
+Prelude> :type True 
+True :: Bool 
+Prelude> True || False 
+True 
+Prelude> True && False 
+False
+Prelude> not False
+True
+```
+
+### 字符类型（Char）
+
+字符类型是有单引号包裹的字符的类型，字符类型支持ASCII码中的所有字符，对于键盘上没有的字符可以使用反斜杠加数字表示。
+
+```bash
+Prelude> :type 'a'
+'a' :: Char
+Prelude> '\100'
+'d'
+Prelude> '\o144'
+'d'
+Prelude> '\x64'
+'d'
+```
+
+部分特殊的ASCII码需要用反斜杠转义表达，常用的转义字符有:
+
+| | |
+| ---- | ---- |
+| \b | 退格符 |
+| \n | 换行符 |
+| \t | 制表符 |
+| \& | 空格符 | 
+| \\ | 反斜杠 |
+| \" | 双引号 |
+| \' | 单引号 |
+
+除ASCII码外，Haskell也支持汉字或其他语言的字符，GHCi会返回相应的Unicode码。
+
+```bash
+Prelude> '你'
+'\20329'
+```
+
+### 有符号整型（Int）
+
+对于64位系统，有符号整型值的范围为`$ -2^{63} \sim 2^{63} - 1 $`。
+
+```bash
+Prelude> 2 ^ 63 - 1 :: Int
+9223372036854775807
+Prelude> 2 ^ 63 :: Int
+-9223372036854775808
+Prelude> 2 ^ 64 :: Int 
+0
+```
+
+可以看到当声明的`Int`类型值超出范围后，得到的取值是错误的。
+
+### 无符号整型（Word）
+
+对于64位系统，无符号整型值的范围为`$ 0 \sim 2^{64} - 1 $`。
+
+```bash
+Prelude> 2 ^ 64 - 1 :: Word
+18446744073709551615
+Prelude> 2 ^ 64 :: Word
+18446744073709551616
+Prelude> 2 ^ 65 :: Word 
+0
+```
+
+当声明的`Word`类型超出范围后，也会得到错误的值。
+
+### 任意精度整数类型（Integer）
+
+与Int不同，任意精度整数类型理论上可以表示任意大小的整数，在实际的计算机上，只有内存是限制其范围的因素。
+
+```bash
+Prelude> 2 ^ 100
+1267650600228229401496703205376
+Prelude> 2 ^ 1000
+10715086071862673209484250490600018105614048117055336074437503883703510511249361224931983788156958581275946729175531468251871452856923140435984577574698574803934567774824230985421074605062371141877954182153046474983581941267398767559165543946077062914571196477686542167660429831652624386837205668069376
+```
+
+### 浮点数类型（Float,Double）
+
+Haskell中有单精度浮点数类型和双精度浮点数类型，这与其他语言无大差异。
+
+### 有理数类型（Rational）
+
+有理数类型是由两个任意精度的整数表示的（根据定义，有理数可以表示为两个整数相除）。
+
+```bash
+Prelude> 1/3 :: Rational
+1 % 3 
+Prelude> 3.14 :: Rational
+157 % 50
+```
+
+
+### 列表(List)
+
+列表是Haskell中非常常见的数据类型，可以容纳若干相同类型的数据。
+
+```bash
+Prelude> :type []
+[] :: [a]
+Prelude> :type ['h','e','l','l','o']
+['h','e','l','l','o'] :: [Char]
+Prelude> :type ([1..5] :: [Int])
+([1..5] :: [Int]) :: [Int]
+```
+
+> 好奇的读者可能发现最后一个表达式如果不添加显式声明的类型，其显式的类型签名是`[1..5] :: (Num a, Enum a) => [a]`，这涉及到类型类的知识，将在后续章节展开。
+
+### 字符串类型 （String）
+
+字符串类型是由若干字符组成，实际上字符串是一种特殊的列表，因此`String`和`[Char]`表述的是同一种类型，`String`只是`[Char]`的别名。
+
+```bash
+Prelude> ['h','e','l','l','o']
+"hello"
+Prelude>:type "hello"
+"hello" :: String
+```
+
+## 定义数据类型
+
+### 代数数据类型(Algebraic Data Type)
+
+代数数据类型指由其他类型通过代数操作组合而成的类型，这里的代数操作指：
+
+- 和（Sum）: 假设值`x`的类型为`A`类型与`B`类型的和`A | B`，则`x`的类型要么是`A`类型，要么是`B`类型，但不能同时为`A`和`B`类型
+- 积（Product）:假设值`x`的类型为`A`类型与`B`类型的积`A B`,则`x`是由`A`类型的值和`B`类型的值组成
+
+我们定义一个平面图形类型，包含了若干类别（如圆形，长方形，三角形等）。一个圆形可以由半径确定；一个长方形可以由长和宽确定；一个三角形需要给出三条边的长度才能确定。因此我们给出的定义如下：
+
+```haskell
+-- code1.hs
+data Figure =
+    Circle Double
+  | Rectangle Double Double
+  | Triangle Double Double Double 
+  deriving (Show)
+```
+
+根据代数数据类型的定义，我们可以看到，对于一个类型为`Figure`的值，它必然是圆形，长方形和三角形中之一，并由若干浮点数类型的积组成。
+
+在上述的定义中，`Figure`作为类型，被称 ***类型构造器(Type Constructor)*** ; 而`Circle`,`Rectangle`,`Triangle`用于构造实际的值，被称为 ***数据构造器(Data Constructor)*** 或者 ***值构造器(Value Constructor)***[[2]](#ref2)。
+
+尝试构造一些值：
+
+```bash
+Prelude> :load code1.hs
+[1 of 2] Compiling Main             ( code1.hs, interpreted )
+Ok, one module loaded.
+Prelude> Circle 1
+Circle 1.0
+Prelude> Rectangle 3 4
+Rectangle 3.0 4.0
+Prelude> :type (Triangle 3 4 5)
+(Triangle 3 4 5) :: Figure
+```
+
+> 读者可能注意到在定义的末端使用了`deriving`派生语法，这里的作用是为了便于将值打印出来,读者可以尝试看看删去`deriving (Show)`后会发生什么
+
+### 定义别名
+
+有的时候，我们希望类型可以表达更多的信息。例如圆形中包含了类型为浮点数的直径，但从`Circle Double`中我们可能并不能非常直观地看出`Double`到底指的什么。类似地，长方形和三角形也造成了同样的疑惑。
+
+基于此，我们构造类型的别名，也称 ***上下文别名(Context Alias)*** [[3]](#ref3)。
+
+```haskell
+-- code1.hs
+-- 圆形直径
+type Diameter = Double
+-- 长方形长宽
+type Length = Double
+type Width = Double
+-- 三角形三条边长
+type Side1 = Double
+type Side2 = Double
+type Side3 = Double
+```
+
+这样我们就可以定义一个新的`Figure'`类型，新的定义为我们提供更多的信息。
+
+```haskell
+-- code1.hs
+data Figure' = 
+  Circle' Diameter
+  | Rectangle' Length Width
+  | Triangle' Side1 Side2 Side3
+  deriving (Show)
+```
+
+### 记录语法
+
+通过`Figure`和`Figure'`类型定义，我们可以很容易地构造一个值，相反地，我们还希望能够从这个值里解构想要的成分。使用 ***记录语法(Record Syntax)*** ，定义中每个 ***域(field)*** 都绑定了相应解构的函数。
+
+```haskell
+-- code1.hs
+data Figure'' = 
+  Circle'' { getDiameter :: Diameter}
+  | Rectangle'' { getLength :: Length, getWidth :: Width}
+  | Triangle'' {
+    getSide1 :: Side1,
+    getSide2 :: Side2,
+    getSide3 :: Side3
+  } deriving (Show)
+```
+
+尝试验证这一点：
+
+```bash
+Prelude> getLength (Rectangle'' 3 4) 
+3.0
+Prelude> getSide1 Triangle'' { getSide1 = 3 , getSide2 = 4 , getSide3 = 5}
+3.0
+```
+
+### 新类型
+
+***新类型(Newtype)*** `newtype`的创建方法与`data`声明类型的方法大致相同，但比较受限，只有当类型由一个构造函数且只有一个字段时，才可以使用`newtype`。
+
+```haskell
+-- code1.hs
+newtype NewInt = NewInt Int 
+newtype NewInt' = NewInt' { getInt :: Int }
+```
+
+> 看起来`newtype`并不如`data`好用，但对于编译器来说却有帮助，`newtype`的限制实际上意味着新类型与原类型是同构的，这样在编译时检查类型后，在运行时这两个类型被视为相同的[[4]](#ref4)。
+
+### 定义递归类型
+
+Haskell允许以递归地形式定义数据类型，一个最典型的例子就是自然数的定义：
+
+```haskell
+-- code1.hs
+data Nat = Zero | Succ Nat deriving (Show)
+```
+
+一个自然数要么为零，要么为另一个自然数的后继，对于后者，定义中调用了类型本身。
+
+通过上述递归定义，我们就可以构造自然数了：
+
+```bash
+Prelude> Zero -- 0
+Zero
+Prelude> Succ (Succ Nat) -- 2
+Succ (Succ Nat) 
+```
+
+<p id="ref1">[1] Pure. (2021, November 5). HaskellWiki, . Retrieved 11:54, March 8, 2024 from https://wiki.haskell.org/index.php?title=Pure&oldid=64830.</p>
+<p id="ref2">[2] Algebraic data type. (2023, May 22). HaskellWiki, . Retrieved 11:12, March 10, 2024 from https://wiki.haskell.org/index.php?title=Algebraic_data_type&oldid=65617.</p>
+<p id="ref3">[3] Context alias. (2021, July 24). HaskellWiki, . Retrieved 11:31, March 10, 2024 from https://wiki.haskell.org/index.php?title=Context_alias&oldid=64617.</p>
+<p id="ref4">[4] Newtype. (2016, May 22). HaskellWiki, . Retrieved 12:55, March 10, 2024 from https://wiki.haskell.org/index.php?title=Newtype&oldid=60788.</p>
