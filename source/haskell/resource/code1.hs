@@ -41,3 +41,28 @@ add (a,b) = a + b
 
 add' :: Int -> Int -> Int 
 add' a b = a + b
+
+add'' :: Int -> Int -> Int
+add'' = \ x y -> x + y
+
+addone' :: Int -> Int 
+addone' = (\x y -> x + y) 1
+-- 等同于
+addone'' :: Int -> Int 
+addone'' = \y -> 1 + y
+
+(|+|) :: Int -> Int -> Int 
+(|+|) x y = x + y
+
+infixl 6 |+|
+
+(|*|) :: Int -> Int -> Int 
+x |*| y = x * y
+
+infixl 7 |*|
+
+addone''' :: Int -> Int 
+addone''' = (1+)
+
+divide :: Int -> Int -> Maybe Int 
+divide a b = if b == 0 then  Nothing else Just (a `div` b) 
