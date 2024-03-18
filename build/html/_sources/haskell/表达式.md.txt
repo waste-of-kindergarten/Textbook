@@ -169,6 +169,8 @@ Prelude> and'' True False
 first condition
 False
 Prelude> and'' True True 
+first condition
+True
 Prelude> and'' False True 
 second condition
 False
