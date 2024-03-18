@@ -168,6 +168,7 @@ Ok, one module loaded.
 Prelude> and'' True False
 first condition
 False
+Prelude> and'' True True 
 Prelude> and'' False True 
 second condition
 False
