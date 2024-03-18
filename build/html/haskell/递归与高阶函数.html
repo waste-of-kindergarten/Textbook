@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>递归与高阶函数 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="表达式" href="%E8%A1%A8%E8%BE%BE%E5%BC%8F.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">递归与高阶函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">递归函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">递归函数的概念</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">定义递归函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">尾递归</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">递归与高阶函数</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/haskell/递归与高阶函数.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>递归与高阶函数<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p>Haskell没有如while或者for之类的循环，实际上，在顺序式语言中循环意味着状态的改变，这与Haskell中“变量不可变”相违背。在Haskell中，我们一般使用递归函数来完成所谓的“循环”，一方面函数本身归属于数学，容易验证其正确性；另一方面，诸多数据结构的定义都离不开递归，使用递归函数对其进行处理也变得更加自然。</p>
+<section id="id2">
+<h2>递归函数<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>在之前的学习中，我们或多或少已经接触过递归函数，并且已经接触过了一个递归定义的数据类型——列表。因此本节我们将通过列表的一系列函数讲解递归函数。</p>
+<section id="id3">
+<h3>递归函数的概念<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>简单来说，递归函数就是能够调用自身的函数，它通常由两部分组成：至少一个 <em><strong>基本情况(base case)</strong></em> 提供终止递归地模式匹配；以及 <em><strong>递归情况(recursive case)</strong></em> 在特定的条件下调用自身<a class="reference external" href="#ref1">[1]</a>。</p>
+<blockquote>
+<div><p>当然，Haskell能够创建没有终止条件的递归函数，这会导致无限递归，但这在惰性求值的条件下并非完全无意义</p>
+</div></blockquote>
+</section>
+<section id="id4">
+<h3>定义递归函数<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>为了方便读者体会递归函数的定义过程，我们会重新定义一些列表相关的内置函数。我们将使用一些特殊的标记将自定义的函数与库函数区分，以防函数名称重复导致定义覆盖。</p>
+<blockquote>
+<div><p>提示：某些函数为了简便需要与内置的定义不完全相同</p>
+</div></blockquote>
+<p><strong>length’</strong> : 计算列表的长度，对应<code class="docutils literal notranslate"><span class="pre">length</span></code>函数</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- length</span>
+<span class="nf">length&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">length&#39;</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="nf">length&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length&#39;</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">length'</span></code>函数的基本情况是空列表，当遇到空列表时，函数停止递归，返回0；当模式匹配列表为非空时，函数属于递归情况，此时对尾部进行递归（直到递归到基本情况），并将结果增一作为返回值。</p>
+<p><strong>elem’</strong>: 判断元素是否在列表中，对应<code class="docutils literal notranslate"><span class="pre">elem</span></code>函数</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- elem</span>
+<span class="nf">elem&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">Eq</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">elem&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="nf">elem&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">elem&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">elem'</span></code>函数的基本情况是接受的列表是空列表，此时形参<code class="docutils literal notranslate"><span class="pre">a</span></code>所表示的值不在列表中，返回<code class="docutils literal notranslate"><span class="pre">False</span></code>；当列表非空时，函数判断第一个值是否与<code class="docutils literal notranslate"><span class="pre">a</span></code>相等，并将计算得到的布尔值与列表尾部递归的结果做或运算作为最终的返回值。</p>
+<blockquote>
+<div><p>补充：实际上，由于惰性求值的特性，这个递归并没有计算到基础情况时就可能已经停止，根据惰性的特点，当<code class="docutils literal notranslate"><span class="pre">||</span></code>运算符左侧参数为<code class="docutils literal notranslate"><span class="pre">True</span></code>时，可以直接得到结果是<code class="docutils literal notranslate"><span class="pre">True</span></code>而无需计算右侧参数，读者可以仿照上一章使用的trace方法追踪递归的情况</p>
+</div></blockquote>
+<p><strong>|++|</strong>: 将两个列表拼接称为一个列表，对应<code class="docutils literal notranslate"><span class="pre">++</span></code>函数</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- (++)</span>
+<span class="kr">infixr</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">|++|</span>
+<span class="p">(</span><span class="o">|++|</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="kt">[]</span><span class="w"> </span><span class="o">|++|</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span>
+<span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="o">|++|</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="o">|++|</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">|++|</span></code>运算符的基础情况是第一个参数为空列表，此时直接返回第二个参数；当第一个列表不为空时，将第一个列表的尾部与第二个列表拼接，并将第一个列表的头部作为新拼接列表的头部返回。</p>
+<p><strong>reverse’</strong>: 倒置列表，对应<code class="docutils literal notranslate"><span class="pre">reverse</span></code>函数。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="c1">-- reverse</span>
+<span class="nf">reverse&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">reverse&#39;</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="nf">reverse&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">reverse&#39;</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>当参数为空列表时，直接返回空列表；当参数为非空列表时，将列表的尾部倒置，再将头部装入列表中拼接到右侧返回。</p>
+<p>有关列表的递归定义的函数还有很多，如<code class="docutils literal notranslate"><span class="pre">all</span></code>,<code class="docutils literal notranslate"><span class="pre">any</span></code>,<code class="docutils literal notranslate"><span class="pre">and</span></code>,<code class="docutils literal notranslate"><span class="pre">or</span></code>等等，在此无法一一列举，读者可以查询<code class="docutils literal notranslate"><span class="pre">Data.List</span></code>库获取更多信息。</p>
+</section>
+<section id="id5">
+<h3>尾递归<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>考虑前面定义的<code class="docutils literal notranslate"><span class="pre">reverse'</span></code>函数，看起来这个函数定义的非常自然，实际上它翻转列表的复杂度很高<span class="math notranslate nohighlight">\(O(n ^ 2)\)</span>。</p>
+<p>我们以<code class="docutils literal notranslate"><span class="pre">reverse'</span> <span class="pre">[1,2,3]</span></code>为例，讨论递归的过程。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">reverse&#39;</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">reverse&#39;</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">reverse&#39;</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">((</span><span class="n">reverse&#39;</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="c1">-- 达到基础条件</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">((</span><span class="kt">[]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="p">([</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="p">(</span><span class="kt">[]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>整个过程需要不断地对递归翻转的尾部进行拼接，而每次拼接所需要附加元素的时间，都是第一个列表长度的线性时间，因此总时间为 <span class="math notranslate nohighlight">\(\frac{1 + 2 + ... + n}{2} = \frac{(1 + n)  n}{2} \sim n^2 (n \rightarrow \infty )\)</span></p>
+<p>下面给出一个改进版本的倒置函数<code class="docutils literal notranslate"><span class="pre">reverse''</span></code>,它需要借助一个辅助函数，以避免在翻转的过程中频繁地使用拼接操作：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+
+<span class="nf">reverse&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">reverse&#39;&#39;</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="kr">where</span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">ys</span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="n">ys</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">ys</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>仍以<code class="docutils literal notranslate"><span class="pre">reverse''</span> <span class="pre">[1,2,3]</span></code>为例，与前面的递归过程进行对比：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">reverse&#39;&#39;</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="kt">[]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>整个过程使用辅助函数不断地将原列表的头部附加到新列表的头部，调用附加的次数与原列表的元素数量成线性关系，因而新的倒置函数的复杂度为<span class="math notranslate nohighlight">\(O(n)\)</span>。</p>
+<p>实际上，除了在时间复杂度上<code class="docutils literal notranslate"><span class="pre">reverse''</span></code>要更优，其在空间利用率上也得到显著提高。在<code class="docutils literal notranslate"><span class="pre">reverse'</span></code>函数递归调用过程中，计算只有达到了递归的基础条件后（即终止递归）才能开始进行，计算机需要分配大量的栈空间来存储中间过程，这大大降低了空间使用效率。而<code class="docutils literal notranslate"><span class="pre">reverse''</span></code>函数使用了 <em><strong>尾递归(Tail Recursion)</strong></em> ，即递归调用作为函数所有操作中的最后一步（其他操作先于递归执行），从而避免频繁调用堆栈而增加对内存的开销。</p>
+<blockquote>
+<div><p>提示：当我们使用普通函数而非构造器进行尾递归时，由于惰性，我们仍然需要存储大量的中间过程，但我们可以使用<code class="docutils literal notranslate"><span class="pre">($!)</span></code>或者<code class="docutils literal notranslate"><span class="pre">!</span></code>强制立即求值。
+如阶乘函数：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- 普通定义</span>
+<span class="nf">factorial</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">factorial</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factorial</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">-- 尾递归优化后定义1（非惰性）</span>
+<span class="nf">factorial&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">factorial&#39;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">!</span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
+<span class="c1">-- 尾递归优化后定义2 （非惰性）        </span>
+<span class="nf">factorial&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="nf">factorial&#39;&#39;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">m</span>
+<span class="w">        </span><span class="n">helper</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">$!</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span>
+</pre></div>
+</div>
+</div></blockquote>
+<blockquote>
+<div><p>补充：在诸如Haskell的惰性语言中，尾递归并不是那么有用，我们还需要讨论一种叫做 <em><strong>守卫递归(guarded recursion)</strong></em> 的概念，在这种递归中，递归调用部分要包含在数据构造器内部（作为其参数），这允许递归过程尽可能地延迟<a class="reference external" href="#ref2">[2]</a>。</p>
+</div></blockquote>
+<p id="ref1">[1] Haskell/Recursion. (2022, April 10). Wikibooks. Retrieved 05:25, March 18, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Recursion&oldid=4046891.</p>
+<p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E8%A1%A8%E8%BE%BE%E5%BC%8F.html" class="btn btn-neutral float-left" title="表达式" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

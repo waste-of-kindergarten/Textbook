@@ -13,4 +13,5 @@ Haskell TextBook
    Haskell 安装与入门
    数据类型与函数
    表达式
+   递归与高阶函数
 
