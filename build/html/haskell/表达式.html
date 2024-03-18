@@ -22,11 +22,13 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../_static/dark_mode_js/default_dark.js"></script>
         <script src="../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="搜索" href="../search.html" /> 
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="数据类型与函数" href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +51,36 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Haskell TextBook</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">表达式</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">局部变量</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#let-in">let…in…</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#where">where</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">条件表达式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">嵌套条件表达式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">级联条件表达式</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#guard">guard 守卫</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">多分支条件表达式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">模式匹配</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wide-card">Wide Card</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#case-of">case .. of ..</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#as">as 模式</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">模式守卫</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">观察模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">模式同义</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -67,6 +97,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell TextBook</a></li>
       <li class="breadcrumb-item active">表达式</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/haskell/表达式.md.txt" rel="nofollow"> 查看页面源码</a>
@@ -79,12 +110,366 @@
              
   <section id="id1">
 <h1>表达式<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<section id="id2">
+<h2>局部变量<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>迄今为止我们只掌握了如何定义孤立的全局函数或者变量（指常规意义下的变量，而非函数内的形参），但对于某些情况来说，定义全局变量或者函数并不合适，这就需要定义局部变量。</p>
+<p>一方面定义局部变量可以限制作用域，使其在适当的区域发挥作用；另一方面，对于不同作用域的局部变量，便于重复使用变量名称。</p>
+<section id="let-in">
+<h3>let…in…<a class="headerlink" href="#let-in" title="此标题的永久链接"></a></h3>
+<p>一个经典的情形是使用海伦公式计算三角形的面积，即给定三角形的三条边<code class="docutils literal notranslate"><span class="pre">a</span></code>,<code class="docutils literal notranslate"><span class="pre">b</span></code>,<code class="docutils literal notranslate"><span class="pre">c</span></code>,其面积如下：</p>
+<div class="math notranslate nohighlight">
+\[S = \sqrt{p(p-a)(p-b)(p-c)} \ (p = \frac{a + b + c}{2})\]</div>
+<p>这里大量重复地使用了<code class="docutils literal notranslate"><span class="pre">p</span></code>，当然我们可以直接将<code class="docutils literal notranslate"><span class="pre">p</span></code>全部带入计算，但这显然不是一个明智的决定。使用let…in…语法定义<code class="docutils literal notranslate"><span class="pre">p</span></code>则简洁很多。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">heron&#39;s_formula</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span>
+<span class="nf">heron&#39;s_formula</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+<span class="w">                            </span><span class="kr">in</span><span class="w"> </span><span class="n">sqrt</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>当实际使用到<code class="docutils literal notranslate"><span class="pre">heron's_formula</span></code>函数时，<code class="docutils literal notranslate"><span class="pre">p</span></code>会自动被替换为<code class="docutils literal notranslate"><span class="pre">(a+b+c)/2</span></code>，在计算时只计算一次<code class="docutils literal notranslate"><span class="pre">p</span></code>即可，因此还节约了代码运行时间。</p>
+</section>
+<section id="where">
+<h3>where<a class="headerlink" href="#where" title="此标题的永久链接"></a></h3>
+<p>除了使用let…in…还可以使用where语句。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">heron&#39;s_formula&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span>
+<span class="nf">heron&#39;s_formula&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">sqrt</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">))</span>
+<span class="w">    </span><span class="kr">where</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>使用where语句与let…in…语句类似，在做计算时会先计算<code class="docutils literal notranslate"><span class="pre">p</span></code>再带入到定义中。</p>
+<blockquote>
+<div><p>提示：应当注意对于内层作用域中出现重复的变量名时，外部作用域相应的变量名会被覆盖掉，例如<code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">in</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">in</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">3</span> <span class="pre">in</span> <span class="pre">x</span></code>的结果为6</p>
+</div></blockquote>
+</section>
+</section>
+<section id="id3">
+<h2>条件表达式<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<p>Haskell的条件表达式格式为if..then..else..，我们继续用上一章讲解类型多态中提到的<code class="docutils literal notranslate"><span class="pre">divide</span></code>函数举例。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">divide</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">divide</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="p">`</span><span class="n">div</span><span class="p">`</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">if</span></code>后跟随条件表达式（即类型为<code class="docutils literal notranslate"><span class="pre">Bool</span></code>）,当条件表达式的值为<code class="docutils literal notranslate"><span class="pre">True</span></code>则返回<code class="docutils literal notranslate"><span class="pre">then</span></code>后面表达式的值，否则返回<code class="docutils literal notranslate"><span class="pre">else</span></code>后面表达式的值。这里当除数<code class="docutils literal notranslate"><span class="pre">b</span></code>为0时，整除无意义，返回<code class="docutils literal notranslate"><span class="pre">Nothing</span></code>;当<code class="docutils literal notranslate"><span class="pre">b</span></code>不为0时，则计算并返回用<code class="docutils literal notranslate"><span class="pre">Just</span></code>包裹的结果。</p>
+<blockquote>
+<div><p>提示：如果读者了解一些顺序式编程语言的话，那么就会发现Haskell中条件表达式略有不同。在Haskell中if..then..else..更像是一个运算符，因为这个表达式必然会返回一个值；相对地，顺序式编程语言中的条件表达式只是一种表述解构。</p>
+</div></blockquote>
+<p>对于复杂冗长的条件表达式可以分多行书写：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">divide&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">divide&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kt">Nothing</span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="p">`</span><span class="n">div</span><span class="p">`</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+
+<span class="nf">divide&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">divide&#39;&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="kr">then</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="p">`</span><span class="n">div</span><span class="p">`</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>上述两种都是合法的表达式。</p>
+<section id="id4">
+<h3>嵌套条件表达式<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>Haskell支持条件表达式的嵌套。</p>
+<p>以判断两个整数是否都是0为例，下面两种写法都是合法的。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">bothzero</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">bothzero</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">                  </span><span class="kr">else</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span>
+<span class="w">              </span><span class="kr">else</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span>
+
+<span class="nf">bothzero&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="nf">bothzero&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
+<span class="w">        </span><span class="kr">then</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
+<span class="w">            </span><span class="kr">then</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">            </span><span class="kr">else</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span>
+<span class="w">        </span><span class="kr">else</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：读者可以自行尝试其他可能的写法，Haskell对于条件表达式的缩进规则比较自由,你甚至可以写出一些比较怪异的风格：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">bothzero&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="nf">bothzero&#39;&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
+<span class="kr">then</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="kr">then</span><span class="w"> </span><span class="kt">True</span>
+<span class="kr">else</span><span class="w"> </span><span class="kt">False</span>
+<span class="kr">else</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="id5">
+<h3>级联条件表达式<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>Haskell也支持条件表达式的级联。</p>
+<p>以比较两个整数大小为例，当第一个数大于第二个数，返回1；当两者相等返回0；否则返回-1。如下的写法均合法：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">compareToInt</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">compareToInt</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span>
+
+<span class="nf">compareToInt&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">compareToInt&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">then</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">        </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="kr">else</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="guard">
+<h2>guard 守卫<a class="headerlink" href="#guard" title="此标题的永久链接"></a></h2>
+<p><em><strong>守卫(Guard)</strong></em> 使用对其的<code class="docutils literal notranslate"><span class="pre">|</span></code>将函数的参数按照一定的条件表达式分类，这些条件将分别导致各自的结果。考虑布尔值的二元与运算：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">and&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">and&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示: haskell内置了<code class="docutils literal notranslate"><span class="pre">and</span></code>函数用于将装有容器的布尔值做与运算，这里为了避开其名称，改为了<code class="docutils literal notranslate"><span class="pre">and'</span></code></p>
+</div></blockquote>
+<p>当<code class="docutils literal notranslate"><span class="pre">a</span></code>的值为<code class="docutils literal notranslate"><span class="pre">True</span></code>时，函数返回<code class="docutils literal notranslate"><span class="pre">b</span></code>；当<code class="docutils literal notranslate"><span class="pre">a</span></code>的值不为<code class="docutils literal notranslate"><span class="pre">True</span></code>时，即其他情况<code class="docutils literal notranslate"><span class="pre">otherwise</span></code>，函数返回<code class="docutils literal notranslate"><span class="pre">False</span></code>。</p>
+<p>可以看到，守卫的效果与（级联）条件表达式类似，自上而下执行条件表达式。虽然我们期望守卫中每个条件表达式包含的情况没有交集，但实际上，Haskell允许条件表达式之间产生交集，且表达式实际守卫的条件是其所包含的条件与前面所有守卫的条件表达式包含条件的差集，或者通俗来讲——先入为主。</p>
+<p>例如我们有若干条件表达式，他们分别产生了函数的定义域集合<code class="docutils literal notranslate"><span class="pre">A</span></code>,<code class="docutils literal notranslate"><span class="pre">B</span></code>,<code class="docutils literal notranslate"><span class="pre">C</span></code>，如果使用守卫对其进行排序，不妨<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">B</span> <span class="pre">C</span></code>,则Haskell返回<code class="docutils literal notranslate"><span class="pre">B</span></code>对应结果的条件是<code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">-</span> <span class="pre">A</span></code>;返回<code class="docutils literal notranslate"><span class="pre">C</span></code>对应结果的条件是<code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">-</span> <span class="pre">A</span> <span class="pre">-</span> <span class="pre">B</span></code></p>
+<p>我们使用一种简单的调试方法，对上述事实进行验证。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">--code2.hs</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">Debug.Trace</span><span class="p">(</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="p">)</span>
+
+<span class="nf">and&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="nf">and&#39;&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="s">&quot;first condition&quot;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="s">&quot;second condition&quot;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="s">&quot;otherwise condition&quot;</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">and''</span></code>使用<code class="docutils literal notranslate"><span class="pre">Debug.Trace</span></code>模块中的<code class="docutils literal notranslate"><span class="pre">trace</span></code>函数来“追踪”守卫到底运行了哪条条件表达式，当我们通过GHCi使用<code class="docutils literal notranslate"><span class="pre">and''</span></code>时，就可以看到实际的效果。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code2.hs
+<span class="o">[</span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="o">]</span><span class="w"> </span>Compiling<span class="w"> </span>Main<span class="w">             </span><span class="o">(</span><span class="w"> </span>code2.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>and<span class="s1">&#39;&#39;</span><span class="w"> </span>True<span class="w"> </span>False
+first<span class="w"> </span>condition
+False
+Prelude&gt;<span class="w"> </span>and<span class="s1">&#39;&#39;</span><span class="w"> </span>False<span class="w"> </span>True<span class="w"> </span>
+second<span class="w"> </span>condition
+False
+Prelude&gt;<span class="w"> </span>and<span class="s1">&#39;&#39;</span><span class="w"> </span>False<span class="w"> </span>False
+otherwise<span class="w"> </span>condition
+False
+</pre></div>
+</div>
+<blockquote>
+<div><p>补充：细心的读者会发现如果将<code class="docutils literal notranslate"><span class="pre">otherwise</span></code>放到守卫表达式中非末尾的位置，那么程序不仅没有报错，其后面的条件表达式将永远无法执行；确实，如果使用GHCi查看<code class="docutils literal notranslate"><span class="pre">otherwise</span></code>的类型，可以发现其是一个布尔值，更进一步地，<code class="docutils literal notranslate"><span class="pre">otherwise</span></code>的值是<code class="docutils literal notranslate"><span class="pre">True</span></code>。</p>
+</div></blockquote>
+</section>
+<section id="id6">
+<h2>多分支条件表达式<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<p>虽然守卫对于多分支条件表达相比if..then..else简洁很多，但守卫的使用相对局限，一个有用的扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">MultiWayIf</span> <span class="pre">#-}</span></code>允许使用守卫将if..then..else条件表达式简化。</p>
+<p>沿用条件表达式中的<code class="docutils literal notranslate"><span class="pre">bothzero</span></code>示例，将其使用多分支条件表达式改写。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="cm">{-# LANGUAGE MultiWayIf #-}</span>
+
+<span class="nf">bothzero&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">bothzero&#39;&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span>
+<span class="w">        </span><span class="kr">if</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">False</span><span class="w">  </span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h2>模式匹配<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<p><em><strong>模式匹配(Pattern Match)</strong></em> 是另一个基础而重要的用法，其主要用来匹配特定类型中数据的形式。</p>
+<p>我们沿用上一章的<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>定义，并为其添加一个判断形状的函数<code class="docutils literal notranslate"><span class="pre">judgeShape</span></code>。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="c1">-- 圆形直径</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Diameter</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="c1">-- 长方形长宽</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Length</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Width</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="c1">-- 三角形三条边长</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Side3</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getLength</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Length</span><span class="p">,</span><span class="w"> </span><span class="n">getWidth</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Width</span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">getSide1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">getSide2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">getSide3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Side3</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+
+<span class="nf">judgeShape</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="nf">judgeShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">diameter</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="nf">judgeShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">width</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="nf">judgeShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">side1</span><span class="w"> </span><span class="n">side2</span><span class="w"> </span><span class="n">side3</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Triangle&quot;</span>
+</pre></div>
+</div>
+<p>可以看到<code class="docutils literal notranslate"><span class="pre">judgeShape</span></code>函数的每一行对应了一种形状，其接受的参数不再是一个抽象的符号（如<code class="docutils literal notranslate"><span class="pre">a</span></code>,<code class="docutils literal notranslate"><span class="pre">b</span></code>之类），而是一个由值构造器构造出来的值。</p>
+<section id="wide-card">
+<h3>Wide Card<a class="headerlink" href="#wide-card" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">judgeShape</span></code>函数中，我们并没有使用值构造器后所附带的形参，因此为了简便我们可以使用“万能牌”替代原有形参。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+
+<span class="nf">judgeShape&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="nf">judgeShape&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="nf">judgeShape&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="nf">judgeShape&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Triangle&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>补充： 对于记录语法定义的数据类型，我们可以使用<code class="docutils literal notranslate"><span class="pre">{}</span></code>作为record版本的Wild Card</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">judgeShape&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="nf">judgeShape&#39;&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="nf">judgeShape&#39;&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="nf">judgeShape&#39;&#39;</span><span class="w"> </span><span class="p">(</span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Triangle&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="case-of">
+<h3>case .. of ..<a class="headerlink" href="#case-of" title="此标题的永久链接"></a></h3>
+<p>使用case .. of .. 可以将分开匹配的模式的定义整合起来，如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+
+<span class="nf">judgeShape&#39;&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="nf">judgeShape&#39;&#39;&#39;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">of</span><span class="w"> </span>
+<span class="w">        </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="w">        </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="w">        </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is a Triangle&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="as">
+<h3>as 模式<a class="headerlink" href="#as" title="此标题的永久链接"></a></h3>
+<p><em><strong>as模式(As-patterns)</strong></em> 提供将固定模式绑定到形参的功能<a class="reference external" href="#ref1">[1]</a>。</p>
+<p>例如当我们想要定义一个函数<code class="docutils literal notranslate"><span class="pre">filterCircle</span></code>，其从图形列表中筛选出所有的圆形形成新的列表。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+
+<span class="nf">filterCircle</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="kt">Figure&#39;&#39;</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Figure&#39;&#39;</span><span class="p">]</span>
+<span class="nf">filterCircle</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">        </span><span class="kt">[]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">        </span><span class="p">(</span><span class="n">x</span><span class="o">@</span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">filterCircle</span><span class="w"> </span><span class="n">xs</span>
+<span class="w">        </span><span class="kr">_</span><span class="kt">:</span><span class="n">xs</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">filterCircle</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">filterCirlce</span></code>首先匹配空列表，返回为空；当列表非空且头部为<code class="docutils literal notranslate"><span class="pre">Circle''</span> <span class="pre">_</span></code>时，使用<code class="docutils literal notranslate"><span class="pre">&#64;</span></code>将其绑定到<code class="docutils literal notranslate"><span class="pre">x</span></code>上，并将其作为返回列表的头部，然后递归地处理尾部；最后对于非空列表但头部为除圆外的模式时，抛弃头部，递归地处理尾部。</p>
+</section>
+</section>
+<section id="id8">
+<h2>模式守卫<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<p>有时我们不仅需要匹配模式，还需要在特定模式下满足一定条件，如果使用模式匹配再使用if…then…else语句会显得很麻烦。使用 <em><strong>模式守卫(Pattern Guards)</strong></em> 可以很好地将模式匹配和守卫结合起来，以满足我们的需要。仍然以<code class="docutils literal notranslate"><span class="pre">judgeShape</span></code>函数为例，我们至少应当保证每种图形中的量大于0才有意义，对于三角形还应当满足两边之和大于第三边。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="c1">-- {-# LANGUAGE PatternGuards #-}</span>
+
+<span class="nf">judgeShape_4</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="nf">judgeShape_4</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2</span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;This is A Triangle&quot;</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;Invalid Figure&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：Haskell 2010标准下，PatternGuards 扩展已经被作为标准语法，因此无需使用扩展声明语句<a class="reference external" href="#ref2">[2]</a></p>
+</div></blockquote>
+<blockquote>
+<div><p>补充： 实际上还有另外一种方案，可以将模式匹配和守卫结合到一起：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">judgeShape_5</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="nf">judgeShape_5</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">  </span><span class="kr">case</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">of</span><span class="w"> </span>
+<span class="w">      </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is a Circle&quot;</span>
+<span class="w">      </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is a Rectangle&quot;</span>
+<span class="w">      </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">,</span>
+<span class="w">              </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2</span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;This is A Triangle&quot;</span><span class="w"> </span>
+<span class="w">      </span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;Invalid Figure&quot;</span>
+</pre></div>
+</div>
+<p>这种方案更适合对于一个模式下有多条件分支的情况</p>
+</div></blockquote>
+<p>另外，模式守卫还允许一次性匹配多个模式，我们在<code class="docutils literal notranslate"><span class="pre">judgeShape_5</span></code>的基础上改变一下得到<code class="docutils literal notranslate"><span class="pre">judge2Shapes</span></code>,用来判断两个图形的形状。如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
+<span class="nf">judge2Shapes</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="nf">judge2Shapes</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">ry</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">rx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">ry</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;Two Circles&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">rx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">ly</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="s">&quot;A Circle and a Rectangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">ry</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">lx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">ry</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Circle and a Rectangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">rx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Circle and a Triangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">ry</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2x</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ry</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Circle and a Triangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+<span class="w">            </span><span class="n">lx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ly</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;Two Rectangles&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+<span class="w">            </span><span class="n">lx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Rectangle and a Triangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2x</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ly</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">wy</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Rectangle and A Triangle&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2x</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">s1y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">s3y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s2y</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;Two Triangles&quot;</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;Invalid Figures&quot;</span>
+</pre></div>
+</div>
+<p>这样通过模式守卫，我们可以避免嵌套的模式匹配以及复杂的条件分支。</p>
+<blockquote>
+<div><p>补充： 实际上，不使用模式守卫也可以使用一定的技巧避免级联和复杂的条件分支：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">judge2Shapes&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="nf">judge2Shapes&#39;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">  </span><span class="kr">case</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="kr">of</span>
+<span class="w">      </span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">rx</span><span class="p">,</span><span class="w"> </span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="n">ry</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">rx</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ry</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="s">&quot;Two Circles&quot;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>同样这种方式也比较适合一个模式下有多条件分支的情况</p>
+</div></blockquote>
+</section>
+<section id="id9">
+<h2>观察模式<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h2>
+<p><em><strong>观察模式(View Patterns)</strong></em> 与模式守卫类似，通过添加扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">ViewPatterns</span> <span class="pre">#-}</span></code>可以避免嵌套模式匹配的情况。这里给出链接以供读者参考<a class="reference external" href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/view_patterns.html">View Patterns</a>。</p>
+</section>
+<section id="id10">
+<h2>模式同义<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<p><em><strong>模式同义(Pattern Synonyms)</strong></em> 允许对模式匹配定义新名称，通过添加扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">PatternSynonyms</span> <span class="pre">#-}</span></code>从而能够简化书写，提高可读性，减少写错的可能。详见参考链接<a class="reference external" href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/pattern_synonyms.html">Pattern Synonyms</a>。</p>
+<p id="ref1"> [1] Haskell/Pattern matching. (2023, April 6). Wikibooks. Retrieved 05:03, March 17, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Pattern_matching&oldid=4276286.</p>
+<p id="ref2"> [2] Future of Haskell. (2023, January 28). HaskellWiki, . Retrieved 07:10, March 17, 2024 from https://wiki.haskell.org/index.php?title=Future_of_Haskell&oldid=65510.</p></section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html" class="btn btn-neutral float-left" title="数据类型与函数" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
 
   <hr/>
 
