@@ -36,3 +36,11 @@ factorial'' n = if n == 0 then 1 else helper n 1
     where 
         helper 1 m = m
         helper n m = helper (n - 1) $! (n * m) 
+
+even' :: Int -> Bool
+even' 0 = True
+even' n = odd' (n - 1)
+
+odd' :: Int -> Bool
+odd' 0 = True 
+odd' n = even' (n - 1)

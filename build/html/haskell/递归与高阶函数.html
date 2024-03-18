@@ -61,8 +61,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#id3">递归函数的概念</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id4">定义递归函数</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">尾递归</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">相互递归</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">不动点</a></li>
 </ul>
 </li>
 </ul>
@@ -219,9 +221,27 @@
 <blockquote>
 <div><p>补充：在诸如Haskell的惰性语言中，尾递归并不是那么有用，我们还需要讨论一种叫做 <em><strong>守卫递归(guarded recursion)</strong></em> 的概念，在这种递归中，递归调用部分要包含在数据构造器内部（作为其参数），这允许递归过程尽可能地延迟<a class="reference external" href="#ref2">[2]</a>。</p>
 </div></blockquote>
+</section>
+<section id="id6">
+<h3>相互递归<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<p>Haskell允许相互递归，例如判断奇数与判断偶数两个函数的相互递归。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+
+<span class="nf">even&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">even&#39;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span>
+<span class="nf">even&#39;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">odd&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nf">odd&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">odd&#39;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="nf">odd&#39;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">even&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2>不动点<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
 <p id="ref1">[1] Haskell/Recursion. (2022, April 10). Wikibooks. Retrieved 05:25, March 18, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Recursion&oldid=4046891.</p>
 <p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p></section>
-</section>
 </section>
 
 

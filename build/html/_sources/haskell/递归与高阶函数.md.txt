@@ -143,8 +143,23 @@ reverse'' [1,2,3]
 
 > 补充：在诸如Haskell的惰性语言中，尾递归并不是那么有用，我们还需要讨论一种叫做 ***守卫递归(guarded recursion)*** 的概念，在这种递归中，递归调用部分要包含在数据构造器内部（作为其参数），这允许递归过程尽可能地延迟[[2]](#ref2)。
 
+### 相互递归
 
+Haskell允许相互递归，例如判断奇数与判断偶数两个函数的相互递归。
 
+```haskell
+-- code3.hs
+
+even' :: Int -> Bool
+even' 0 = True
+even' n = odd' (n - 1)
+
+odd' :: Int -> Bool
+odd' 0 = True 
+odd' n = even' (n - 1)
+```
+
+## 不动点
 
 
 
@@ -154,6 +169,3 @@ reverse'' [1,2,3]
 
 <p id="ref1">[1] Haskell/Recursion. (2022, April 10). Wikibooks. Retrieved 05:25, March 18, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Recursion&oldid=4046891.</p>
 <p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p>
-
-
-
