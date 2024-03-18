@@ -52,7 +52,7 @@ divide a b = if b == 0 then Nothing else Just (a `div` b)
 
 `if`后跟随条件表达式（即类型为`Bool`）,当条件表达式的值为`True`则返回`then`后面表达式的值，否则返回`else`后面表达式的值。这里当除数`b`为0时，整除无意义，返回`Nothing`;当`b`不为0时，则计算并返回用`Just`包裹的结果。
 
-> 提示：如果读者了解一些顺序式编程语言的话，那么就会发现Haskell中条件表达式略有不同。在Haskell中if..then..else..更像是一个运算符，因为这个表达式必然会返回一个值；相对地，顺序式编程语言中的条件表达式只是一种表述解构。
+> 提示：如果读者了解一些顺序式编程语言的话，那么就会发现Haskell中条件表达式略有不同。在Haskell中if..then..else..更像是一个运算符，因为这个表达式必然会返回一个值；相对地，顺序式编程语言中的条件表达式只是一种表述结构。
 
 对于复杂冗长的条件表达式可以分多行书写：
 
@@ -389,8 +389,7 @@ judge2Shapes x y
 
 
 
-
-
+-------------------------------
 
 
 <p id="ref1"> [1] Haskell/Pattern matching. (2023, April 6). Wikibooks. Retrieved 05:03, March 17, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Pattern_matching&oldid=4276286.</p>

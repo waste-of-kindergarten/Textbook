@@ -153,7 +153,7 @@
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">if</span></code>后跟随条件表达式（即类型为<code class="docutils literal notranslate"><span class="pre">Bool</span></code>）,当条件表达式的值为<code class="docutils literal notranslate"><span class="pre">True</span></code>则返回<code class="docutils literal notranslate"><span class="pre">then</span></code>后面表达式的值，否则返回<code class="docutils literal notranslate"><span class="pre">else</span></code>后面表达式的值。这里当除数<code class="docutils literal notranslate"><span class="pre">b</span></code>为0时，整除无意义，返回<code class="docutils literal notranslate"><span class="pre">Nothing</span></code>;当<code class="docutils literal notranslate"><span class="pre">b</span></code>不为0时，则计算并返回用<code class="docutils literal notranslate"><span class="pre">Just</span></code>包裹的结果。</p>
 <blockquote>
-<div><p>提示：如果读者了解一些顺序式编程语言的话，那么就会发现Haskell中条件表达式略有不同。在Haskell中if..then..else..更像是一个运算符，因为这个表达式必然会返回一个值；相对地，顺序式编程语言中的条件表达式只是一种表述解构。</p>
+<div><p>提示：如果读者了解一些顺序式编程语言的话，那么就会发现Haskell中条件表达式略有不同。在Haskell中if..then..else..更像是一个运算符，因为这个表达式必然会返回一个值；相对地，顺序式编程语言中的条件表达式只是一种表述结构。</p>
 </div></blockquote>
 <p>对于复杂冗长的条件表达式可以分多行书写：</p>
 <div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code2.hs</span>
@@ -460,6 +460,7 @@ False
 <section id="id10">
 <h2>模式同义<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
 <p><em><strong>模式同义(Pattern Synonyms)</strong></em> 允许对模式匹配定义新名称，通过添加扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">PatternSynonyms</span> <span class="pre">#-}</span></code>从而能够简化书写，提高可读性，减少写错的可能。详见参考链接<a class="reference external" href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/pattern_synonyms.html">Pattern Synonyms</a>。</p>
+<hr class="docutils" />
 <p id="ref1"> [1] Haskell/Pattern matching. (2023, April 6). Wikibooks. Retrieved 05:03, March 17, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Pattern_matching&oldid=4276286.</p>
 <p id="ref2"> [2] Future of Haskell. (2023, January 28). HaskellWiki, . Retrieved 07:10, March 17, 2024 from https://wiki.haskell.org/index.php?title=Future_of_Haskell&oldid=65510.</p></section>
 </section>
