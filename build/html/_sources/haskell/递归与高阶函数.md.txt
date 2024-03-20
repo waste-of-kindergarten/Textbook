@@ -161,11 +161,210 @@ odd' n = even' (n - 1)
 
 ## 不动点
 
+***不动点(Fixed Point)*** 与递归具有紧密的关系，Haskell将不动点作为基元引入lambda演算中，以便允许使用者能够定义递归函数[[3]](#ref3)。
 
+某个函数的不动点指的是是函数作用在该点上，结果仍然这个点[[3]](#ref3)。求不动点的函数`fix`定义如下：
 
+```haskell
+-- code3.hs
 
+fix :: (a -> a) -> a
+fix f = let x = f x in x
 
+-- 其他等价版本
+fix' :: (a -> a) -> a
+fix' f = let x = fix' f in f x
 
+fix'' :: (a -> a) -> a
+fix'' f = f (fix'' f)
+```
+
+> 提示：`Control.Monad.Fix`已经内置了`fix`函数
+
+`fix`函数是循环定义的，看起来应用这个函数只会导致无限的嵌套，没有太大意义。然而，我们确实可以找到函数可以使`fix`计算出结果。
+
+```bash
+Prelude> :load code3.hs
+[1 of 2] Compiling Main             ( code3.hs, interpreted )
+Ok, one module loaded.
+Prelude> fix (const "fixpoint")
+"fixpoint"
+```
+
+`const`的类型是`const :: a -> b -> a`,用于构造常函数，因此`const "fixpoint"`无论接受什么类型的值都会返回`"fixpoint"`。
+
+我们分析整个过程：
+
+```haskell
+fix (const "fixpoint")
+= let x = const "fixpoint" x in x
+= let x = const "fixpoint" x in const "fixpoint" x
+= let x = const "fixpoint" x in "fixpoint"
+```
+
+由于`const`忽略了第二个参数，整个计算很快终止，我们得到该常函数的不动点，正是常函数值域中唯一的值。
+
+使用构造器进行无限嵌套的计算无法计算出结果，但确实有意义，例如
+
+```bash
+Prelude> fix (1:)
+[1,1,1,1,1,...
+Prelude> x = fix (1:)
+Prelude> head x 
+1
+```
+
+使用`fix`函数，我们构造出之前讨论过的无穷列表，由于惰性求值的特性，我们仍然可以按需对这个无穷进行求值。
+
+## 高阶函数
+
+一个函数如果接受其他函数作为参数，或者返回一个函数作为结果，那么这个函数被称为 ***高阶函数(Higher-order Function)***[[4]](#ref4)。
+
+在讨论柯里化时，我们研究了柯里化对于生成部分函数的优势，实际上，柯里化后函数（多元函数）都是高阶函数，因为每次接受一个参数，并返回一个部分函数。
+
+> 提示： 高阶函数并不都存在部分函数
+
+我们可以利用高阶函数实现柯里化的转换，对于一个二元函数，定义如下：
+
+```haskell
+-- code3.hs
+-- curry
+curry' :: ((a,b) -> c) -> a -> b -> c
+curry' f a b = f (a,b)
+-- uncurry
+uncurry' :: (a -> b -> c) -> (a,b) -> c
+uncurry f (a,b) = f a b
+```
+
+`curry'`与`uncurry'`作为互逆的过程，均接受一个函数作为参数，返回另一个函数。
+
+除了柯里化和逆柯里化函数外，Haskell中还有几个重要的递归函数也是高阶函数。
+
+### `map` 函数
+
+`map`函数的类型为`(a -> b) -> [a] -> [b]`，它接受一个函数，以及一个列表，并将这个函数应用到列表上的每一个元素，以生成新的列表。`map`的定义如下：
+
+```haskell
+-- code3.hs
+-- map
+map' :: (a -> b) -> [a] -> [b]
+map' f [] = []
+map' f (x:xs) = f x : map' f xs 
+```
+
+在GHCi中进行尝试：
+
+```bash
+Prelude> map' (+1) [1,2,3,4]
+[2,3,4,5]
+Prelude> map' odd [1,2,3,4]
+[True,False,True,False]
+Prelude> import Data.Char(toUpper)
+Prelude> map' toUpper "haskell"
+"HASKELL"
+```
+
+### `filter`函数
+
+`filter`类型为`(a -> Bool) -> [a] -> [a]`，其作用是利用第一个参数（返回布尔值的函数）对第二个参数（列表）进行筛选，得到新的列表。
+
+```haskell
+-- code3.hs
+-- filter
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' f [] = []
+filter' f (x:xs) = if f x 
+    then x : filter' f xs 
+    else filter' f xs
+```
+
+下面给出几个使用的示例：
+
+```bash
+Prelude> filter' odd [1,2,3,4]
+[1,3]
+Prelude> filter' (const True) "abc"
+"abc"
+Prelude> filter' isDigit "123abc321cba"
+"123321"
+```
+
+### `foldr`与`foldl`函数
+
+顾名思义，fold函数将列表中的元素“折叠”起来，它依次将列表中的元素代入计算，并返回最终计算的结果，直观上好像将列表“收缩”成了一个点。
+
+折叠函数分为左折叠`foldl`和右折叠`foldr`,两者都接受一个二元函数（通常为运算符），一个初始值以及一个列表。折叠函数将初始值与列表中首个元素作为运算符的两个参数，计算得到的结果作为对列表尾部折叠的初始值，不断递归直到列表为空，折叠函数返回此时的初始值。`foldl`与`foldr`的不同在于，两者接受的运算符中放置初始值位置不同，`foldl`类型为`(b -> a -> b) -> b -> [a] -> b`,初始值放在运算符的左侧；而`foldr`类型为`(a -> b -> b) -> b -> [a] -> b`，初始值放在了运算符的右侧。
+
+> 提示： 为了方便起见，此处折叠函数与内置函数类型稍有不同，内置的折叠函数不仅可以处理列表，还可以处理任何可折叠的对象
+
+首先看左折叠的定义：
+
+```haskell
+-- code3.hs
+-- foldl
+myfoldl :: (b -> a -> b) -> b -> [a] -> b
+myfoldl f zero [] = zero 
+myfoldl f zero (x:xs) = myfoldl f (f zero x) xs
+```
+
+以`myfoldl (+) [1,2,3]`为例，我们分析折叠过程：
+
+```haskell
+myfoldl (+) 0 [1,2,3]
+= myfoldl (0 + 1) [2,3]
+= myfoldl ((0 + 1) + 2) [3]
+= myfoldl (((0 + 1) + 2) + 3) []
+= ((0 + 1) + 2) + 3
+= 6
+```
+
+示例以初始值0开始，逐个与列表中的元素作和，最终得到了列表所有元素的和。
+
+下面讨论右折叠，其定义如下：
+
+```haskell
+-- code3.hs
+-- foldr
+myfoldr :: (a -> b -> b) -> b -> [a] -> b
+myfoldr f zero [] = zero
+myfoldr f zero (x:xs) = f x (myfoldr f zero xs) 
+```
+
+仍然以`myfoldr (+) 0 [1,2,3]`为例，分析折叠过程：
+
+```haskell
+myfoldr (+) 0 [1,2,3]
+= 1 + (myfoldr (+) 0 [2,3])
+= 1 + (2 + (myfoldr (+) 0 [3]))
+= 1 + (2 + (3 + (myfoldr (+) 0 [])))
+= 1 + (2 + (3 + 0))
+= 6
+```
+
+细心的读者会发现，左折叠函数是尾递归的，即递归调用作为函数操作的最后一步，但由于惰性，这并不能提高空间效率，因此Haskell提供了位于Data.List库中的非惰性左折叠函数`foldl'`。非惰性的左折叠函数在每次递归调用时，立刻计算出初始值，而不是保留中间过程直到递归调用结束。
+
+然而，左折叠函数对于无限的数据处理并不理想，考虑`myfoldl (&&) True (False : fix (True:))`的折叠过程：
+
+```haskell
+myfoldl (&&) True (False : fix (True:))
+= myfoldl (&&) (False && True) (fix (True:))
+= ...
+```
+
+可以看到，每次递归时它都会使用新参数调用自身，直到列表的末尾，因此对于无穷列表来说，它将一直递归调用下去，无法停止；相比之下，右折叠则能够处理无情列表的情况：
+
+```haskell
+myfoldr (&&) True (False : fix (True:))
+= False (&&) (myfoldr (&&) True (fix (True:)))
+= False
+```
+
+右折叠会立即返回 将函数`f`应用于递归折叠到列表尾部的结果，这意味着如果函数`f`可以不依赖递归部分而产生结果，整个递归过程将会终止[[5]](#ref5)，正如上述情形。
+
+---------------------------
 
 <p id="ref1">[1] Haskell/Recursion. (2022, April 10). Wikibooks. Retrieved 05:25, March 18, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Recursion&oldid=4046891.</p>
 <p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p>
+<p id="ref3">[3] Haskell/Fix and recursion. (2023, March 24). Wikibooks. Retrieved 00:54, March 19, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Fix_and_recursion&oldid=4245469.</p>
+<p id="ref4">[4] Higher order function. (2010, September 29). HaskellWiki, . Retrieved 02:32, March 19, 2024 from https://wiki.haskell.org/index.php?title=Higher_order_function&oldid=36887.</p>
+<p id="ref5">[5] Fold. (2019, March 28). HaskellWiki, . Retrieved 09:06, March 19, 2024 from https://wiki.haskell.org/index.php?title=Fold&oldid=62841.</p>

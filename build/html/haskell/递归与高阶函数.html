@@ -65,6 +65,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id7">不动点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">高阶函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#map"><code class="docutils literal notranslate"><span class="pre">map</span></code> 函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter"><code class="docutils literal notranslate"><span class="pre">filter</span></code>函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#foldrfoldl"><code class="docutils literal notranslate"><span class="pre">foldr</span></code>与<code class="docutils literal notranslate"><span class="pre">foldl</span></code>函数</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -240,8 +246,176 @@
 </section>
 <section id="id7">
 <h2>不动点<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<p><em><strong>不动点(Fixed Point)</strong></em> 与递归具有紧密的关系，Haskell将不动点作为基元引入lambda演算中，以便允许使用者能够定义递归函数<a class="reference external" href="#ref3">[3]</a>。</p>
+<p>某个函数的不动点指的是是函数作用在该点上，结果仍然这个点<a class="reference external" href="#ref3">[3]</a>。求不动点的函数<code class="docutils literal notranslate"><span class="pre">fix</span></code>定义如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+
+<span class="nf">fix</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="nf">fix</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">x</span>
+
+<span class="c1">-- 其他等价版本</span>
+<span class="nf">fix&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="nf">fix&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">fix&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span>
+
+<span class="nf">fix&#39;&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="nf">fix&#39;&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">fix&#39;&#39;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：<code class="docutils literal notranslate"><span class="pre">Control.Monad.Fix</span></code>已经内置了<code class="docutils literal notranslate"><span class="pre">fix</span></code>函数</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">fix</span></code>函数是循环定义的，看起来应用这个函数只会导致无限的嵌套，没有太大意义。然而，我们确实可以找到函数可以使<code class="docutils literal notranslate"><span class="pre">fix</span></code>计算出结果。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code3.hs
+<span class="o">[</span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">2</span><span class="o">]</span><span class="w"> </span>Compiling<span class="w"> </span>Main<span class="w">             </span><span class="o">(</span><span class="w"> </span>code3.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>fix<span class="w"> </span><span class="o">(</span>const<span class="w"> </span><span class="s2">&quot;fixpoint&quot;</span><span class="o">)</span>
+<span class="s2">&quot;fixpoint&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">const</span></code>的类型是<code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">::</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>,用于构造常函数，因此<code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">&quot;fixpoint&quot;</span></code>无论接受什么类型的值都会返回<code class="docutils literal notranslate"><span class="pre">&quot;fixpoint&quot;</span></code>。</p>
+<p>我们分析整个过程：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">fix</span><span class="w"> </span><span class="p">(</span><span class="n">const</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">const</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">x</span>
+<span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">const</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">const</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span><span class="w"> </span><span class="n">x</span>
+<span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">const</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="s">&quot;fixpoint&quot;</span>
+</pre></div>
+</div>
+<p>由于<code class="docutils literal notranslate"><span class="pre">const</span></code>忽略了第二个参数，整个计算很快终止，我们得到该常函数的不动点，正是常函数值域中唯一的值。</p>
+<p>使用构造器进行无限嵌套的计算无法计算出结果，但确实有意义，例如</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>fix<span class="w"> </span><span class="o">(</span><span class="m">1</span>:<span class="o">)</span>
+<span class="o">[</span><span class="m">1</span>,1,1,1,1,...
+Prelude&gt;<span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fix<span class="w"> </span><span class="o">(</span><span class="m">1</span>:<span class="o">)</span>
+Prelude&gt;<span class="w"> </span>head<span class="w"> </span>x<span class="w"> </span>
+<span class="m">1</span>
+</pre></div>
+</div>
+<p>使用<code class="docutils literal notranslate"><span class="pre">fix</span></code>函数，我们构造出之前讨论过的无穷列表，由于惰性求值的特性，我们仍然可以按需对这个无穷进行求值。</p>
+</section>
+<section id="id8">
+<h2>高阶函数<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<p>一个函数如果接受其他函数作为参数，或者返回一个函数作为结果，那么这个函数被称为 <em><strong>高阶函数(Higher-order Function)</strong></em><a class="reference external" href="#ref4">[4]</a>。</p>
+<p>在讨论柯里化时，我们研究了柯里化对于生成部分函数的优势，实际上，柯里化后函数（多元函数）都是高阶函数，因为每次接受一个参数，并返回一个部分函数。</p>
+<blockquote>
+<div><p>提示： 高阶函数并不都存在部分函数</p>
+</div></blockquote>
+<p>我们可以利用高阶函数实现柯里化的转换，对于一个二元函数，定义如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- curry</span>
+<span class="nf">curry&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="nf">curry&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="c1">-- uncurry</span>
+<span class="nf">uncurry&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="nf">uncurry</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">curry'</span></code>与<code class="docutils literal notranslate"><span class="pre">uncurry'</span></code>作为互逆的过程，均接受一个函数作为参数，返回另一个函数。</p>
+<p>除了柯里化和逆柯里化函数外，Haskell中还有几个重要的递归函数也是高阶函数。</p>
+<section id="map">
+<h3><code class="docutils literal notranslate"><span class="pre">map</span></code> 函数<a class="headerlink" href="#map" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">map</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">b)</span> <span class="pre">-&gt;</span> <span class="pre">[a]</span> <span class="pre">-&gt;</span> <span class="pre">[b]</span></code>，它接受一个函数，以及一个列表，并将这个函数应用到列表上的每一个元素，以生成新的列表。<code class="docutils literal notranslate"><span class="pre">map</span></code>的定义如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- map</span>
+<span class="nf">map&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+<span class="nf">map&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="nf">map&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">map&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>在GHCi中进行尝试：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; map&#39; (+1) [1,2,3,4]
+[2,3,4,5]
+Prelude&gt; map&#39; odd [1,2,3,4]
+[True,False,True,False]
+Prelude&gt; import Data.Char(toUpper)
+Prelude&gt; map&#39; toUpper &quot;haskell&quot;
+&quot;HASKELL&quot;
+</pre></div>
+</div>
+</section>
+<section id="filter">
+<h3><code class="docutils literal notranslate"><span class="pre">filter</span></code>函数<a class="headerlink" href="#filter" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">filter</span></code>类型为<code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">Bool)</span> <span class="pre">-&gt;</span> <span class="pre">[a]</span> <span class="pre">-&gt;</span> <span class="pre">[a]</span></code>，其作用是利用第一个参数（返回布尔值的函数）对第二个参数（列表）进行筛选，得到新的列表。</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- filter</span>
+<span class="nf">filter&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">filter&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="nf">filter&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">then</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">filter&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">else</span><span class="w"> </span><span class="n">filter&#39;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p>下面给出几个使用的示例：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; filter&#39; odd [1,2,3,4]
+[1,3]
+Prelude&gt; filter&#39; (const True) &quot;abc&quot;
+&quot;abc&quot;
+Prelude&gt; filter&#39; isDigit &quot;123abc321cba&quot;
+&quot;123321&quot;
+</pre></div>
+</div>
+</section>
+<section id="foldrfoldl">
+<h3><code class="docutils literal notranslate"><span class="pre">foldr</span></code>与<code class="docutils literal notranslate"><span class="pre">foldl</span></code>函数<a class="headerlink" href="#foldrfoldl" title="此标题的永久链接"></a></h3>
+<p>顾名思义，fold函数将列表中的元素“折叠”起来，它依次将列表中的元素代入计算，并返回最终计算的结果，直观上好像将列表“收缩”成了一个点。</p>
+<p>折叠函数分为左折叠<code class="docutils literal notranslate"><span class="pre">foldl</span></code>和右折叠<code class="docutils literal notranslate"><span class="pre">foldr</span></code>,两者都接受一个二元函数（通常为运算符），一个初始值以及一个列表。折叠函数将初始值与列表中首个元素作为运算符的两个参数，计算得到的结果作为对列表尾部折叠的初始值，不断递归直到列表为空，折叠函数返回此时的初始值。<code class="docutils literal notranslate"><span class="pre">foldl</span></code>与<code class="docutils literal notranslate"><span class="pre">foldr</span></code>的不同在于，两者接受的运算符中放置初始值位置不同，<code class="docutils literal notranslate"><span class="pre">foldl</span></code>类型为<code class="docutils literal notranslate"><span class="pre">(b</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b)</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">[a]</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>,初始值放在运算符的左侧；而<code class="docutils literal notranslate"><span class="pre">foldr</span></code>类型为<code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">b)</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">[a]</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>，初始值放在了运算符的右侧。</p>
+<blockquote>
+<div><p>提示： 为了方便起见，此处折叠函数与内置函数类型稍有不同，内置的折叠函数不仅可以处理列表，还可以处理任何可折叠的对象</p>
+</div></blockquote>
+<p>首先看左折叠的定义：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- foldl</span>
+<span class="nf">myfoldl</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span>
+<span class="nf">myfoldl</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span>
+<span class="nf">myfoldl</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">myfoldl</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p>以<code class="docutils literal notranslate"><span class="pre">myfoldl</span> <span class="pre">(+)</span> <span class="pre">[1,2,3]</span></code>为例，我们分析折叠过程：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">myfoldl</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">myfoldl</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">myfoldl</span><span class="w"> </span><span class="p">((</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">myfoldl</span><span class="w"> </span><span class="p">(((</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="kt">[]</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">((</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">6</span>
+</pre></div>
+</div>
+<p>示例以初始值0开始，逐个与列表中的元素作和，最终得到了列表所有元素的和。</p>
+<p>下面讨论右折叠，其定义如下：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code3.hs</span>
+<span class="c1">-- foldr</span>
+<span class="nf">myfoldr</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span>
+<span class="nf">myfoldr</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">zero</span>
+<span class="nf">myfoldr</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="p">(</span><span class="n">myfoldr</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>仍然以<code class="docutils literal notranslate"><span class="pre">myfoldr</span> <span class="pre">(+)</span> <span class="pre">0</span> <span class="pre">[1,2,3]</span></code>为例，分析折叠过程：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kt">[]</span><span class="p">)))</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="mi">6</span>
+</pre></div>
+</div>
+<p>细心的读者会发现，左折叠函数是尾递归的，即递归调用作为函数操作的最后一步，但由于惰性，这并不能提高空间效率，因此Haskell提供了位于Data.List库中的非惰性左折叠函数<code class="docutils literal notranslate"><span class="pre">foldl'</span></code>。非惰性的左折叠函数在每次递归调用时，立刻计算出初始值，而不是保留中间过程直到递归调用结束。</p>
+<p>然而，左折叠函数对于无限的数据处理并不理想，考虑<code class="docutils literal notranslate"><span class="pre">myfoldl</span> <span class="pre">(&amp;&amp;)</span> <span class="pre">True</span> <span class="pre">(False</span> <span class="pre">:</span> <span class="pre">fix</span> <span class="pre">(True:))</span></code>的折叠过程：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">myfoldl</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span><span class="p">(</span><span class="kt">False</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">fix</span><span class="w"> </span><span class="p">(</span><span class="kt">True:</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">myfoldl</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">False</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="kt">True</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fix</span><span class="w"> </span><span class="p">(</span><span class="kt">True:</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="o">...</span>
+</pre></div>
+</div>
+<p>可以看到，每次递归时它都会使用新参数调用自身，直到列表的末尾，因此对于无穷列表来说，它将一直递归调用下去，无法停止；相比之下，右折叠则能够处理无情列表的情况：</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span><span class="p">(</span><span class="kt">False</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">fix</span><span class="w"> </span><span class="p">(</span><span class="kt">True:</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">myfoldr</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;&amp;</span><span class="p">)</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span><span class="p">(</span><span class="n">fix</span><span class="w"> </span><span class="p">(</span><span class="kt">True:</span><span class="p">)))</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<p>右折叠会立即返回 将函数<code class="docutils literal notranslate"><span class="pre">f</span></code>应用于递归折叠到列表尾部的结果，这意味着如果函数<code class="docutils literal notranslate"><span class="pre">f</span></code>可以不依赖递归部分而产生结果，整个递归过程将会终止<a class="reference external" href="#ref5">[5]</a>，正如上述情形。</p>
+<hr class="docutils" />
 <p id="ref1">[1] Haskell/Recursion. (2022, April 10). Wikibooks. Retrieved 05:25, March 18, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Recursion&oldid=4046891.</p>
-<p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p></section>
+<p id="ref2">[2] Brent Yorgey.(2009, March 25). [Haskell-cafe] Definition of "tail recursive" wrt Folds. Retrieved March 3,2024 from https://mail.haskell.org/pipermail/haskell-cafe/2009-March/058607.html</p>
+<p id="ref3">[3] Haskell/Fix and recursion. (2023, March 24). Wikibooks. Retrieved 00:54, March 19, 2024 from https://en.wikibooks.org/w/index.php?title=Haskell/Fix_and_recursion&oldid=4245469.</p>
+<p id="ref4">[4] Higher order function. (2010, September 29). HaskellWiki, . Retrieved 02:32, March 19, 2024 from https://wiki.haskell.org/index.php?title=Higher_order_function&oldid=36887.</p>
+<p id="ref5">[5] Fold. (2019, March 28). HaskellWiki, . Retrieved 09:06, March 19, 2024 from https://wiki.haskell.org/index.php?title=Fold&oldid=62841.</p></section>
+</section>
 </section>
 
 

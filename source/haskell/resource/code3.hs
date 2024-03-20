@@ -44,3 +44,33 @@ even' n = odd' (n - 1)
 odd' :: Int -> Bool
 odd' 0 = True 
 odd' n = even' (n - 1)
+
+
+fix :: (a -> a) -> a
+fix f = let x = f x in x
+
+-- 其他等价版本
+fix' :: (a -> a) -> a
+fix' f = let x = fix' f in f x
+
+fix'' :: (a -> a) -> a
+fix'' f = f (fix'' f)
+
+-- curry
+curry' :: ((a,b) -> c) -> a -> b -> c
+curry' f a b = f (a,b)
+-- uncurry
+uncurry' :: (a -> b -> c) -> (a,b) -> c
+uncurry' f (a,b) = f a b
+
+-- map
+map' :: (a -> b) -> [a] -> [b]
+map' f [] = []
+map' f (x:xs) = f x : map' f xs 
+
+-- filter
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' f [] = []
+filter' f (x:xs) = if f x 
+    then x : filter' f xs 
+    else filter' f xs
