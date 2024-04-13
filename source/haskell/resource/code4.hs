@@ -1,8 +1,15 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE DeriveAnyClass #-}
-
-
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE TypeFamilies #-}
 -- 圆形直径
 type Diameter = Double
 -- 长方形长宽
@@ -63,4 +70,71 @@ data SolidFigure' =
     | Cuboid' {getLength :: Length, getWidth :: Width, getHeight :: Height}
     | Cylinder' {getDiameter :: Diameter, getHeight :: Height}
   deriving (Show,Judgeable')
+
+newtype Fig = Fig SolidFigure deriving newtype (Judgeable)
+
+type SynFig = Fig 
+
+instance Judgeable' SynFig 
+
+deriving instance Eq Figure''
+deriving instance Eq SolidFigure
+deriving instance Eq SolidFigure'
+
+class Same a b where
+  same :: a -> b -> Bool 
+  same _ _ = False
+
+instance Same Figure'' SolidFigure  
+
+instance Same SolidFigure Figure'' 
+
+instance Same SolidFigure SolidFigure where 
+  same = (==) 
+
+instance Same Figure'' Figure'' where 
+  same = (==)
+
+class DefaultVal where 
+  unit :: Double
+  unit = 1
+  info :: String 
+  info = "global information"
+  needinstantiation :: ()
+
+instance DefaultVal where
+  needinstantiation = ()
+
+-- ordinary instances
+instance Eq a => Same (Maybe a) (Maybe a) where 
+  same Nothing Nothing = True 
+  same (Just a) (Just b) = a == b 
+  same _ _ = False 
+
+-- flexible instances
+instance Same [Char] [Char] where 
+  same [] [] = True 
+  same (x:xs) (y:ys) = x == y && same xs ys 
+  same _ _ = False
+
+class WithoutDep a b c where 
+  func :: a -> b -> c 
+
+instance WithoutDep Int Int Int where 
+  func = \ x y -> 0
+
+instance WithoutDep Int Int Double where
+  func = \ x y -> 0
+
+class WithDep a b c | a b -> c where 
+  func' :: a -> b -> c
+
+instance WithDep Int Int Int where 
+  func' = \ x y -> 0
+
+{-
+-- illegal because a definition has already existed.
+instance WithDep Int Int Double where 
+  func' = \ x y -> 0
+-}
 

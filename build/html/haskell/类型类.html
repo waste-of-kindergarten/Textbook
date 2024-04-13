@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>类型类 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="递归与高阶函数" href="%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">类型类</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">类型类的声明与实例的实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">常用类型类</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#eq">相等类型类 <code class="docutils literal notranslate"><span class="pre">Eq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ord">有序类型类 <code class="docutils literal notranslate"><span class="pre">Ord</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bounded">有界类型类 <code class="docutils literal notranslate"><span class="pre">Bounded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum">枚举类型类 <code class="docutils literal notranslate"><span class="pre">Enum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ix">索引类型类 <code class="docutils literal notranslate"><span class="pre">Ix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show">可显示类型类 <code class="docutils literal notranslate"><span class="pre">Show</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#read">可读类型类 <code class="docutils literal notranslate"><span class="pre">Read</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#isstring">字符串类型类 <code class="docutils literal notranslate"><span class="pre">IsString</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functor-applicative-monad">函子类型类 (<code class="docutils literal notranslate"><span class="pre">Functor</span></code>, <code class="docutils literal notranslate"><span class="pre">Applicative</span></code>, <code class="docutils literal notranslate"><span class="pre">Monad</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">派生</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">派生与自动派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">默认实现的派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">新类型的派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">派生策略</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">孤立派生</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">特殊用法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">多参数类型类</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">无参数类型类</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">灵活的实例声明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">函数依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">别名的实例导出</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">存在类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">关联类型族</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">类型类</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/haskell/类型类.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>类型类<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p>在 <em>数据类型与函数</em> 一章中，我们阐述了多态性分为 <em><strong>参数多态性(Parametric PolyMorphism)</strong></em> 和 <em><strong>临时多态性(Ad-hoc PolyMorphism)</strong></em> ， 并着重讨论了参数多态性。本章我们讲解的类型类，是一种允许使用临时多态性的语法。</p>
+<p>临时多态性允许某个变量为若干类型中的任意一种，这是因为它对于每种类型都进行了单独的定义<a class="reference external" href="#ref1">[1]</a>。</p>
+<blockquote>
+<div><p>提示：与参数多态性明显不同的是，参数多态性中类型的变量指任意类型，而临时多态性的类型并不是任意的。</p>
+</div></blockquote>
+<section id="id2">
+<h2>类型类的声明与实例的实现<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>仍然沿用<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>类型，并定义一个<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>类型表示立体图形。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE DuplicateRecordFields #-}</span>
+<span class="c1">-- 开启扩展 DuplicateRecordFields 允许记录语法中的域名称重复</span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">Height</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Double</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Sphere</span><span class="w"> </span><span class="p">{</span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">}</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Cuboid</span><span class="w"> </span><span class="p">{</span><span class="n">getLength</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Length</span><span class="p">,</span><span class="w"> </span><span class="n">getWidth</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Width</span><span class="p">,</span><span class="w"> </span><span class="n">getHeight</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Height</span><span class="p">}</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Cylinder</span><span class="w"> </span><span class="p">{</span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">,</span><span class="w"> </span><span class="n">getHeight</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Height</span><span class="p">}</span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>类型定义了三个立体图形，<code class="docutils literal notranslate"><span class="pre">Sphere</span></code>表示球体，<code class="docutils literal notranslate"><span class="pre">Cuboid</span></code>为长方体，<code class="docutils literal notranslate"><span class="pre">Cylinder</span></code>为圆柱体，当然还有其他立体图形，读者可以根据自己的喜好自行添加。</p>
+<p>在前面章节中我们定义过的<code class="docutils literal notranslate"><span class="pre">judgeShape</span></code>函数，它可以用于判断<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>类型的形状，我们希望定义一个更通用的函数，它既可以判断平面图形<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>也可以判断立体图形<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>。类型类恰好就可以胜任这种情形。</p>
+<p>我们定义一个<code class="docutils literal notranslate"><span class="pre">Judgeable</span></code>类型类用来表示图形是可判断的，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Judgeable</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">judgeType</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+</pre></div>
+</div>
+<p>类型类以<code class="docutils literal notranslate"><span class="pre">class</span></code>关键字开头，并定义了两个函数<code class="docutils literal notranslate"><span class="pre">judgeType</span></code>和<code class="docutils literal notranslate"><span class="pre">tellShape</span></code>用于判断图形的类型和图形的形状。</p>
+<p>此时，我们已经构建了具有临时多态性的函数，接下来只需要分别对两种待处理的类型进行实例化。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="c1">-- {-# LANGUAGE InstanceSigs #-}</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Judgeable</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="kr">where</span><span class="w">  </span>
+<span class="w">    </span><span class="c1">-- judgeType :: Figure&#39;&#39; -&gt; String</span>
+<span class="w">    </span><span class="n">judgeType</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Figure&quot;</span>
+<span class="w">    </span><span class="c1">-- tellShape :: Figure&#39;&#39; -&gt; String</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Circle&#39;&#39;</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Circle&quot;</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Rectangle&#39;&#39;</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Rectangle&quot;</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Triangle&#39;&#39;</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Triangle&quot;</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Judgeable</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="c1">-- judgeType :: SolidFigure -&gt; String</span>
+<span class="w">    </span><span class="n">judgeType</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A SolidFigure&quot;</span>
+<span class="w">    </span><span class="c1">-- tellShape :: SolidFigure -&gt; String</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Sphere</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Sphere&quot;</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Cuboid</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Cuboid&quot;</span>
+<span class="w">    </span><span class="n">tellShape</span><span class="w"> </span><span class="p">(</span><span class="kt">Cylinder</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Cylinder&quot;</span>
+</pre></div>
+</div>
+<p>使用关键字<code class="docutils literal notranslate"><span class="pre">instance</span></code>将类型类<code class="docutils literal notranslate"><span class="pre">Judgeable</span></code>中参数<code class="docutils literal notranslate"><span class="pre">a</span></code>实例化为对应类型，并为实例定义相应的函数。</p>
+<blockquote>
+<div><p>注意：在Haskell 2010标准中，类型类实例中默认不允许使用类型签名，可以使用扩展 <code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">InstanceSigs</span> <span class="pre">#-}</span></code>允许这一点，这在后续的标准中已经被移除</p>
+</div></blockquote>
+<p>下面尝试在GHCi中使用这个类型类：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code4.hs
+<span class="o">[</span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="m">1</span><span class="o">]</span><span class="w"> </span>Compiling<span class="w"> </span>Main<span class="w">             </span><span class="o">(</span><span class="w"> </span>code4.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;This is &quot;</span><span class="w"> </span>++<span class="w"> </span>tellShape<span class="w"> </span>x<span class="w"> </span>++<span class="w"> </span><span class="s2">&quot; which is &quot;</span><span class="w"> </span>++<span class="w"> </span>judgeType<span class="w"> </span>x
+Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<span class="s2">&quot;This is A Sphere which is A SolidFigure&quot;</span>
+Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span class="o">(</span>Circle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<span class="s2">&quot;This is A Circle which is A Figure&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>常用类型类<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<p>Haskell中内置了众多的类型类，由于这些类型类可以自动派生出实例，本小结仅对这些类型类进行简要的介绍。对于希望了解手动定义的读者可以在本章末尾查看有关常用类型类实现的示例。</p>
+<section id="eq">
+<h3>相等类型类 <code class="docutils literal notranslate"><span class="pre">Eq</span></code><a class="headerlink" href="#eq" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Eq</span></code>类型类提供了判断相等（不等）的函数，其定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="p">(</span><span class="o">/=</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL (==) | (/=) #-}</span><span class="w"> </span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Eq</span></code>类型类中<code class="docutils literal notranslate"><span class="pre">(==)</span></code>函数用于判断相等，而<code class="docutils literal notranslate"><span class="pre">(/=)</span></code>用于判断不等。根据尾行的提示，在对类型类进行实例化时，只需要实现<code class="docutils literal notranslate"><span class="pre">(==)</span></code>和<code class="docutils literal notranslate"><span class="pre">(/=)</span></code>中的一个即可（最小实现）。</p>
+</section>
+<section id="ord">
+<h3>有序类型类 <code class="docutils literal notranslate"><span class="pre">Ord</span></code><a class="headerlink" href="#ord" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Ord</span></code>类型类用于实现排序相关的函数，一个能够排序的类型必然是能够判断相等的（或者说受到相等性约束），因此在实现<code class="docutils literal notranslate"><span class="pre">Ord</span></code>类型类实例时，必须首先实现<code class="docutils literal notranslate"><span class="pre">Eq</span></code>的实例。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Ord</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">compare</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Ordering</span>
+<span class="w">  </span><span class="p">(</span><span class="o">&lt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="p">(</span><span class="o">&lt;=</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="p">(</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="p">(</span><span class="o">&gt;=</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="n">max</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">min</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL compare | (&lt;=) #-}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Ord</span></code>类型类中内置了许多函数，但根据尾行提示，只需要实现<code class="docutils literal notranslate"><span class="pre">compare</span></code>函数或者<code class="docutils literal notranslate"><span class="pre">(&lt;=)</span></code>函数即可，其他函数可以根据用户实现的函数和<code class="docutils literal notranslate"><span class="pre">Eq</span></code>类型类的约束导出。</p>
+</section>
+<section id="bounded">
+<h3>有界类型类 <code class="docutils literal notranslate"><span class="pre">Bounded</span></code><a class="headerlink" href="#bounded" title="此标题的永久链接"></a></h3>
+<p>有界类型类比较简单，用于为类型提供一个最小值和最大值。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Bounded</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">minBound</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">maxBound</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL minBound, maxBound #-}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Bounded</span></code>类型类的实例需要对两个函数全部实现。</p>
+</section>
+<section id="enum">
+<h3>枚举类型类 <code class="docutils literal notranslate"><span class="pre">Enum</span></code><a class="headerlink" href="#enum" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Enum</span></code>类型类定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Enum</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">succ</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">pred</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">toEnum</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">fromEnum</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">  </span><span class="n">enumFrom</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="n">enumFromThen</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="n">enumFromTo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="n">enumFromThenTo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL toEnum, fromEnum #-}</span>
+</pre></div>
+</div>
+<p>一般地，只需要定义<code class="docutils literal notranslate"><span class="pre">toEnum</span></code>和<code class="docutils literal notranslate"><span class="pre">fromEnum</span></code>即可实现枚举类型的实例，这两个函数将实例中实现的类型与整数做了一一对应。</p>
+<blockquote>
+<div><p>提示： 前面使用过的语法糖<code class="docutils literal notranslate"><span class="pre">..</span></code>(如<code class="docutils literal notranslate"><span class="pre">[1..5]</span></code>表示<code class="docutils literal notranslate"><span class="pre">[1,2,3,4,5]</span></code>)就是依靠<code class="docutils literal notranslate"><span class="pre">Enum</span></code>类型类实现的，只要一个类型被实现为<code class="docutils literal notranslate"><span class="pre">Enum</span></code>的实例，就可以使用<code class="docutils literal notranslate"><span class="pre">..</span></code>生成一个枚举列表。</p>
+</div></blockquote>
+</section>
+<section id="ix">
+<h3>索引类型类 <code class="docutils literal notranslate"><span class="pre">Ix</span></code><a class="headerlink" href="#ix" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Ix</span></code>类型类为离散有序的类型提供索引，定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Ord</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Ix</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">range</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="n">index</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Arr</span><span class="o">.</span><span class="n">unsafeIndex</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">  </span><span class="n">inRange</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="n">rangeSize</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Arr</span><span class="o">.</span><span class="n">unsafeRangeSize</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL range, (index | unsafeIndex), inRange #-}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Ix</span></code>类型类的最小实现为<code class="docutils literal notranslate"><span class="pre">range</span></code>，<code class="docutils literal notranslate"><span class="pre">index</span></code>和<code class="docutils literal notranslate"><span class="pre">unsafeIndex</span></code>之一，以及<code class="docutils literal notranslate"><span class="pre">inRange</span></code>函数。其中<code class="docutils literal notranslate"><span class="pre">range</span></code>函数接受一个二元组（左边应当小于右边），并返回一个以元组元素为范围列表（包含元组中的两个元素）；<code class="docutils literal notranslate"><span class="pre">index</span></code>函数用于检索某个元素位于元组标示的范围的位置,当检索元素不再范围内时会报错； <code class="docutils literal notranslate"><span class="pre">unsafeIndex</span></code>是<code class="docutils literal notranslate"><span class="pre">index</span></code>不会报错的版本，但无法保证元素是否在范围内；<code class="docutils literal notranslate"><span class="pre">inRange</span></code>则判断元素是否在范围内。其余函数根据名称和类型签名也不难判断其含义。</p>
+</section>
+<section id="show">
+<h3>可显示类型类 <code class="docutils literal notranslate"><span class="pre">Show</span></code><a class="headerlink" href="#show" title="此标题的永久链接"></a></h3>
+<p>在Haskell中，不是所有类型“天生”就可以输出到终端上的，这需要通过实现<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类的实例来完成。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Show</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">showsPrec</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ShowS</span>
+<span class="w">  </span><span class="n">show</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span>
+<span class="w">  </span><span class="n">showList</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ShowS</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL showsPrec | show #-}</span>
+</pre></div>
+</div>
+<p>为了能够显示某个类型的值，可以选择实现<code class="docutils literal notranslate"><span class="pre">show</span></code>函数或者<code class="docutils literal notranslate"><span class="pre">showsPrec</span></code>函数，其中<code class="docutils literal notranslate"><span class="pre">showsPrec</span></code>函数返回的类型<code class="docutils literal notranslate"><span class="pre">ShowS</span></code>实际上是<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">String</span></code>的别名。</p>
+</section>
+<section id="read">
+<h3>可读类型类 <code class="docutils literal notranslate"><span class="pre">Read</span></code><a class="headerlink" href="#read" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Read</span></code>类型类与<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类可以认为是互为相反的操作，其将字符串转换为特定类型的值。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Read</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">readsPrec</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ReadS</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">readList</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ReadS</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Read</span><span class="o">.</span><span class="n">readPrec</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Text</span><span class="o">.</span><span class="kt">ParserCombinators</span><span class="o">.</span><span class="kt">ReadPrec</span><span class="o">.</span><span class="kt">ReadPrec</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Read</span><span class="o">.</span><span class="n">readListPrec</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Text</span><span class="o">.</span><span class="kt">ParserCombinators</span><span class="o">.</span><span class="kt">ReadPrec</span><span class="o">.</span><span class="kt">ReadPrec</span>
+<span class="w">                             </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL readsPrec | readPrec #-}</span>
+</pre></div>
+</div>
+<p>这里只介绍一个常用的必要实现函数<code class="docutils literal notranslate"><span class="pre">readsPrec</span></code>，其接受的<code class="docutils literal notranslate"><span class="pre">Int</span></code>参数为构造器的优先级（函数应用的优先级为10），返回类型中的<code class="docutils literal notranslate"><span class="pre">ReadS</span> <span class="pre">a</span></code>是<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">[(a,String)]</span></code>的别称。</p>
+</section>
+<section id="isstring">
+<h3>字符串类型类 <code class="docutils literal notranslate"><span class="pre">IsString</span></code><a class="headerlink" href="#isstring" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">IsString</span></code>类型类位于<code class="docutils literal notranslate"><span class="pre">Data.String</span></code>模块。在实际编程中，默认的字符串String类型某些操作效率不高（单向链表），因此Haskell还提供了诸如ByteString、Text等类型，因此有时需要将String与其他存储字符串的类型进行转换，这是就需要用到<code class="docutils literal notranslate"><span class="pre">IsString</span></code>类型类。</p>
+<blockquote>
+<div><p>补充： ByteString通过Word8数组存储字符串，Text将ByteString编码为如ASCII,UTF8等标准格式。</p>
+</div></blockquote>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">IsString</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">fromString</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL fromString #-}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示： 一般情况下，可以使用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">OverloadedStrings</span> <span class="pre">#-}</span></code>让不同“字符串”之间进行转换。</p>
+</div></blockquote>
+</section>
+<section id="functor-applicative-monad">
+<h3>函子类型类 (<code class="docutils literal notranslate"><span class="pre">Functor</span></code>, <code class="docutils literal notranslate"><span class="pre">Applicative</span></code>, <code class="docutils literal notranslate"><span class="pre">Monad</span></code>)<a class="headerlink" href="#functor-applicative-monad" title="此标题的永久链接"></a></h3>
+<p>三种函子类型类虽然是常见的类型类，但其比较复杂（涉及到范畴相关的知识），因此我们将其单独书写为一章<a>函子教程专题</a>,读者可以选择详细了解三种函子类型类后继续本章的其余内容，或者大致了解该部分后直接向下阅读。</p>
+</section>
+</section>
+<section id="id4">
+<h2>派生<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+<section id="id5">
+<h3>派生与自动派生<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>派生使用<code class="docutils literal notranslate"><span class="pre">deriving</span></code>关键字，其声明应当跟随类型的定义。</p>
+<p>对于 <em><strong>普通(stock)</strong></em> 类型类（<code class="docutils literal notranslate"><span class="pre">Eq</span></code>、<code class="docutils literal notranslate"><span class="pre">Ord</span></code>、<code class="docutils literal notranslate"><span class="pre">Enum</span></code>、<code class="docutils literal notranslate"><span class="pre">Ix</span></code>、<code class="docutils literal notranslate"><span class="pre">Bounded</span></code>、<code class="docutils literal notranslate"><span class="pre">Read</span></code>和<code class="docutils literal notranslate"><span class="pre">Show</span></code>），Haskell允许用户使用自动派生出这些类型类的有关实例。如前面我们在定义<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>和<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>时就自动派生了<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类。</p>
+</section>
+<section id="id6">
+<h3>默认实现的派生<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<p>有时我们希望自定义的类型类能够类似普通类型类一样可以自动派生出实例，这可以通过在类型类定义中添加默认的实现来实现。</p>
+<p>我们修改<code class="docutils literal notranslate"><span class="pre">Judgeable</span></code>类型类为带有默认实现的版本<code class="docutils literal notranslate"><span class="pre">Judgeable'</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Judgeable&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">judgeType&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">  </span><span class="n">judgeType&#39;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Default Judgeable Type&quot;</span>
+<span class="w">  </span><span class="n">tellShape&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">  </span><span class="n">tellShape&#39;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;A Default Judgeable Shape&quot;</span>
+</pre></div>
+</div>
+<p>一般地，我们可以使用空的<code class="docutils literal notranslate"><span class="pre">instance</span></code>声明来生成<code class="docutils literal notranslate"><span class="pre">Judgeable'</span></code>关于<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>的实例。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Judgeable&#39;</span><span class="w"> </span><span class="kt">SolidFigure</span>
+</pre></div>
+</div>
+<p>或者，我们可以使用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DeriveAnyClass</span> <span class="pre">#-}</span></code>扩展，这将允许我们像自动派生普通类型类一样派生带有默认实现的类型类，这里定义<code class="docutils literal notranslate"><span class="pre">SolidFigure'</span></code>作为<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>的副本来展示这一用法。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE DeriveAnyClass #-}</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">SolidFigure&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Sphere&#39;</span><span class="w"> </span><span class="p">{</span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">}</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Cuboid&#39;</span><span class="w"> </span><span class="p">{</span><span class="n">getLength</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Length</span><span class="p">,</span><span class="w"> </span><span class="n">getWidth</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Width</span><span class="p">,</span><span class="w"> </span><span class="n">getHeight</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Height</span><span class="p">}</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Cylinder&#39;</span><span class="w"> </span><span class="p">{</span><span class="n">getDiameter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Diameter</span><span class="p">,</span><span class="w"> </span><span class="n">getHeight</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Height</span><span class="p">}</span>
+<span class="w">  </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="kt">Judgeable&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>尝试使用<code class="docutils literal notranslate"><span class="pre">Judgeable'</span></code>类型类中的函数：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="s1">&#39; x = &quot;This is &quot; ++ tellShape&#39;</span><span class="w"> </span>x<span class="w"> </span>++<span class="w"> </span><span class="s2">&quot; which is &quot;</span><span class="w"> </span>++<span class="w"> </span>judgeType<span class="s1">&#39; x</span>
+<span class="s1">Prelude&gt; tellShapeInfo&#39;</span><span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<span class="s2">&quot;This is A Default Judgeable Shape which is A Default Judgeable Type&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>新类型的派生<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<p>在前面章节我们提到了<code class="docutils literal notranslate"><span class="pre">newtype</span></code>定义新类型的方法，并简述了其在构造方面的限制和为编译器带来的优势。</p>
+<p>在编译器层面上，使用<code class="docutils literal notranslate"><span class="pre">newtype</span></code>声明的新类型与原类型是不被区分的，当原类型已经在特定类型类中实现了实例，我们很有可能需要新类型上也有同样的实现。Haskell提供了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">GeneralizedNewtypeDeriving</span> <span class="pre">#-}</span></code>扩展以便导出类型类。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span>
+<span class="cm">{-# LANGUAGE DerivingStrategies #-}</span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">Fig</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Fig</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="kr">newtype</span><span class="w"> </span><span class="p">(</span><span class="kt">Judgeable</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：这里另外使用了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DerivingStrategies</span> <span class="pre">#-}</span></code>扩展，并在<code class="docutils literal notranslate"><span class="pre">deriving</span></code>后添加<code class="docutils literal notranslate"><span class="pre">newtype</span></code>关键字，其原因是为了消除来自DerivingAnyClass扩展的冲突，在仅使用新类型派生扩展时只需按照通常派生的写法即可。有关DerivingStrategies的内容将在下文讲解。</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;This is &quot;</span><span class="w"> </span>++<span class="w"> </span>tellShape<span class="w"> </span>x<span class="w"> </span>++<span class="w"> </span><span class="s2">&quot; which is &quot;</span><span class="w"> </span>++<span class="w"> </span>judgeType<span class="w"> </span>x
+Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span class="o">(</span>Fig<span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">))</span>
+<span class="s2">&quot;This is A Sphere which is A SolidFigure&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3>派生策略<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
+<p>派生策略扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DerivingStrategies</span> <span class="pre">#-}</span></code>用于消除来自DeiriveAnyClass和Generalized NewtypeDeriving以及内置导出之间的冲突。例如对一个新类型派生实例，到底是按照类型类中默认实现去派生还是参照与之同构的原类型派生。</p>
+<p>使用派生策略扩展后，通过使用三个新的关键字跟随<code class="docutils literal notranslate"><span class="pre">deriving</span></code>对派生方式进行区分,它们分别为<code class="docutils literal notranslate"><span class="pre">stock</span></code>,<code class="docutils literal notranslate"><span class="pre">newtype</span></code>和<code class="docutils literal notranslate"><span class="pre">anyclass</span></code>。其中<code class="docutils literal notranslate"><span class="pre">stock</span></code>用于对于普通类型类（即<code class="docutils literal notranslate"><span class="pre">Eq</span></code>、<code class="docutils literal notranslate"><span class="pre">Ord</span></code>、<code class="docutils literal notranslate"><span class="pre">Enum</span></code>、<code class="docutils literal notranslate"><span class="pre">Ix</span></code>、<code class="docutils literal notranslate"><span class="pre">Bounded</span></code>、<code class="docutils literal notranslate"><span class="pre">Read</span></code>和<code class="docutils literal notranslate"><span class="pre">Show</span></code>）的派生；<code class="docutils literal notranslate"><span class="pre">newtype</span></code>用于对新类型的派生；<code class="docutils literal notranslate"><span class="pre">anyclass</span></code>用于含有默认实现的自定义类型类的派生。</p>
+<blockquote>
+<div><p>补充: Haskell 提供了一些扩展用于自动派生其他内置的类型类，这些扩展分别为 DeriveGeneric,DeriveFunctor,DeriveDataTypeable,DeriveFoldable,DeriveTraversable,DeriveLift，启用扩展后可以就使用<code class="docutils literal notranslate"><span class="pre">stock</span></code>关键字对相应的类型类进行派生。另外，这些扩展已经包含在新的标准中<code class="docutils literal notranslate"><span class="pre">ghc</span> <span class="pre">2021</span></code>中，无需手动开启扩展。</p>
+</div></blockquote>
+<blockquote>
+<div><p>提示：上述各种扩展对应的类型类会在本章后续讲解</p>
+</div></blockquote>
+</section>
+<section id="id9">
+<h3>孤立派生<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p>通常情况下，deriving 导出实例必须跟随类型的定义声明的，但在实际场景中，我们很难保证后期不添加新的派生，这将导致对原代码的修改，破坏了工程中的开闭原则。使用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">StandaloneDeriving</span> <span class="pre">#-}</span></code>扩展，可以声明孤立的派生，使得派生与类型定义分离。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE StandaloneDeriving #-}</span>
+
+<span class="kr">deriving</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span>
+<span class="kr">deriving</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="kt">SolidFigure</span>
+<span class="kr">deriving</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="kt">SolidFigure&#39;</span>
+</pre></div>
+</div>
+<p>这里为之前声明的三个类型另外派生<code class="docutils literal notranslate"><span class="pre">Eq</span></code>实例，这样就可以对每种类型中的值进行比较：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>Circle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="nv">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>Circle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="m">1</span>
+True
+Prelude&gt;<span class="w"> </span>Sphere<span class="w"> </span><span class="m">1</span><span class="w"> </span>/<span class="o">=</span><span class="w"> </span>Cuboid<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span>
+True
+Prelude&gt;<span class="w"> </span>Sphere<span class="s1">&#39; 2 == Cuboid&#39;</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span>
+False
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id10">
+<h2>特殊用法<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<section id="id11">
+<h3>多参数类型类<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<p>通常，类型类的声明只能包含一个参数，或者说一个类型类的实例只能属于一个类型。通过使用扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">MultiParamTypeClasses</span> <span class="pre">#-}</span></code>允许类型类突破这一限制。</p>
+<p><code class="docutils literal notranslate"><span class="pre">Figure''</span></code>和<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>属于不同类型，即使我们派生出两个类型的<code class="docutils literal notranslate"><span class="pre">Eq</span></code>实例，也是无法进行两个类型之间值的比较的。使用多参数类型类扩展，可以定义一个新的类型类达到此效果。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE MultiParamTypeClasses #-}</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Same</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">same</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">  </span><span class="n">same</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Same</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w">  </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Same</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Same</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="kt">SolidFigure</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">same</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Same</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="kt">Figure&#39;&#39;</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">same</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="o">==</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>我们定义了一个<code class="docutils literal notranslate"><span class="pre">Same</span></code>类型类，内部含有一个函数<code class="docutils literal notranslate"><span class="pre">same</span></code>用于判断两个值是否相等，默认情况下是不相等的，因此对于两个不同的类型，直接使用空<code class="docutils literal notranslate"><span class="pre">instance</span></code>声明实例。对于两个相同的类型，<code class="docutils literal notranslate"><span class="pre">same</span></code>函数作用与<code class="docutils literal notranslate"><span class="pre">(==)</span></code>函数相同。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>same<span class="w"> </span><span class="o">(</span>Circle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+False
+Prelude&gt;<span class="w"> </span>same<span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>Circle<span class="s1">&#39;&#39;</span><span class="w"> </span><span class="m">1</span><span class="o">)</span>
+False
+Prelude&gt;<span class="w"> </span>same<span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+True
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3>无参数类型类<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h3>
+<p>无参数类型类需要扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">NullaryTypeClasses</span> <span class="pre">#-}</span></code>，但目前该扩展已经被遗弃，该扩展的功能被包含到MultiParamTypeClasses中。无参数类型类可用于记录类型签名中的某些假设或添加一些全局可配置的设置在程序中<a class="reference external" href="#ref2">[2]</a>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">DefaultVal</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">unit</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Double</span>
+<span class="w">  </span><span class="n">unit</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="n">info</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">  </span><span class="n">info</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;global information&quot;</span>
+<span class="w">  </span><span class="n">needinstantiation</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="nb">()</span>
+</pre></div>
+</div>
+<p>显然，无参数类型类由于没有参数，无法为特定类型声明实例，因此至多为其声明一个实例。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">DefaultVal</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">needinstantiation</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nb">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3>灵活的实例声明<a class="headerlink" href="#id13" title="此标题的永久链接"></a></h3>
+<p>当我们需要声明具有多态类型的类型类实例时，其与通常的声明方法无异。但对于嵌套的类型（即多态类型中参数实例化，如<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>或<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">Int</span></code>等）需要使用灵活的实例声明扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">FlexibleInstances</span> <span class="pre">#-}</span></code>进行类型类实例的声明。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE FlexibleInstances #-}</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+
+<span class="c1">-- ordinary instance </span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="p">(</span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="kt">Nothing</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span>
+
+<span class="c1">-- flexible instance</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span>
+<span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<p>上述示例定义了一个类型类用于判断容器是否为空，第一个实例声明的类型是多态类型<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">a</span></code>，因此直接声明即可；第二个实例声明的类型是<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>，列表<code class="docutils literal notranslate"><span class="pre">[a]</span></code>中的<code class="docutils literal notranslate"><span class="pre">a</span></code>实例化为了<code class="docutils literal notranslate"><span class="pre">Char</span></code>，因此需要使用灵活实例声明扩展才可以。</p>
+</section>
+<section id="id14">
+<h3>函数依赖<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
+<p>函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系<a class="reference external" href="#ref3">[3]</a>。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>这种关系，当<code class="docutils literal notranslate"><span class="pre">a</span></code>确定时,<code class="docutils literal notranslate"><span class="pre">b</span></code>有唯一的类型与之对应。</p>
+<p>考虑不使用函数依赖的情况：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE FunctionalDependencies #-}</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">WithoutDep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">func</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">WithoutDep</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">func</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nf">\</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">WithoutDep</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Double</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">func</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nf">\</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>可以看到<code class="docutils literal notranslate"><span class="pre">WithoutDep</span></code>类型类中类型参数没有依赖关系，因而可以声明<code class="docutils literal notranslate"><span class="pre">WithoutDep</span> <span class="pre">Int</span> <span class="pre">Int</span> <span class="pre">Int</span></code>和<code class="docutils literal notranslate"><span class="pre">WithoutDep</span> <span class="pre">Int</span> <span class="pre">Int</span> <span class="pre">Double</span></code>两个实例。
+在实际使用中，当我们尝试使用<code class="docutils literal notranslate"><span class="pre">func</span></code>函数时，程序会困惑应当使用哪个实例中的函数，除非我们手动给出返回类型。</p>
+<blockquote>
+<div><p>提示： 即使只声明一个实例，程序仍然无法计算出结果，直到我们给出返回类型，因此这种歧义产生的原因并不是多个实例的导致的，而是无法进行类型推断</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>func<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span>
+&lt;interactive&gt;:1:1:<span class="w"> </span>error:
+<span class="w">    </span>•<span class="w"> </span>Could<span class="w"> </span>not<span class="w"> </span>deduce<span class="w"> </span><span class="o">(</span>WithoutDep<span class="w"> </span>a0<span class="w"> </span>b0<span class="w"> </span>c<span class="o">)</span>
+<span class="w">      </span>from<span class="w"> </span>the<span class="w"> </span>context:<span class="w"> </span><span class="o">(</span>WithoutDep<span class="w"> </span>a<span class="w"> </span>b<span class="w"> </span>c,<span class="w"> </span>Num<span class="w"> </span>a,<span class="w"> </span>Num<span class="w"> </span>b<span class="o">)</span>
+<span class="w">        </span>bound<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>inferred<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>‘it’:
+<span class="w">                   </span>forall<span class="w"> </span>a<span class="w"> </span>b<span class="w"> </span>c.<span class="w"> </span><span class="o">(</span>WithoutDep<span class="w"> </span>a<span class="w"> </span>b<span class="w"> </span>c,<span class="w"> </span>Num<span class="w"> </span>a,<span class="w"> </span>Num<span class="w"> </span>b<span class="o">)</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>c
+<span class="w">        </span>at<span class="w"> </span>&lt;interactive&gt;:1:1-8
+<span class="w">      </span>The<span class="w"> </span><span class="nb">type</span><span class="w"> </span>variables<span class="w"> </span>‘a0’,<span class="w"> </span>‘b0’<span class="w"> </span>are<span class="w"> </span>ambiguous
+<span class="w">    </span>•<span class="w"> </span>In<span class="w"> </span>the<span class="w"> </span>ambiguity<span class="w"> </span>check<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>inferred<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>‘it’
+<span class="w">      </span>To<span class="w"> </span>defer<span class="w"> </span>the<span class="w"> </span>ambiguity<span class="w"> </span>check<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>sites,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>AllowAmbiguousTypes
+<span class="w">      </span>When<span class="w"> </span>checking<span class="w"> </span>the<span class="w"> </span>inferred<span class="w"> </span><span class="nb">type</span>
+<span class="w">        </span>it<span class="w"> </span>::<span class="w"> </span>forall<span class="w"> </span>a<span class="w"> </span>b<span class="w"> </span>c.<span class="w"> </span><span class="o">(</span>WithoutDep<span class="w"> </span>a<span class="w"> </span>b<span class="w"> </span>c,<span class="w"> </span>Num<span class="w"> </span>a,<span class="w"> </span>Num<span class="w"> </span>b<span class="o">)</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>c
+Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>::<span class="w"> </span>Int<span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="m">2</span><span class="w"> </span>::<span class="w"> </span>Int<span class="o">))</span><span class="w"> </span>::<span class="w"> </span>Int<span class="w"> </span>
+<span class="m">0</span>
+Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>::<span class="w"> </span>Int<span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="m">2</span><span class="w"> </span>::<span class="w"> </span>Int<span class="o">))</span><span class="w"> </span>::<span class="w"> </span>Double
+<span class="m">0</span>.0
+</pre></div>
+</div>
+<p>上述方法在一些情况下可能会作为有用的技巧，例如我们希望一个函数在接受相同的输入时，会根据我们的需要（显示给出返回类型）返回不同的结果。然而我们知道，当类型之间存在依赖关系时，或者说只需要声明一个实例时，程序仍然需要显式给出返回类型，这显然带来了不小的麻烦。</p>
+<p>通过使用函数依赖，可以帮助程序直接推断出返回类型：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">WithDep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">func&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">c</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">WithDep</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">func&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nf">\</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="cm">{-</span>
+<span class="cm">-- illegal because a definition has already existed.</span>
+<span class="cm">instance WithDep Int Int Double where </span>
+<span class="cm">  func&#39; = \ x y -&gt; 0</span>
+<span class="cm">-}</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">WithDep</span></code>类型类中，第三个参数受到前两个参数的限制，因此只能声明一个<code class="docutils literal notranslate"><span class="pre">WithDep</span> <span class="pre">Int</span> <span class="pre">Int</span> <span class="pre">Int</span></code>实例，<code class="docutils literal notranslate"><span class="pre">WithDep</span> <span class="pre">Int</span> <span class="pre">Int</span> <span class="pre">Double</span></code>实例与函数依赖的唯一性不符，因而是非法的。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; func&#39; (1 :: Int) (2 :: Int)) 
+0
+</pre></div>
+</div>
+<p>可见，使用函数依赖后，返回类型<code class="docutils literal notranslate"><span class="pre">c</span></code>被自动推断成了<code class="docutils literal notranslate"><span class="pre">Int</span></code>，而无需我们手动指定。</p>
+</section>
+<section id="id15">
+<h3>别名的实例导出<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
+<p>一般地，我们无法为类型的别名声明类型类实例。但使用特别的扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">TypeSynonymInstances</span> <span class="pre">#-}</span></code>可以允许这一点。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+<span class="cm">{-# LANGUAGE TypeSynonymInstances #-}</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">SynFig</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Fig</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Judgeable&#39;</span><span class="w"> </span><span class="kt">SynFig</span><span class="w">  </span>
+</pre></div>
+</div>
+<p>例如，我们声明了上一节中<code class="docutils literal notranslate"><span class="pre">Fig</span></code>类型的一个别名<code class="docutils literal notranslate"><span class="pre">SynFig</span></code>,其已经派生了<code class="docutils literal notranslate"><span class="pre">Judgeable</span></code>类型类的实例，因此我们实现其别名的<code class="docutils literal notranslate"><span class="pre">Judgeable'</span></code>类型类的实例。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="s1">&#39; x = &quot;This is &quot; ++ tellShape&#39;</span><span class="w"> </span>x<span class="w"> </span>++<span class="w"> </span><span class="s2">&quot; which is &quot;</span><span class="w"> </span>++<span class="w"> </span>judgeType<span class="s1">&#39; x </span>
+<span class="s1">Prelude&gt; tellShapeInfo&#39;</span><span class="w"> </span><span class="o">(</span>Fig<span class="w"> </span><span class="o">(</span>Sphere<span class="w"> </span><span class="m">1</span><span class="o">))</span>
+<span class="s2">&quot;This is A Default Judgeable Shape which is A Default Judgeable Type&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id16">
+<h3>存在类型<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
+</section>
+<section id="id17">
+<h3>关联类型族<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<p>关联类型族是类型层面上的函数，其功能与函数依赖类似，能够消除</p>
+<p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
+<p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>
+<p id="ref3">[3] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html" class="btn btn-neutral float-left" title="递归与高阶函数" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
