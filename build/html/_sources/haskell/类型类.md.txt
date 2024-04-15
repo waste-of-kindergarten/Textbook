@@ -80,7 +80,7 @@ Prelude> tellShapeInfo (Circle'' 1)
 
 ## 类型类约束
 
-一般地，我们可以对类型参数施加类型类约束，例如上一节中的`tellShapeInfo`函数实际上为：
+一般地，我们可以对类型参数施加类型类约束（也称为上下文），例如上一节中的`tellShapeInfo`函数实际上为：
 
 ```hs
 -- code4.hs
@@ -425,6 +425,7 @@ instance DefaultVal where
 
 class Empty a where 
   isEmpty :: a -> Bool
+  getFirstElem :: 
 
 -- ordinary instance 
 instance Empty (Maybe a) where 
@@ -438,6 +439,13 @@ instance Empty [Char] where
 ```
 
 上述示例定义了一个类型类用于判断容器是否为空，第一个实例声明的类型是多态类型`Maybe a`，因此直接声明即可；第二个实例声明的类型是`[Char]`，列表`[a]`中的`a`实例化为了`Char`，因此需要使用灵活实例声明扩展才可以。
+
+### 灵活的上下文
+
+一般地，使用类型类对类型参数进行约束具有一定限制，其只能是简单的类型变量；通过使用扩展`{-# LANGUAGE FlexibleContexts #-}`，可以解除这一限制，以便生成更复杂的类型约束的上下文。例如`Eq [a] => ...`或者`Ord (T a ()) => ...`在开启扩展下都是合法的[[3]](#ref3)。
+
+> 补充： 无论是FlexibleInstances还是FlexibleContexts扩展，实例声明都必须遵循相应的终止规则限制，如果满足这种终止规则，我们称实例约束上下文 *Paterson小于* 实例声明头；这种限制可以通过扩展UndecidableInstances解除。详情可参考[Instance termination rules](https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#instance-termination-rules)。
+
 
 ### 别名的实例导出
 
@@ -462,7 +470,7 @@ Prelude> tellShapeInfo' (Fig (Sphere 1))
 
 ### 函数依赖
 
-函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系[[3]](#ref3)。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于`a -> b`这种关系，当`a`确定时,`b`有唯一的类型与之对应。
+函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系[[4]](#ref4)。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于`a -> b`这种关系，当`a`确定时,`b`有唯一的类型与之对应。
 
 考虑不使用函数依赖的情况：
 
@@ -601,7 +609,7 @@ showc = show c'
 
 ### 关联类型
 
-关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法[[4]](#ref4)。
+关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法[[5]](#ref5)。
 
 
 > 提示：实际上，类型族的表现形式有两种，关联类型是其一，用于类型类中；另一种出现在顶层，这里不做讨论。更多有关类型族的内容请详见有关章节。
@@ -643,5 +651,6 @@ instance Assoc1 Int Int where
 
 <p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
 <p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>
-<p id="ref3">[3] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
-<p id="ref4">[4] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p>
+<p id="ref3">[3] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 16.03, April 15, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#extension-FlexibleContexts</p>
+<p id="ref4">[4] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
+<p id="ref5">[5] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p>

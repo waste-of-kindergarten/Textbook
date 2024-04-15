@@ -83,14 +83,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#id12">多参数类型类</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id13">无参数类型类</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id14">灵活的实例声明</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id15">别名的实例导出</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id16">函数依赖</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id17">存在类型</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id18">关联类型</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id19">实例重叠</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">灵活的上下文</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">别名的实例导出</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">函数依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id18">存在类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id19">关联类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id20">实例重叠</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id20">其他常用类型类</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">其他常用类型类</a></li>
 </ul>
 </li>
 </ul>
@@ -193,7 +194,7 @@ Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span cl
 </section>
 <section id="id3">
 <h2>类型类约束<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
-<p>一般地，我们可以对类型参数施加类型类约束，例如上一节中的<code class="docutils literal notranslate"><span class="pre">tellShapeInfo</span></code>函数实际上为：</p>
+<p>一般地，我们可以对类型参数施加类型类约束（也称为上下文），例如上一节中的<code class="docutils literal notranslate"><span class="pre">tellShapeInfo</span></code>函数实际上为：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 
 <span class="nf">tellShapeInfo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Judgeable</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
@@ -497,6 +498,7 @@ True
 
 <span class="kr">class</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
 <span class="w">  </span><span class="n">isEmpty</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">  </span><span class="n">getFirstElem</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span>
 
 <span class="c1">-- ordinary instance </span>
 <span class="kr">instance</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="p">(</span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
@@ -512,7 +514,14 @@ True
 <p>上述示例定义了一个类型类用于判断容器是否为空，第一个实例声明的类型是多态类型<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">a</span></code>，因此直接声明即可；第二个实例声明的类型是<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>，列表<code class="docutils literal notranslate"><span class="pre">[a]</span></code>中的<code class="docutils literal notranslate"><span class="pre">a</span></code>实例化为了<code class="docutils literal notranslate"><span class="pre">Char</span></code>，因此需要使用灵活实例声明扩展才可以。</p>
 </section>
 <section id="id15">
-<h3>别名的实例导出<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
+<h3>灵活的上下文<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
+<p>一般地，使用类型类对类型参数进行约束具有一定限制，其只能是简单的类型变量；通过使用扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">FlexibleContexts</span> <span class="pre">#-}</span></code>，可以解除这一限制，以便生成更复杂的类型约束的上下文。例如<code class="docutils literal notranslate"><span class="pre">Eq</span> <span class="pre">[a]</span> <span class="pre">=&gt;</span> <span class="pre">...</span></code>或者<code class="docutils literal notranslate"><span class="pre">Ord</span> <span class="pre">(T</span> <span class="pre">a</span> <span class="pre">())</span> <span class="pre">=&gt;</span> <span class="pre">...</span></code>在开启扩展下都是合法的<a class="reference external" href="#ref3">[3]</a>。</p>
+<blockquote>
+<div><p>补充： 无论是FlexibleInstances还是FlexibleContexts扩展，实例声明都必须遵循相应的终止规则限制，如果满足这种终止规则，我们称实例约束上下文 <em>Paterson小于</em> 实例声明头；这种限制可以通过扩展UndecidableInstances解除。详情可参考<a class="reference external" href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#instance-termination-rules">Instance termination rules</a>。</p>
+</div></blockquote>
+</section>
+<section id="id16">
+<h3>别名的实例导出<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
 <p>一般地，我们无法为类型的别名声明类型类实例。但使用特别的扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">TypeSynonymInstances</span> <span class="pre">#-}</span></code>可以允许这一点。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 <span class="cm">{-# LANGUAGE TypeSynonymInstances #-}</span>
@@ -529,9 +538,9 @@ True
 </pre></div>
 </div>
 </section>
-<section id="id16">
-<h3>函数依赖<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
-<p>函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系<a class="reference external" href="#ref3">[3]</a>。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>这种关系，当<code class="docutils literal notranslate"><span class="pre">a</span></code>确定时,<code class="docutils literal notranslate"><span class="pre">b</span></code>有唯一的类型与之对应。</p>
+<section id="id17">
+<h3>函数依赖<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<p>函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系<a class="reference external" href="#ref4">[4]</a>。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>这种关系，当<code class="docutils literal notranslate"><span class="pre">a</span></code>确定时,<code class="docutils literal notranslate"><span class="pre">b</span></code>有唯一的类型与之对应。</p>
 <p>考虑不使用函数依赖的情况：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 <span class="cm">{-# LANGUAGE FunctionalDependencies #-}</span>
@@ -591,8 +600,8 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 </div>
 <p>可见，使用函数依赖后，返回类型<code class="docutils literal notranslate"><span class="pre">c</span></code>被自动推断成了<code class="docutils literal notranslate"><span class="pre">Int</span></code>，而无需我们手动指定。</p>
 </section>
-<section id="id17">
-<h3>存在类型<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<section id="id18">
+<h3>存在类型<a class="headerlink" href="#id18" title="此标题的永久链接"></a></h3>
 <p>此前我们定义的所有类型中，所有类型有关参数必须体现在等式的左侧，当参数取不同的类型时，总的嵌套类型被认为是不同的类型，这有时会带来不便。</p>
 <p>例如，我们希望存储不同类型的值到容器中（也称异构的），并且要求这个容器的长度是可变化的。单纯地使用列表是无法实现的，对于列表<code class="docutils literal notranslate"><span class="pre">[a]</span></code>，其存储元素的类型必须为<code class="docutils literal notranslate"><span class="pre">a</span></code>所对应的类型。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- [&#39;a&#39;,1,True] </span>
@@ -646,9 +655,9 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 <div><p>补充： 细心的读者可能希望尝试对<code class="docutils literal notranslate"><span class="pre">ExistData</span></code>类型构造类似<code class="docutils literal notranslate"><span class="pre">geta</span></code>函数，但这是无法通过类型检验的（思考这是为什么？），因为在这个类型中的类型参数被隐藏起来。一种解决方案是使用<code class="docutils literal notranslate"><span class="pre">Typeable</span></code>类型类中的<code class="docutils literal notranslate"><span class="pre">cast</span></code>函数（这里只作为了解，不过多讲解）</p>
 </div></blockquote>
 </section>
-<section id="id18">
-<h3>关联类型<a class="headerlink" href="#id18" title="此标题的永久链接"></a></h3>
-<p>关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法<a class="reference external" href="#ref4">[4]</a>。</p>
+<section id="id19">
+<h3>关联类型<a class="headerlink" href="#id19" title="此标题的永久链接"></a></h3>
+<p>关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法<a class="reference external" href="#ref5">[5]</a>。</p>
 <blockquote>
 <div><p>提示：实际上，类型族的表现形式有两种，关联类型是其一，用于类型类中；另一种出现在顶层，这里不做讨论。更多有关类型族的内容请详见有关章节。</p>
 </div></blockquote>
@@ -666,17 +675,18 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 </div>
 <p>这里，<code class="docutils literal notranslate"><span class="pre">FuncType</span></code>将<code class="docutils literal notranslate"><span class="pre">a</span></code>和<code class="docutils literal notranslate"><span class="pre">b</span></code>的类型映射到一个新的类型上，这个类型是唯一的，即<code class="docutils literal notranslate"><span class="pre">FuncType</span> <span class="pre">a</span> <span class="pre">b</span></code>由<code class="docutils literal notranslate"><span class="pre">a</span></code>和<code class="docutils literal notranslate"><span class="pre">b</span></code>决定。</p>
 </section>
-<section id="id19">
-<h3>实例重叠<a class="headerlink" href="#id19" title="此标题的永久链接"></a></h3>
+<section id="id20">
+<h3>实例重叠<a class="headerlink" href="#id20" title="此标题的永久链接"></a></h3>
 <p>目前有关实例重叠的处理扩展已经被弃用，详情可以参考<a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#overlapping-instances">Overlapping Instances</a>。</p>
 </section>
 </section>
-<section id="id20">
-<h2>其他常用类型类<a class="headerlink" href="#id20" title="此标题的永久链接"></a></h2>
+<section id="id21">
+<h2>其他常用类型类<a class="headerlink" href="#id21" title="此标题的永久链接"></a></h2>
 <p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
 <p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>
-<p id="ref3">[3] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
-<p id="ref4">[4] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p></section>
+<p id="ref3">[3] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 16.03, April 15, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#extension-FlexibleContexts</p>
+<p id="ref4">[4] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
+<p id="ref5">[5] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p></section>
 </section>
 
 
