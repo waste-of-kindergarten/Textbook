@@ -10,6 +10,11 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE ExistentialQuantification #-}
+
+import Data.Dynamic
+import Data.Typeable (cast)
+
 -- 圆形直径
 type Diameter = Double
 -- 长方形长宽
@@ -56,6 +61,16 @@ instance Judgeable SolidFigure where
     tellShape (Sphere _) = "A Sphere"
     tellShape (Cuboid {}) = "A Cuboid"
     tellShape (Cylinder {}) = "A Cylinder" 
+
+
+class Judgeable a => Dimension a where 
+  dim :: a -> Int
+
+instance Dimension Figure'' where
+  dim = const 2
+
+instance Dimension SolidFigure where
+  dim = const 3
 
 class Judgeable' a where 
   judgeType' :: a -> String 
@@ -138,3 +153,38 @@ instance WithDep Int Int Double where
   func' = \ x y -> 0
 -}
 
+class Assoc a b where
+  type FuncType a b :: * 
+  assocfunc :: a -> b -> FuncType a b
+
+instance Assoc Int Int where 
+  type FuncType Int Int = Int 
+  assocfunc a b = 0
+
+-- code4.hs
+data HeteData =
+  HeteInt Int
+  | HeteChar Char
+  | HeteBool Bool
+
+  -- code4.hs
+a :: [HeteData]
+a = [HeteChar 'a',HeteInt 1,HeteBool True]
+
+b :: [Dynamic]
+b = [toDyn 'a',toDyn (1 :: Int),toDyn True]
+
+geta :: Char
+geta = case (fromDynamic . head) b of
+  Nothing -> error "Type mismatch"
+  Just x -> x
+
+data ExistData = forall a. (Show a) => ExistHeteData a
+
+c :: [ExistData]
+c = [ExistHeteData 'a',ExistHeteData (1 :: Int),ExistHeteData True]
+
+showc :: String
+showc = show c'
+  where f (ExistHeteData t) = show t
+        c' = map f c

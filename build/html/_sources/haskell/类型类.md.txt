@@ -78,9 +78,41 @@ Prelude> tellShapeInfo (Circle'' 1)
 "This is A Circle which is A Figure"
 ```
 
+## 类型类约束
+
+一般地，我们可以对类型参数施加类型类约束，例如上一节中的`tellShapeInfo`函数实际上为：
+
+```hs
+-- code4.hs
+
+tellShapeInfo :: Judgeable a => a -> [Char]
+tellShapeInfo x = "This is " ++ tellShape x ++ " which is " ++ judgeType x 
+```
+
+即接受的参数的类型必须是已经实现为`Judgeable`类型类实例的类型。
+
+或者也可以在定义类型类时添加其他类型类的约束：
+
+```hs
+-- code4.hs
+
+class Judgeable a => Dimension a where 
+  dim :: a -> Int
+
+instance Dimension Figure'' where
+  dim = const 2
+
+instance Dimension SolidFigure where
+  dim = const 3
+```
+
+这里定义了一个`Dimension`类型类用于给出图形的维数，该类型类中类型参数`a`受到`Judgeable`的约束，任何实现`Dimension`实例的类型必须首先是可判定的。
+
+在定义类型上也可以使用类型类进行约束，根据约束位于等号左侧还是右侧可以分为两类，前者需要使用`{-# LANGUAGE DatatypeContexts #-}`扩展，但被广泛认为是一个错误，可由其他方案代替（读者可查看相关解答）；后者则属于存在类型，见[下文](#id17)。
+
 ## 常用类型类
 
-Haskell中内置了众多的类型类，由于这些类型类可以自动派生出实例，本小结仅对这些类型类进行简要的介绍。对于希望了解手动定义的读者可以在本章末尾查看有关常用类型类实现的示例。
+Haskell中内置了众多的类型类，由于这些类型类可以自动派生出实例，本小结仅对这些类型类进行简要的介绍。
 
 ### 相等类型类 `Eq`
 
@@ -407,6 +439,27 @@ instance Empty [Char] where
 
 上述示例定义了一个类型类用于判断容器是否为空，第一个实例声明的类型是多态类型`Maybe a`，因此直接声明即可；第二个实例声明的类型是`[Char]`，列表`[a]`中的`a`实例化为了`Char`，因此需要使用灵活实例声明扩展才可以。
 
+### 别名的实例导出
+
+一般地，我们无法为类型的别名声明类型类实例。但使用特别的扩展`{-# LANGUAGE TypeSynonymInstances #-}`可以允许这一点。
+
+```hs
+-- code4.hs
+{-# LANGUAGE TypeSynonymInstances #-}
+
+type SynFig = Fig 
+
+instance Judgeable' SynFig  
+```
+
+例如，我们声明了上一节中`Fig`类型的一个别名`SynFig`,其已经派生了`Judgeable`类型类的实例，因此我们实现其别名的`Judgeable'`类型类的实例。
+
+```bash
+Prelude> tellShapeInfo' x = "This is " ++ tellShape' x ++ " which is " ++ judgeType' x 
+Prelude> tellShapeInfo' (Fig (Sphere 1))
+"This is A Default Judgeable Shape which is A Default Judgeable Type"
+```
+
 ### 函数依赖
 
 函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系[[3]](#ref3)。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于`a -> b`这种关系，当`a`确定时,`b`有唯一的类型与之对应。
@@ -479,35 +532,100 @@ Prelude> func' (1 :: Int) (2 :: Int))
 可见，使用函数依赖后，返回类型`c`被自动推断成了`Int`，而无需我们手动指定。
 
 
-### 别名的实例导出
+### 存在类型 
 
-一般地，我们无法为类型的别名声明类型类实例。但使用特别的扩展`{-# LANGUAGE TypeSynonymInstances #-}`可以允许这一点。
+此前我们定义的所有类型中，所有类型有关参数必须体现在等式的左侧，当参数取不同的类型时，总的嵌套类型被认为是不同的类型，这有时会带来不便。
+
+例如，我们希望存储不同类型的值到容器中（也称异构的），并且要求这个容器的长度是可变化的。单纯地使用列表是无法实现的，对于列表`[a]`，其存储元素的类型必须为`a`所对应的类型。
+
+```hs
+-- ['a',1,True] 
+-- impossible because of type checking
+```
+
+最简单直接的方法是使用代数数据类型，将不同的类型作和运算生成一个新的类型，其中每个构造函数代表一个类型[[5]](#ref5)。
 
 ```hs
 -- code4.hs
-{-# LANGUAGE TypeSynonymInstances #-}
-
-type SynFig = Fig 
-
-instance Judgeable' SynFig  
+data HeteData =
+  HeteInt Int
+  | HeteChar Char
+  | HeteBool Bool
 ```
 
-例如，我们声明了上一节中`Fig`类型的一个别名`SynFig`,其已经派生了`Judgeable`类型类的实例，因此我们实现其别名的`Judgeable'`类型类的实例。
+这样，就可以存储“不同”类型的数据了：
 
-```bash
-Prelude> tellShapeInfo' x = "This is " ++ tellShape' x ++ " which is " ++ judgeType' x 
-Prelude> tellShapeInfo' (Fig (Sphere 1))
-"This is A Default Judgeable Shape which is A Default Judgeable Type"
+```hs
+-- code4.hs
+a :: [HeteData]
+a = [HeteChar 'a',HeteInt 1,HeteBool True]
 ```
 
-### 存在类型
+但是这种方法只限于表示有限的类型，不适合对于有扩展需要的情况。
 
-### 关联类型族
+在Haskell中的`Data.Dynamic`库中，提供了一种动态类型，它允许直接对不同类型进行封装，以存储“不同”类型的数据：
 
-关联类型族是类型层面上的函数，其功能与函数依赖类似，能够消除
+```hs
+-- code4.hs
+import Data.Dynamic
+
+b :: [Dynamic]
+b = [toDyn 'a',toDyn (1 :: Int),toDyn True]
+
+geta :: Char
+geta = case (fromDynamic . head) b of
+  Nothing -> error "Type mismatch"
+  Just x -> x
+```
+
+或者，第三种方法就是使用存在类型扩展，通过使用扩展`{-# LANGUAGE ExistentialQuantification #-}`，可以在等式右侧对类型参数进行限制，而无需在等式左侧声明它们。
+
+```hs
+-- code4.hs
+
+data ExistData = forall a. (Show a) => ExistHeteData a 
+
+c :: [ExistData]
+c = [ExistHeteData 'a',ExistHeteData (1 :: Int),ExistHeteData True]
+
+showc :: String
+showc = show c'
+  where f (ExistHeteData t) = show t
+        c' = map f c
+```
+
+示例中，`ExistData`类型中类型参数`a`受到`Show`类型类的限制，即任何值`ExistHeteData a`中的`a`的类型必须是`Show`类型类的实例。这样我们就能够构造出存储异构数据的列表，`showc`利用`Show`类型类的限制，使用`show`函数将列表中存储的异构数据转换为字符串。
+
+> 补充： 细心的读者可能希望尝试对`ExistData`类型构造类似`geta`函数，但这是无法通过类型检验的（思考这是为什么？），因为在这个类型中的类型参数被隐藏起来。一种解决方案是使用`Typeable`类型类中的`cast`函数（这里只作为了解，不过多讲解）
 
 
+### 关联类型
 
+关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法[[4]](#ref4)。
+
+
+> 提示：实际上，类型族的表现形式有两种，关联类型是其一，用于类型类中；另一种出现在顶层，这里不做讨论。更多有关类型族的内容请详见有关章节。
+
+```hs
+-- code4.hs
+{-# LANGUAGE TypeFamilies #-}
+
+class Assoc1 a b where
+  type FuncType a b :: * 
+  assocfunc :: a -> b -> FuncType a b
+
+instance Assoc1 Int Int where 
+  type FuncType Int Int = Int 
+  assocfunc a b = 0
+```
+
+这里，`FuncType`将`a`和`b`的类型映射到一个新的类型上，这个类型是唯一的，即`FuncType a b`由`a`和`b`决定。
+
+### 实例重叠
+
+目前有关实例重叠的处理扩展已经被弃用，详情可以参考<a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#overlapping-instances">Overlapping Instances</a>。
+
+## 其他常用类型类
 
 
 
@@ -526,3 +644,4 @@ Prelude> tellShapeInfo' (Fig (Sphere 1))
 <p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
 <p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>
 <p id="ref3">[3] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
+<p id="ref4">[4] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p>
