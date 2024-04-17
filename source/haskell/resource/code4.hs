@@ -11,9 +11,12 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 import Data.Dynamic
-import Data.Typeable (cast)
+import Data.Default
+import Control.Applicative (Applicative(liftA2))
+import GHC.Base (liftA)
 
 -- 圆形直径
 type Diameter = Double
@@ -191,3 +194,26 @@ showc :: String
 showc = show c'
   where f (ExistHeteData t) = show t
         c' = map f c
+
+newtype BoolA = BoolA Bool 
+
+newtype BoolO = BoolO Bool 
+
+instance Semigroup BoolA where 
+  BoolA a <> BoolA b = BoolA (a && b)
+
+
+instance Semigroup BoolA => Monoid BoolA where 
+  mempty = BoolA True 
+  
+instance Semigroup BoolO where 
+  BoolO a <> BoolO b = BoolO (a || b)
+
+instance Semigroup BoolO => Monoid BoolO where 
+  mempty = BoolO False
+
+
+
+
+
+  

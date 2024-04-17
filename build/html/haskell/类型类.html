@@ -22,6 +22,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../_static/dark_mode_js/default_dark.js"></script>
         <script src="../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -91,7 +92,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#id20">实例重叠</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id21">其他常用类型类</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">其他常用类型类</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#semigroup">半群类型类 <code class="docutils literal notranslate"><span class="pre">Semigroup</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#monoid">幺半群类型类 <code class="docutils literal notranslate"><span class="pre">Monoid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#default">默认值类型类 <code class="docutils literal notranslate"><span class="pre">Default</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -682,11 +688,78 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 </section>
 <section id="id21">
 <h2>其他常用类型类<a class="headerlink" href="#id21" title="此标题的永久链接"></a></h2>
+<section id="semigroup">
+<h3>半群类型类 <code class="docutils literal notranslate"><span class="pre">Semigroup</span></code><a class="headerlink" href="#semigroup" title="此标题的永久链接"></a></h3>
+<p>半群类型类对应数学中的 <em><strong>半群(semigroup)</strong></em>。对于一个集合<span class="math notranslate nohighlight">\( S \)</span>以及一个作用在该集合上的二元运算<span class="math notranslate nohighlight">\( \cdot \)</span>，满足封闭性和结合性，则称这个数学结构为半群。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Semigroup</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="p">(</span><span class="o">&lt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Base</span><span class="o">.</span><span class="n">sconcat</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Base</span><span class="o">.</span><span class="kt">NonEmpty</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="kt">GHC</span><span class="o">.</span><span class="kt">Base</span><span class="o">.</span><span class="n">stimes</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Integral</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL (&lt;&gt;) #-}</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">Semigroup</span></code>类型类中，<code class="docutils literal notranslate"><span class="pre">(&lt;&gt;)</span></code>即为对应的二元运算，也是半群实例的最小实现。</p>
+<blockquote>
+<div><p>提示：好奇的读者可以使用hoogle查询另外两个函数的作用，这里不再赘述</p>
+</div></blockquote>
+<p>我们已经接触过许多满足半群的数学结构：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">newtype</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Semigroup</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">BoolA</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w"> </span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Semigroup</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">BoolO</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+
+
+<span class="cm">{- 已经内置的实例</span>
+<span class="cm">instance Semigroup [a] where </span>
+<span class="cm">  [] &lt;&gt; ys = ys </span>
+<span class="cm">  (x:xs) &lt;&gt; ys = x : (xs &lt;&gt; ys)</span>
+<span class="cm">-}</span>
+</pre></div>
+</div>
+<p>在上面的示例中，布尔类型作为集合，与运算和或运算均可以作为满足半群的二元运算符，但由于我们无法为同一类型声明两个完全相同的类型类的实例，这里使用<code class="docutils literal notranslate"><span class="pre">newtype</span></code>将创建两个与布尔类型同构的新类型。另外，Haskell中已经内置了半群关于列表的实例，其中二元运算符为列表的拼接操作。</p>
+</section>
+<section id="monoid">
+<h3>幺半群类型类 <code class="docutils literal notranslate"><span class="pre">Monoid</span></code><a class="headerlink" href="#monoid" title="此标题的永久链接"></a></h3>
+<p>当半群中存在单位元<span class="math notranslate nohighlight">\( 1 \)</span>，即任何元素与其作运算都是该元素本身，则称这个半群为幺半群。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Semigrop</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">mempty</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">  </span><span class="n">mappend</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="n">mconcat</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">  </span><span class="cm">{-# MINIMAL mempty #-}</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">Monoid</span></code>类型类中，<code class="docutils literal notranslate"><span class="pre">mempty</span></code>表示幺元（单位元），<code class="docutils literal notranslate"><span class="pre">mappend</span></code>表示二元运算。</p>
+<p>在<code class="docutils literal notranslate"><span class="pre">Semigroup</span></code>中的举出的三个示例，同时也是幺半群：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">mempty</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolA</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w"> </span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">mempty</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">BoolO</span><span class="w"> </span><span class="kt">False</span>
+
+<span class="cm">{- 已经内置的实例</span>
+<span class="cm">instance Monoid [a] where </span>
+<span class="cm">  mempty = []</span>
+<span class="cm">-}</span>
+</pre></div>
+</div>
+<p>对于布尔类型分别和与运算以及或运算构成的半群，<code class="docutils literal notranslate"><span class="pre">True</span></code>和<code class="docutils literal notranslate"><span class="pre">False</span></code>分别为其单位元，因此它们都是幺半群。对于列表来说，显然空列表关于拼接运算是单位元，因此列表和拼接运算以及空列表也构成了幺半群。</p>
+</section>
+<section id="default">
+<h3>默认值类型类 <code class="docutils literal notranslate"><span class="pre">Default</span></code><a class="headerlink" href="#default" title="此标题的永久链接"></a></h3>
+<p>顾名思义，<code class="docutils literal notranslate"><span class="pre">Default</span></code>类型类提供某一类型的默认值。</p>
 <p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
 <p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>
 <p id="ref3">[3] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 16.03, April 15, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#extension-FlexibleContexts</p>
 <p id="ref4">[4] Functional dependencies. (2021, July 21). HaskellWiki, . Retrieved 03:35, April 13, 2024 from https://wiki.haskell.org/index.php?title=Functional_dependencies&oldid=64590.</p>
 <p id="ref5">[5] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 01:16, April 15, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.</p></section>
+</section>
 </section>
 
 
