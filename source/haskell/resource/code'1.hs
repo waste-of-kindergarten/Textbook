@@ -19,12 +19,17 @@ instance Applicative L where
   _ <*> (L []) = mempty
   (L (f:fs)) <*> (L (x:xs)) = L [f x] <> (L fs <*> L xs)
 
-instance Applicative Tree where 
-  pure x = let tree = Node x tree tree 
-            in tree 
-  Empty <*> _ = Empty 
-  _ <*> Empty = Empty 
-  Node f flchild frchild <*> Node x lchild rchild = Node (f x) (flchild <*> lchild) (frchild <*> rchild) 
+instance Applicative Tree where
+  pure x = let tree = Node x tree tree
+            in tree
+  Empty <*> _ = Empty
+  _ <*> Empty = Empty
+  Node f flchild frchild <*> Node x lchild rchild = Node (f x) (flchild <*> lchild) (frchild <*> rchild)
 
+return' :: Monad m => a -> m a
+return' = pure 
+
+(|>>) :: Monad m => m a -> m b -> m b 
+ma |>> mb = ma >>= const mb 
 
 

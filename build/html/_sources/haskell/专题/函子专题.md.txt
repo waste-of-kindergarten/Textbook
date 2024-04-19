@@ -95,13 +95,15 @@ Node 'a' (Node 'a' Empty Empty) (Node 'a' Empty Empty)
 class Functor f => Applicative (f :: * -> *) where
   pure :: a -> f a
   (<*>) :: f (a -> b) -> f a -> f b
-  GHC.Base.liftA2 :: (a -> b -> c) -> f a -> f b -> f c 
+  liftA2 :: (a -> b -> c) -> f a -> f b -> f c 
   (*>) :: f a -> f b -> f b
   (<*) :: f a -> f b -> f a
   {-# MINIMAL pure, ((<*>) | liftA2) #-}
 ```
 
 最小实现为`pure`函数，以及`(<*>)`函数和`liftA2`中的任意一个。
+
+> 提示：这里使用的定义位于`Control.Applicative`，在GHCi中默认使用`GHC.Base`中的定义，这些定义会有微小的差异
 
 `pure`函数将一个值放到一个容器中：
 
@@ -143,16 +145,16 @@ Prelude> [(+1),(+2)] <*> []
 >  (L (f:fs)) <*> (L (x:xs)) = L [f x] <> (L fs <*> L xs)
 > ```
 
-`GHC.Base.liftA2`函数接受一个类型为`a -> b -> c`的二元函数，以及两个分别装有类型为`a`和`b`的容器，在保持容器结构的情况下，该函数将二元函数依次作用与后两个容器中的元素，生成新的容器。
+`liftA2`函数接受一个类型为`a -> b -> c`的二元函数，以及两个分别装有类型为`a`和`b`的容器，在保持容器结构的情况下，该函数将二元函数依次作用与后两个容器中的元素，生成新的容器。
 
-`GHC.Base.liftA2`与`<*>`可以互相定义，这也是最小实现中只要二选一即可。
+`liftA2`与`<*>`可以互相定义，这也是最小实现中只要二选一即可。
 
 ```hs
-GHC.Base.liftA2 :: (a -> b -> c) -> f a -> f b -> f c
-GHC.Base.liftA2 f t1 t2 = fmap f t1 <*> t2
+liftA2 :: (a -> b -> c) -> f a -> f b -> f c
+liftA2 f t1 t2 = fmap f t1 <*> t2
 
 (<*>) :: f (a -> b) -> f a -> f b
-tf <*> t = GHC.Base.liftA2 helper tf t
+tf <*> t = liftA2 helper tf t
   where helper :: (a -> b) -> a -> b
         helper f a = f a
 ```
@@ -162,10 +164,88 @@ tf <*> t = GHC.Base.liftA2 helper tf t
 ```bash
 Prelude> Just (+) <*> Just 1 <*> Just 2
 Just 3
-Prelude> GHC.Base.liftA2 (+) (Just 1) (Just 2)
+Prelude> liftA2 (+) (Just 1) (Just 2)
 Just 3
 ```
 
+`<*`和`*>`功能比较类似，它们接受两个容器，并将其中一个容器中的元素依次替换为另一个容器中的元素。
+
+
+
+最后给出有关二叉树的应用函子实例的声明：
+
+```hs
+-- code'1.hs
+
+instance Applicative Tree where 
+  pure x = let tree = Node x tree tree 
+            in tree 
+  Empty <*> _ = Empty 
+  _ <*> Empty = Empty 
+  Node f flchild frchild <*> Node x lchild rchild = Node (f x) (flchild <*> lchild) (frchild <*> rchild) 
+```
+
+## 可选择应用函子类型类 `Alternative`
+
+`Applicative`类型类在应用函子的基础上添加了一些特性。
+
+```hs
+class Applicative f => Alternative f where 
+  empty :: f a 
+  (<|>) :: f a -> f a -> f a
+  some :: f a -> f [a] 
+  many :: f a -> f [a]
+  {-# MINIMAL empty, (<|>) #-}
+```
+
+其中`empty`函数用于表示某种“错误”，例如`Maybe a`类型中的`Nothing`或者`[a]`类型中的`[]`。`<|>`表示在若干“选项”中的选择。
+
+```bash
+Prelude> empty :: Maybe a 
+Nothing 
+Prelude> empty :: [a] 
+[]
+Prelude> [1] <|> [1,2,3,4] <|> []
+[1,1,2,3]
+Prelude> [1] <|> [] <|> [1,2,3,4]
+[1,1,2,3,4]
+Prelude> Nothing <|> Just 1 <|> Just 2
+Just 1
+```
+
+> 提示： `some`和`many`函数的使用方法和使用场景比较复杂，感兴趣的读者可以阅读相关内容请参阅[[1]](#ref1)
 
 ## 单子类型类 `Monad`
 
+`Monad`类型类也是一种特殊的应用函子，这里只给出定义和一些例子，更多内容请移步[Monad专题](/haskell/专题/Monad专题)。
+
+```hs
+class Applicatve m => Monad (m :: * -> *) where 
+  (>>=) :: m a -> (a -> m b) -> m b 
+  (>>) :: m a -> m b -> m b 
+  return :: a -> m a 
+  fail :: String -> m a 
+  {-# MINIMAL (>>=) #-}
+```
+
+`Monad`类型类的最小实现为`(>>=)`，它接受一个容器`m a`，以及一个类型为`a -> m b`的函数,并将第二个函数依次应用于第一个容器中的元素，最后生成新的容器。
+
+```bash
+Prelude> Nothing >>= \t -> Just (t + 1)
+Nothing
+Prelude> Just 1 >>= \t -> Just (t + 1)
+Just 2
+Prelude> [] >>= \t -> [t + 1]
+[]
+Prelude> [1,2,3,4] >>= \t -> [t + 1]
+[2,3,4,5]
+Prelude> [(+1),(+2),(+3),(+4)] >>= \f -> [f 1]
+[2,3,4,5]
+```
+
+除了`(>>=)`外，`return`函数将一个数值`a`映射为包含该元素的容器，`(>>)`类似`(>>=)`，区别是`(>>)`并没有将第一个参数传入第二个参数中；最后`fail`计算错误时进行报错。
+
+
+
+
+<p id="ref1">[1] Typeclassopedia. (2022, December 30). HaskellWiki, . Retrieved 07:43, April 19, 2024 from https://wiki.haskell.org/index.php?title=Typeclassopedia&oldid=65490.</p>
