@@ -1,0 +1,171 @@
+# 函子专题
+
+本专题主要讲解范畴论中`Functor`、`Applicative`、`Monad`三种函子类型类，但我们尽量避免涉及过多的范畴相关的内容，而是以工程的视角将其视为特殊的类型类进行讲解，对于更深入有关范畴的内容，可参考后续[Haskell范畴论专题](#)。
+
+## 函子类型类 `Functor` 
+
+`Functor`类型类定义如下：
+
+```hs
+class Functor (f :: * -> *) where 
+    fmap :: (a -> b) -> f a -> f b
+    (<$) :: a -> f b -> f a
+    {-# MINIMAL fmap #-}
+```
+
+`Functor`类型类最小实现是`fmap`函数。此前，我们已经学习过`map`函数，该函数类型签名为`(a -> b) -> [a] -> [b]`,其将函数作用在列表中的每一个元素，并使用函数作用的结果作为新列表。
+
+细心的读者会发现`fmap`函数的类型签名与`map`函数非常相似，实际上，当我们将`fmap`函数类型中的`f`实例化为`[]`，该函数也就变称了`map`函数。
+
+```bash
+Prelude> f = fmap :: (a -> b) -> [a] -> [b]
+Prelude> f (+1) [1,2,3,4]
+[2,3,4,5]
+```
+
+`Functor`类型类将`map`函数抽象出来，使其能够处理更多其他的容器对象。
+
+例如，`Maybe`类型已经内置了`Functor`类型类的实例，因此我们可以对其使用`fmap`函数：
+
+```bash
+Prelude> fmap (+1) (Just 1)
+Just 2
+Prelude> fmap (:[]) (Just 'a')
+Just "a"
+Prelude> fmap (++" world") (Just "hello")
+Just "hello world"
+Prelude> fmap id Nothing
+Nothing
+```
+
+或者我们可以定义其他容器对象，并声明`Functor`实例,例如下面的二叉树：
+
+```hs
+-- code'1.hs
+data Tree a = 
+  Empty
+  | Node a (Tree a) (Tree a) deriving (Show)
+
+instance Functor Tree where
+  fmap f Empty = Empty
+  fmap f (Node a lchild rchild) = Node (f a) (fmap f lchild) (fmap f rchild)
+```
+
+该二叉树的定义有两种情形，空二叉树或者由结点和左右子树构成的树。通过声明二叉树的`Functor`实例，我们就可以对二叉树中的每个元素同时作用一个映射，使其更容易地生成新的二叉树：
+
+```bash
+Prelude> :load code'1.hs
+Prelude> tree = Node 1 (Node 2 Empty Empty) (Node 3 Empty Empty)
+Prelude> fmap (+1) tree
+Node 2 (Node 3 Empty Empty) (Node 4 Empty Empty)
+```
+
+> 提示： 或者我们也可以使用DeriveFunctor扩展，自动派生`Functor`实例
+
+为了使用方面，Haskell还提供了一个与`fmap`功能完全相同的运算符`<$>`,该运算符为左结合的中缀运算符，优先级为4。
+
+```hs
+infixl 4 <$>
+```
+
+除了`fmap`函数外，`Functor`类型类的另一个函数`<$`可以用`fmap`表示出来。
+
+```hs
+(<$) = fmap . const
+```
+
+该函数将第二个参数中容器中的每个元素都替换为第一个参数。
+
+```bash
+Prelude> 1 <$ Just 2
+Just 1
+Prelude> 1 <$ [1,2,3,4]
+[1,1,1,1]
+Prelude> 'a' <$ tree
+Node 'a' (Node 'a' Empty Empty) (Node 'a' Empty Empty)
+Prelude> (fmap . const) 'a' tree
+Node 'a' (Node 'a' Empty Empty) (Node 'a' Empty Empty)
+```
+
+## 应用函子类型类 `Applicative`
+
+应用函子是特殊的函子，因此`Applicative`类型类受到`Functor`的约束，其定义如下：
+
+```hs
+class Functor f => Applicative (f :: * -> *) where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+  GHC.Base.liftA2 :: (a -> b -> c) -> f a -> f b -> f c 
+  (*>) :: f a -> f b -> f b
+  (<*) :: f a -> f b -> f a
+  {-# MINIMAL pure, ((<*>) | liftA2) #-}
+```
+
+最小实现为`pure`函数，以及`(<*>)`函数和`liftA2`中的任意一个。
+
+`pure`函数将一个值放到一个容器中：
+
+```bash
+Prelude> pure 1 :: [Int]
+[1]
+Prelude> pure 1 :: Maybe Int 
+Just 1
+```
+
+`<*>`函数接受一个带有`a -> b`类型函数的容器，以及带有`a`类型元素的容器，在保持容器结构的情况下，依次将第一个容器中的函数作用到第二个容器中的元素，最终生成新的容器。
+
+```bash
+Prelude> Just (+1) <*> Just 1
+Just 2
+Prelude> Just id <*> Nothing
+Nothing
+Prelude> Nothing <*> Just 1
+Nothing
+Prelude> [(+1),(+2)] <*> [1,2]
+[2,3,3,4]
+Prelude> [(+1),(+2)] <*> [1,2,3]
+[2,3,4,3,4,5]
+Prelude> [(+1),(+2)] <*> []
+[]
+```
+
+> 补充： 读者可能会疑惑为什么列表使用`<*>`的效果得到的是笛卡尔积, 而不是对应位置函数应用在对应位置的元素上（这里我们借用来源于Python的概念“广播”），这可能与Haskell的开发历史有关；实际上我们可以用列表的同构类型（指newtype声明）ZipList，该数据类型位于`Control.Applicative`中，并在应用函子实例中实现了广播操作。我们提供了一个自定义的版本供读者参考：
+> ```hs
+> -- code'1.hs
+>
+> newtype L a = L [a] 
+>    deriving newtype (Show,Functor,Semigroup,Monoid)
+>
+>instance Applicative L where
+>  pure x = L (repeat x)
+>  (L []) <*> _ = mempty
+>  _ <*> (L []) = mempty
+>  (L (f:fs)) <*> (L (x:xs)) = L [f x] <> (L fs <*> L xs)
+> ```
+
+`GHC.Base.liftA2`函数接受一个类型为`a -> b -> c`的二元函数，以及两个分别装有类型为`a`和`b`的容器，在保持容器结构的情况下，该函数将二元函数依次作用与后两个容器中的元素，生成新的容器。
+
+`GHC.Base.liftA2`与`<*>`可以互相定义，这也是最小实现中只要二选一即可。
+
+```hs
+GHC.Base.liftA2 :: (a -> b -> c) -> f a -> f b -> f c
+GHC.Base.liftA2 f t1 t2 = fmap f t1 <*> t2
+
+(<*>) :: f (a -> b) -> f a -> f b
+tf <*> t = GHC.Base.liftA2 helper tf t
+  where helper :: (a -> b) -> a -> b
+        helper f a = f a
+```
+
+下面给出几个示例：
+
+```bash
+Prelude> Just (+) <*> Just 1 <*> Just 2
+Just 3
+Prelude> GHC.Base.liftA2 (+) (Just 1) (Just 2)
+Just 3
+```
+
+
+## 单子类型类 `Monad`
+

@@ -15,8 +15,7 @@
 
 import Data.Dynamic
 import Data.Default
-import Control.Applicative (Applicative(liftA2))
-import GHC.Base (liftA)
+
 
 -- 圆形直径
 type Diameter = Double

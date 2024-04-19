@@ -243,7 +243,7 @@ class IsString a where
 
 ### 函子类型类 (`Functor`, `Applicative`, `Monad`)
 
-三种函子类型类虽然是常见的类型类，但其比较复杂（涉及到范畴相关的知识），因此我们将其单独书写为一章<a>函子教程专题</a>,读者可以选择详细了解三种函子类型类后继续本章的其余内容，或者大致了解该部分后直接向下阅读。
+三种函子类型类比较复杂，因此我们将其单独书写为一章[函子专题](/haskell/专题/函子专题),读者可以选择详细了解三种函子类型类后继续本章的其余内容，或者大致了解该部分后直接向下阅读。
 
 ## 派生
 
@@ -710,7 +710,82 @@ instance Monoid [a] where
 
 ### 默认值类型类 `Default`
 
-顾名思义，`Default`类型类提供某一类型的默认值。
+顾名思义，`Default`类型类提供某一类型的默认值。它位于data-default库中。
+
+```hs
+class Default a where 
+  def :: a 
+```
+
+### 可折叠类型类 `Foldable`
+
+`Foldable`类型类用来表示具有容器的特性，所有实现该类型类实例的类型，都可以折叠为一个值，例如前面学习的列表就是可折叠的。
+
+```hs
+class Foldable (t :: * -> *) where 
+  Data.Foldable.fold :: Monoid m => t m -> m
+  foldMap :: Monoid m => (a -> m) -> t a -> m
+  foldr :: (a -> b -> b) -> b -> t a -> b
+  Data.Foldable.foldr' :: (a -> b -> b) -> b -> t a -> b 
+  foldl :: (b -> a -> b) -> b -> t a -> b
+  Data.Foldable.foldl' :: (b -> a -> b) -> b -> t a -> b 
+  foldr1 :: (a -> a -> a) -> t a -> a 
+  foldl1 :: (a -> a -> a) -> t a -> a 
+  Data.Foldable.toList :: t a -> [a]
+  null :: t a -> Bool 
+  length :: t a -> Int 
+  elem :: Eq a => a -> t a -> Bool 
+  maximum :: Ord a => t a -> a
+  minimum :: Ord a => t a -> a
+  sum :: Num a => t a -> a
+  product :: Num a => t a -> a 
+  {-# MINIMAL foldMap | foldr #-}
+```
+
+`Foldable`类型类中最小实现为`foldMap`或`foldr`,其中`foldMap`将一个容器中的元素全部进行映射（要求映射后的对象是幺半群），并使用幺半群中的二元运算将所有映射后的元素折叠为一个值；`foldr`接受一个二元函数，一个初始值和一个容器，该函数不断使用二元函数作用在初始值和容器中的元素并生成新的初始值，直到容器为空时，返回折叠后的值（即此时的初始值）。
+
+> 提示：带有`'`标记的折叠函数是严格求职版本，其他的函数通过名称和类型签名不难理解其含义，这里不再赘述。
+
+> 补充：可使用DeriveFoldable扩展自动派生`Foldable`实例
+
+### 可游历类型类 `Traversable`
+
+`Traversable`类型类将具有可折叠特性的特殊的类型继续进行封装，得到一些共有的计算，该类型类比较复杂，且涉及到函子有关概念，这里仅给出定义和一个示例以供学有余力的读者了解。
+
+```hs
+class (Functor t,Foldable t) => Traversable t where 
+  traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
+  sequenceA :: Applicative f => t (f a) -> f (t a)
+  mapM :: Monad m => (a -> m b) -> t a -> m (t b)
+  sequence :: Monad m => t (m a) -> m (t a)
+  {-# MINIMAL traverse | sequenceA #-}
+```
+
+最小实现是`traverse`或`sequenceA`函数，下面给出使用这两个函数的示例：
+
+```bash
+Prelude> traverse (\t -> Just 'a') [1,2,3,4]
+Just "aaaa"
+Prelude> sequenceA [Just 1,Just 2,Just 3,Just 4]
+Just [1,2,3,4]
+```
+> 补充： 可使用DeriveTraversable扩展自动派生`Traversable`实例
+
+### 数类型类 `Num`
+
+`Num`类型类用于具有数字特性的类型，其定义如下：
+
+```hs
+class Num a where 
+  (+) :: a -> a -> a
+  (-) :: a -> a -> a
+  (*) :: a -> a -> a
+  negate :: a -> a 
+  abs :: a -> a
+  signum :: a -> a
+  fromInteger :: Integer -> a
+  {-# MINIMAL (+), (*), abs, signum, fromInteger, (negae | (-)) #-}
+```
 
 
 
