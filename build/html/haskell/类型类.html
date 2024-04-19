@@ -70,30 +70,30 @@
 <li class="toctree-l4"><a class="reference internal" href="#show">可显示类型类 <code class="docutils literal notranslate"><span class="pre">Show</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#read">可读类型类 <code class="docutils literal notranslate"><span class="pre">Read</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#isstring">字符串类型类 <code class="docutils literal notranslate"><span class="pre">IsString</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functor-applicative-monad">函子类型类 (<code class="docutils literal notranslate"><span class="pre">Functor</span></code>, <code class="docutils literal notranslate"><span class="pre">Applicative</span></code>, <code class="docutils literal notranslate"><span class="pre">Monad</span></code>)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">（各种）函子类型类</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">派生</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id6">派生与自动派生</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id7">默认实现的派生</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id8">新类型的派生</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id9">派生策略</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id10">孤立派生</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">派生</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">派生与自动派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">默认实现的派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">新类型的派生</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">派生策略</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">孤立派生</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id11">特殊用法</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id12">多参数类型类</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id13">无参数类型类</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id14">灵活的实例声明</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id15">灵活的上下文</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id16">别名的实例导出</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id17">函数依赖</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id18">存在类型</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id19">关联类型</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id20">实例重叠</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">特殊用法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id13">多参数类型类</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">无参数类型类</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">灵活的实例声明</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">灵活的上下文</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">别名的实例导出</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id18">函数依赖</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id19">存在类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id20">关联类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id21">实例重叠</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id21">其他常用类型类</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id22">其他常用类型类</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#semigroup">半群类型类 <code class="docutils literal notranslate"><span class="pre">Semigroup</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#monoid">幺半群类型类 <code class="docutils literal notranslate"><span class="pre">Monoid</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#default">默认值类型类 <code class="docutils literal notranslate"><span class="pre">Default</span></code></a></li>
@@ -105,6 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
 </ul>
 </li>
 </ul>
@@ -346,20 +347,20 @@ Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span cl
 <div><p>提示： 一般情况下，可以使用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">OverloadedStrings</span> <span class="pre">#-}</span></code>让不同“字符串”之间进行转换。</p>
 </div></blockquote>
 </section>
-<section id="functor-applicative-monad">
-<h3>函子类型类 (<code class="docutils literal notranslate"><span class="pre">Functor</span></code>, <code class="docutils literal notranslate"><span class="pre">Applicative</span></code>, <code class="docutils literal notranslate"><span class="pre">Monad</span></code>)<a class="headerlink" href="#functor-applicative-monad" title="此标题的永久链接"></a></h3>
-<p>三种函子类型类比较复杂，因此我们将其单独书写为一章<a class="reference internal" href="%E4%B8%93%E9%A2%98/%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html"><span class="doc">函子专题</span></a>,读者可以选择详细了解三种函子类型类后继续本章的其余内容，或者大致了解该部分后直接向下阅读。</p>
-</section>
-</section>
 <section id="id5">
-<h2>派生<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h2>
+<h3>（各种）函子类型类<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>函子类型类比较复杂，因此我们将其单独书写为一章<a class="reference internal" href="%E4%B8%93%E9%A2%98/%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html"><span class="doc">函子专题</span></a>,读者可以选择详细了解各种函子类型类后继续本章的其余内容，或者大致了解该部分后直接向下阅读。</p>
+</section>
+</section>
 <section id="id6">
-<h3>派生与自动派生<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<h2>派生<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<section id="id7">
+<h3>派生与自动派生<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
 <p>派生使用<code class="docutils literal notranslate"><span class="pre">deriving</span></code>关键字，其声明应当跟随类型的定义。</p>
 <p>对于 <em><strong>普通(stock)</strong></em> 类型类（<code class="docutils literal notranslate"><span class="pre">Eq</span></code>、<code class="docutils literal notranslate"><span class="pre">Ord</span></code>、<code class="docutils literal notranslate"><span class="pre">Enum</span></code>、<code class="docutils literal notranslate"><span class="pre">Ix</span></code>、<code class="docutils literal notranslate"><span class="pre">Bounded</span></code>、<code class="docutils literal notranslate"><span class="pre">Read</span></code>和<code class="docutils literal notranslate"><span class="pre">Show</span></code>），Haskell允许用户使用自动派生出这些类型类的有关实例。如前面我们在定义<code class="docutils literal notranslate"><span class="pre">Figure''</span></code>和<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>时就自动派生了<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类。</p>
 </section>
-<section id="id7">
-<h3>默认实现的派生<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<section id="id8">
+<h3>默认实现的派生<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
 <p>有时我们希望自定义的类型类能够类似普通类型类一样可以自动派生出实例，这可以通过在类型类定义中添加默认的实现来实现。</p>
 <p>我们修改<code class="docutils literal notranslate"><span class="pre">Judgeable</span></code>类型类为带有默认实现的版本<code class="docutils literal notranslate"><span class="pre">Judgeable'</span></code>。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
@@ -393,8 +394,8 @@ Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span cl
 </pre></div>
 </div>
 </section>
-<section id="id8">
-<h3>新类型的派生<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
+<section id="id9">
+<h3>新类型的派生<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
 <p>在前面章节我们提到了<code class="docutils literal notranslate"><span class="pre">newtype</span></code>定义新类型的方法，并简述了其在构造方面的限制和为编译器带来的优势。</p>
 <p>在编译器层面上，使用<code class="docutils literal notranslate"><span class="pre">newtype</span></code>声明的新类型与原类型是不被区分的，当原类型已经在特定类型类中实现了实例，我们很有可能需要新类型上也有同样的实现。Haskell提供了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">GeneralizedNewtypeDeriving</span> <span class="pre">#-}</span></code>扩展以便导出类型类。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
@@ -413,8 +414,8 @@ Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span cl
 </pre></div>
 </div>
 </section>
-<section id="id9">
-<h3>派生策略<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<section id="id10">
+<h3>派生策略<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
 <p>派生策略扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DerivingStrategies</span> <span class="pre">#-}</span></code>用于消除来自DeiriveAnyClass和Generalized NewtypeDeriving以及内置导出之间的冲突。例如对一个新类型派生实例，到底是按照类型类中默认实现去派生还是参照与之同构的原类型派生。</p>
 <p>使用派生策略扩展后，通过使用三个新的关键字跟随<code class="docutils literal notranslate"><span class="pre">deriving</span></code>对派生方式进行区分,它们分别为<code class="docutils literal notranslate"><span class="pre">stock</span></code>,<code class="docutils literal notranslate"><span class="pre">newtype</span></code>和<code class="docutils literal notranslate"><span class="pre">anyclass</span></code>。其中<code class="docutils literal notranslate"><span class="pre">stock</span></code>用于对于普通类型类（即<code class="docutils literal notranslate"><span class="pre">Eq</span></code>、<code class="docutils literal notranslate"><span class="pre">Ord</span></code>、<code class="docutils literal notranslate"><span class="pre">Enum</span></code>、<code class="docutils literal notranslate"><span class="pre">Ix</span></code>、<code class="docutils literal notranslate"><span class="pre">Bounded</span></code>、<code class="docutils literal notranslate"><span class="pre">Read</span></code>和<code class="docutils literal notranslate"><span class="pre">Show</span></code>）的派生；<code class="docutils literal notranslate"><span class="pre">newtype</span></code>用于对新类型的派生；<code class="docutils literal notranslate"><span class="pre">anyclass</span></code>用于含有默认实现的自定义类型类的派生。</p>
 <blockquote>
@@ -424,8 +425,8 @@ Prelude&gt;<span class="w"> </span>tellShapeInfo<span class="w"> </span><span cl
 <div><p>提示：上述各种扩展对应的类型类会在本章后续讲解</p>
 </div></blockquote>
 </section>
-<section id="id10">
-<h3>孤立派生<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
+<section id="id11">
+<h3>孤立派生<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
 <p>通常情况下，deriving 导出实例必须跟随类型的定义声明的，但在实际场景中，我们很难保证后期不添加新的派生，这将导致对原代码的修改，破坏了工程中的开闭原则。使用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">StandaloneDeriving</span> <span class="pre">#-}</span></code>扩展，可以声明孤立的派生，使得派生与类型定义分离。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 <span class="cm">{-# LANGUAGE StandaloneDeriving #-}</span>
@@ -446,10 +447,10 @@ False
 </div>
 </section>
 </section>
-<section id="id11">
-<h2>特殊用法<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h2>
 <section id="id12">
-<h3>多参数类型类<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h3>
+<h2>特殊用法<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h2>
+<section id="id13">
+<h3>多参数类型类<a class="headerlink" href="#id13" title="此标题的永久链接"></a></h3>
 <p>通常，类型类的声明只能包含一个参数，或者说一个类型类的实例只能属于一个类型。通过使用扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">MultiParamTypeClasses</span> <span class="pre">#-}</span></code>允许类型类突破这一限制。</p>
 <p><code class="docutils literal notranslate"><span class="pre">Figure''</span></code>和<code class="docutils literal notranslate"><span class="pre">SolidFigure</span></code>属于不同类型，即使我们派生出两个类型的<code class="docutils literal notranslate"><span class="pre">Eq</span></code>实例，也是无法进行两个类型之间值的比较的。使用多参数类型类扩展，可以定义一个新的类型类达到此效果。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
@@ -480,8 +481,8 @@ True
 </pre></div>
 </div>
 </section>
-<section id="id13">
-<h3>无参数类型类<a class="headerlink" href="#id13" title="此标题的永久链接"></a></h3>
+<section id="id14">
+<h3>无参数类型类<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
 <p>无参数类型类需要扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">NullaryTypeClasses</span> <span class="pre">#-}</span></code>，但目前该扩展已经被遗弃，该扩展的功能被包含到MultiParamTypeClasses中。无参数类型类可用于记录类型签名中的某些假设或添加一些全局可配置的设置在程序中<a class="reference external" href="#ref2">[2]</a>。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 
@@ -501,8 +502,8 @@ True
 </pre></div>
 </div>
 </section>
-<section id="id14">
-<h3>灵活的实例声明<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
+<section id="id15">
+<h3>灵活的实例声明<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
 <p>当我们需要声明具有多态类型的类型类实例时，其与通常的声明方法无异。但对于嵌套的类型（即多态类型中参数实例化，如<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>或<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">Int</span></code>等）需要使用灵活的实例声明扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">FlexibleInstances</span> <span class="pre">#-}</span></code>进行类型类实例的声明。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 <span class="cm">{-# LANGUAGE FlexibleInstances #-}</span>
@@ -524,15 +525,15 @@ True
 </div>
 <p>上述示例定义了一个类型类用于判断容器是否为空，第一个实例声明的类型是多态类型<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">a</span></code>，因此直接声明即可；第二个实例声明的类型是<code class="docutils literal notranslate"><span class="pre">[Char]</span></code>，列表<code class="docutils literal notranslate"><span class="pre">[a]</span></code>中的<code class="docutils literal notranslate"><span class="pre">a</span></code>实例化为了<code class="docutils literal notranslate"><span class="pre">Char</span></code>，因此需要使用灵活实例声明扩展才可以。</p>
 </section>
-<section id="id15">
-<h3>灵活的上下文<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h3>
+<section id="id16">
+<h3>灵活的上下文<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
 <p>一般地，使用类型类对类型参数进行约束具有一定限制，其只能是简单的类型变量；通过使用扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">FlexibleContexts</span> <span class="pre">#-}</span></code>，可以解除这一限制，以便生成更复杂的类型约束的上下文。例如<code class="docutils literal notranslate"><span class="pre">Eq</span> <span class="pre">[a]</span> <span class="pre">=&gt;</span> <span class="pre">...</span></code>或者<code class="docutils literal notranslate"><span class="pre">Ord</span> <span class="pre">(T</span> <span class="pre">a</span> <span class="pre">())</span> <span class="pre">=&gt;</span> <span class="pre">...</span></code>在开启扩展下都是合法的<a class="reference external" href="#ref3">[3]</a>。</p>
 <blockquote>
 <div><p>补充： 无论是FlexibleInstances还是FlexibleContexts扩展，实例声明都必须遵循相应的终止规则限制，如果满足这种终止规则，我们称实例约束上下文 <em>Paterson小于</em> 实例声明头；这种限制可以通过扩展UndecidableInstances解除。详情可参考<a class="reference external" href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#instance-termination-rules">Instance termination rules</a>。</p>
 </div></blockquote>
 </section>
-<section id="id16">
-<h3>别名的实例导出<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
+<section id="id17">
+<h3>别名的实例导出<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
 <p>一般地，我们无法为类型的别名声明类型类实例。但使用特别的扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">TypeSynonymInstances</span> <span class="pre">#-}</span></code>可以允许这一点。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
 <span class="cm">{-# LANGUAGE TypeSynonymInstances #-}</span>
@@ -549,8 +550,8 @@ True
 </pre></div>
 </div>
 </section>
-<section id="id17">
-<h3>函数依赖<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<section id="id18">
+<h3>函数依赖<a class="headerlink" href="#id18" title="此标题的永久链接"></a></h3>
 <p>函数依赖通常用来限制类型类的参数，尤其是对于多参数类型类中参数之间的决定关系<a class="reference external" href="#ref4">[4]</a>。这种决定关系（或者说映射），使得其中的某些参数取决于另一些参数，例如对于<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code>这种关系，当<code class="docutils literal notranslate"><span class="pre">a</span></code>确定时,<code class="docutils literal notranslate"><span class="pre">b</span></code>有唯一的类型与之对应。</p>
 <p>考虑不使用函数依赖的情况：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code4.hs</span>
@@ -611,8 +612,8 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 </div>
 <p>可见，使用函数依赖后，返回类型<code class="docutils literal notranslate"><span class="pre">c</span></code>被自动推断成了<code class="docutils literal notranslate"><span class="pre">Int</span></code>，而无需我们手动指定。</p>
 </section>
-<section id="id18">
-<h3>存在类型<a class="headerlink" href="#id18" title="此标题的永久链接"></a></h3>
+<section id="id19">
+<h3>存在类型<a class="headerlink" href="#id19" title="此标题的永久链接"></a></h3>
 <p>此前我们定义的所有类型中，所有类型有关参数必须体现在等式的左侧，当参数取不同的类型时，总的嵌套类型被认为是不同的类型，这有时会带来不便。</p>
 <p>例如，我们希望存储不同类型的值到容器中（也称异构的），并且要求这个容器的长度是可变化的。单纯地使用列表是无法实现的，对于列表<code class="docutils literal notranslate"><span class="pre">[a]</span></code>，其存储元素的类型必须为<code class="docutils literal notranslate"><span class="pre">a</span></code>所对应的类型。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- [&#39;a&#39;,1,True] </span>
@@ -666,8 +667,8 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 <div><p>补充： 细心的读者可能希望尝试对<code class="docutils literal notranslate"><span class="pre">ExistData</span></code>类型构造类似<code class="docutils literal notranslate"><span class="pre">geta</span></code>函数，但这是无法通过类型检验的（思考这是为什么？），因为在这个类型中的类型参数被隐藏起来。一种解决方案是使用<code class="docutils literal notranslate"><span class="pre">Typeable</span></code>类型类中的<code class="docutils literal notranslate"><span class="pre">cast</span></code>函数（这里只作为了解，不过多讲解）</p>
 </div></blockquote>
 </section>
-<section id="id19">
-<h3>关联类型<a class="headerlink" href="#id19" title="此标题的永久链接"></a></h3>
+<section id="id20">
+<h3>关联类型<a class="headerlink" href="#id20" title="此标题的永久链接"></a></h3>
 <p>关联数据类型（也称为类型族，是支持数据类型的临时重载的扩展），是类型层面上的函数，可以作为函数依赖的替代方法<a class="reference external" href="#ref5">[5]</a>。</p>
 <blockquote>
 <div><p>提示：实际上，类型族的表现形式有两种，关联类型是其一，用于类型类中；另一种出现在顶层，这里不做讨论。更多有关类型族的内容请详见有关章节。</p>
@@ -686,13 +687,13 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>func<span class="w"> 
 </div>
 <p>这里，<code class="docutils literal notranslate"><span class="pre">FuncType</span></code>将<code class="docutils literal notranslate"><span class="pre">a</span></code>和<code class="docutils literal notranslate"><span class="pre">b</span></code>的类型映射到一个新的类型上，这个类型是唯一的，即<code class="docutils literal notranslate"><span class="pre">FuncType</span> <span class="pre">a</span> <span class="pre">b</span></code>由<code class="docutils literal notranslate"><span class="pre">a</span></code>和<code class="docutils literal notranslate"><span class="pre">b</span></code>决定。</p>
 </section>
-<section id="id20">
-<h3>实例重叠<a class="headerlink" href="#id20" title="此标题的永久链接"></a></h3>
+<section id="id21">
+<h3>实例重叠<a class="headerlink" href="#id21" title="此标题的永久链接"></a></h3>
 <p>目前有关实例重叠的处理扩展已经被弃用，详情可以参考<a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/exts/instances.html#overlapping-instances">Overlapping Instances</a>。</p>
 </section>
 </section>
-<section id="id21">
-<h2>其他常用类型类<a class="headerlink" href="#id21" title="此标题的永久链接"></a></h2>
+<section id="id22">
+<h2>其他常用类型类<a class="headerlink" href="#id22" title="此标题的永久链接"></a></h2>
 <section id="semigroup">
 <h3>半群类型类 <code class="docutils literal notranslate"><span class="pre">Semigroup</span></code><a class="headerlink" href="#semigroup" title="此标题的永久链接"></a></h3>
 <p>半群类型类对应数学中的 <em><strong>半群(semigroup)</strong></em>。对于一个集合<span class="math notranslate nohighlight">\( S \)</span>以及一个作用在该集合上的二元运算<span class="math notranslate nohighlight">\( \cdot \)</span>，满足封闭性和结合性，则称这个数学结构为半群。</p>

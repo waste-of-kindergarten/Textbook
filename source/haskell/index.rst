@@ -16,4 +16,4 @@ Haskell TextBook
    递归与高阶函数
    类型类
    专题/函子专题
-   Monad专题
+   专题/Monad专题

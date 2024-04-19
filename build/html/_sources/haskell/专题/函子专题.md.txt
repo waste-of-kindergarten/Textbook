@@ -150,13 +150,13 @@ Prelude> [(+1),(+2)] <*> []
 `liftA2`与`<*>`可以互相定义，这也是最小实现中只要二选一即可。
 
 ```hs
+-- Applicative f =>
 liftA2 :: (a -> b -> c) -> f a -> f b -> f c
-liftA2 f t1 t2 = fmap f t1 <*> t2
+liftA2 f t1 t2 =  (pure f) <*> t1 <*> t2  --fmap f t1 <*> t2
 
+-- Applicative f => 
 (<*>) :: f (a -> b) -> f a -> f b
-tf <*> t = liftA2 helper tf t
-  where helper :: (a -> b) -> a -> b
-        helper f a = f a
+tf <*> t = liftA2 (\ f a -> f a) tf t
 ```
 
 下面给出几个示例：
@@ -168,8 +168,20 @@ Prelude> liftA2 (+) (Just 1) (Just 2)
 Just 3
 ```
 
-`<*`和`*>`功能比较类似，它们接受两个容器，并将其中一个容器中的元素依次替换为另一个容器中的元素。
+`<*`和`*>`功能比较类似，它们接受两个容器，并将其中一个容器中的元素按次序替换为另一个容器中的元素。它们可以通过`<*>`或者`liftA2`函数表示出来。
 
+```hs
+-- Applicative f => 
+(<*) :: f a -> f b -> f b
+fa <* fb =  pure const <*> fa <*> fb
+  -- liftA2 const fa fb
+  -- fmap const fa <*> fb
+
+(*>) :: f a -> f b -> f a 
+fa *> fb = pure (flip const) <*> fa <*> fb
+  -- liftA2 (flip const) fa fb 
+  -- fmap (flip const) fa fb
+```
 
 
 最后给出有关二叉树的应用函子实例的声明：
@@ -243,9 +255,16 @@ Prelude> [(+1),(+2),(+3),(+4)] >>= \f -> [f 1]
 [2,3,4,5]
 ```
 
-除了`(>>=)`外，`return`函数将一个数值`a`映射为包含该元素的容器，`(>>)`类似`(>>=)`，区别是`(>>)`并没有将第一个参数传入第二个参数中；最后`fail`计算错误时进行报错。
+除了`(>>=)`外，`Monad`类型类还提供了`return`函数将一个数值`a`映射为包含该元素的容器，对应了`Applicative`中的`pure`函数；`(>>)`类似`(>>=)`，区别是`(>>)`并没有将第一个参数传入第二个参数中；最后`fail`用于计算错误时进行报错。
 
-
+```hs
+-- Monad m => 
+return :: a -> m a
+return = pure 
+-- Monad m =>
+(>>) :: m a -> m b -> m b 
+ma >> mb = ma >>= const mb
+```
 
 
 <p id="ref1">[1] Typeclassopedia. (2022, December 30). HaskellWiki, . Retrieved 07:43, April 19, 2024 from https://wiki.haskell.org/index.php?title=Typeclassopedia&oldid=65490.</p>
