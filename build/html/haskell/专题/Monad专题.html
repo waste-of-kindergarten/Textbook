@@ -26,7 +26,8 @@
         <script src="../../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
-    <link rel="search" title="搜索" href="../../search.html" /> 
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="prev" title="函子专题" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +50,30 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Haskell TextBook</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Monad专题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">Monad</span></code>介绍</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">常见的 monad</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#maybe-monad"><code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-monad"><code class="docutils literal notranslate"><span class="pre">List</span></code> monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#do">do-标记</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#io-monad"><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-monad"><code class="docutils literal notranslate"><span class="pre">State</span></code> monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reader-monad"><code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writer-monad"><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -67,6 +90,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Haskell TextBook</a></li>
       <li class="breadcrumb-item active">Monad专题</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/haskell/专题/Monad专题.md.txt" rel="nofollow"> 查看页面源码</a>
@@ -79,12 +103,234 @@
              
   <section id="monad">
 <h1>Monad专题<a class="headerlink" href="#monad" title="此标题的永久链接"></a></h1>
+<p>在<a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html"><span class="doc">函子专题</span></a>中已经简要介绍了<code class="docutils literal notranslate"><span class="pre">Monad</span></code>类型类的定义与用法。本章将针对<code class="docutils literal notranslate"><span class="pre">Monad</span></code>展开，讲解有关<code class="docutils literal notranslate"><span class="pre">Monad</span></code>更多有关特性与用法。</p>
+<section id="id1">
+<h2><code class="docutils literal notranslate"><span class="pre">Monad</span></code>介绍<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<p>在Haskell中，monad经常被认为是计算的抽象描述符,本质上这些描述符可以进行组合，使用较小的表达式构建更大的表达式<a class="reference external" href="#ref1">1</a>。Monad可以作为各种数据或控制结构的标准编程接口<a class="reference external" href="#ref2">2</a>。</p>
+<blockquote>
+<div><p>补充： 这里的表达式有时也被称为“动作”(actions)</p>
+</div></blockquote>
+<p>monad具有三个属性，这些属性使其非常高效有用：</p>
+<ul class="simple">
+<li><p>模块化： monad允许计算由更简单的计算组合而合成，并将组合策略与正在执行的实际计算分开。</p></li>
+<li><p>灵活性： monad使得其函数式程序相比等价的不适用单子书写的程序更具有适应性。monad将计算策略集中到一个位置，而无需分散在整个程序中。</p></li>
+<li><p>隔离性：monad可以用于创建命令式计算结构，这些结构与程序主体保持安全的隔离。<a class="reference external" href="#ref2">2</a></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Monad</span></code>类型类定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="p">(</span><span class="o">&gt;&gt;=</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="p">(</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="n">return</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="w">    </span><span class="n">fail</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL (&gt;&gt;=) #-}</span>
+</pre></div>
+</div>
+<p>通过定义，我们知道一个monad前提必须是一个应用函子，然而仅仅实现了某个类型的单子类型类的实例并不能保证其为真正monad。在此基础上，还应当满足以下单子律：</p>
+<ul class="simple">
+<li><p>左单位元： <code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">a</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k</span> <span class="pre">=</span> <span class="pre">k</span> <span class="pre">a</span></code></p></li>
+<li><p>右单位元： <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">return</span> <span class="pre">=</span> <span class="pre">m</span></code></p></li>
+<li><p>结合律：<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">(\x</span> <span class="pre">-&gt;</span> <span class="pre">k</span> <span class="pre">x</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h)</span> <span class="pre">=</span> <span class="pre">(m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k)</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h</span></code></p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>常见的 monad<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>下面依次介绍几个Haskell内置的 monad，并验证其确实满足单子律。</p>
+<section id="maybe-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad<a class="headerlink" href="#maybe-monad" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">instance</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">maybe</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Nothing</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>下面我们来验证其满足单子律。</p>
+<p>对于左单位元，要证<code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">a</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k</span> <span class="pre">=</span> <span class="pre">k</span> <span class="pre">a</span></code>，其中<code class="docutils literal notranslate"><span class="pre">k</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">b</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>左边 = return a &gt;&gt;= k 
+= Just a &gt;&gt;= k 
+= k a = 右边
+</pre></div>
+</div>
+<p>对于右单位元，要证<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">return</span> <span class="pre">=</span> <span class="pre">m</span></code>，其中<code class="docutils literal notranslate"><span class="pre">m</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">a</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>当 m = Nothing 时：
+
+左边 = m &gt;&gt;= return 
+= Nothing &gt;&gt;= return 
+= Nothing = m = 右边
+
+当 m = Just a 时：
+
+左边 = m &gt;&gt;= return 
+= Just a &gt;&gt;= return 
+= return a 
+= Just a = m = 右边
+</pre></div>
+</div>
+<p>对于结合律，要证<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">(\x</span> <span class="pre">-&gt;</span> <span class="pre">k</span> <span class="pre">x</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h)</span> <span class="pre">=</span> <span class="pre">(m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k)</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h</span></code>，其中<code class="docutils literal notranslate"><span class="pre">m</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">a</span></code>,<code class="docutils literal notranslate"><span class="pre">k</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">b</span></code>,<code class="docutils literal notranslate"><span class="pre">h</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">c</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>当 m = Nothing 时：
+
+左边 = m &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= Nothing &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= Nothing 
+= Nothing &gt;&gt;= h
+= (Nothing &gt;&gt;= k) &gt;&gt;= h 
+= (m &gt;&gt;= k) &gt;&gt;= h
+= 右边
+
+当 m = Just a 时：
+
+左边 = m &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= Just a &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= k a &gt;&gt;= h
+= (Just a &gt;&gt;= k) &gt;&gt;= h
+= (m &gt;&gt;= k) &gt;&gt;= h
+= 右边
+</pre></div>
+</div>
+<p>综上，<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>满足成为monad的条件。</p>
+<p>最后，我们给出一个示例：假设我们拥有若干字符串，我们首先需要将其合并后，并计算其中非字母字符的数量。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">Data.Char</span><span class="p">(</span><span class="n">isAlpha</span><span class="p">)</span>
+
+<span class="nf">string1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="s">&quot;My name is &quot;</span>
+
+<span class="nf">string2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="s">&quot;L fried.&quot;</span>
+<span class="c1">-- just joking (Alfred)</span>
+<span class="nf">string3</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="s">&quot;The textbook seems a mess 2 readers !&quot;</span>
+
+<span class="nf">maybeMonadDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span>
+<span class="nf">maybeMonadDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="n">string1</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span>
+<span class="w">        </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">string2</span><span class="w"> </span><span class="o">&gt;&gt;=</span>
+<span class="w">            </span><span class="nf">\</span><span class="n">y</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span>
+<span class="w">                </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">string3</span><span class="w"> </span><span class="o">&gt;&gt;=</span>
+<span class="w">                    </span><span class="nf">\</span><span class="n">z</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span>
+<span class="w">                        </span><span class="kt">Just</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>尝试在GHCi中运行查看结果：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code<span class="s1">&#39;2.hs</span>
+<span class="s1">[1 of 1] Compiling Main             ( code&#39;</span><span class="m">2</span>.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>maybeMonadDemo
+Just<span class="w"> </span><span class="m">14</span>
+</pre></div>
+</div>
+</section>
+<section id="list-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">List</span></code> monad<a class="headerlink" href="#list-monad" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">List</span></code> monad 定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">instance</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">xs</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">concatMap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">xs</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">concatMap</span></code>函数类型为<code class="docutils literal notranslate"><span class="pre">Foldable</span> <span class="pre">t</span> <span class="pre">=&gt;</span> <span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">[b])</span> <span class="pre">-&gt;</span> <span class="pre">t</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">[b]</span></code>，当<code class="docutils literal notranslate"><span class="pre">xs</span></code>有多于一个元素时，该函数会将<code class="docutils literal notranslate"><span class="pre">f</span></code>对每个元素映射的结果进行拼接。</p>
+<p>下面我们来验证其满足单子律。</p>
+<p>对于左单位元，要证<code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">a</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k</span> <span class="pre">=</span> <span class="pre">k</span> <span class="pre">a</span></code>，其中<code class="docutils literal notranslate"><span class="pre">k</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">[b]</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>左边 = return a &gt;&gt;= k 
+= [a] &gt;&gt;= k 
+= k a = 右边
+</pre></div>
+</div>
+<p>对于右单位元，要证<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">return</span> <span class="pre">=</span> <span class="pre">m</span></code>，其中<code class="docutils literal notranslate"><span class="pre">m</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">[a]</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>当 m = [] 时
+
+左边 = m &gt;&gt;= return 
+= concatMap return m 
+= concatMap return []
+= [] = m = 右边
+
+当 m = (x:xs) 时，假设对于xs，右单位元成立，即`m1 &gt;&gt;= return = concatMap return xs = m1`成立
+
+左边 = m &gt;&gt;= return 
+= concatMap return m 
+= concatMap return (x:xs)
+= return x ++ concatMap return xs
+= [x] ++ concatMap return xs 
+= [x] ++ (m1 &gt;&gt;= return)
+= [x] ++ xs -- 根据归纳假设
+= x:xs = m = 右边
+</pre></div>
+</div>
+<p>对于结合律，要证<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">(\x</span> <span class="pre">-&gt;</span> <span class="pre">k</span> <span class="pre">x</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h)</span> <span class="pre">=</span> <span class="pre">(m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">k)</span> <span class="pre">&gt;&gt;=</span> <span class="pre">h</span></code>，其中<code class="docutils literal notranslate"><span class="pre">m</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">[a]</span></code>，<code class="docutils literal notranslate"><span class="pre">k</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">[b]</span></code>，<code class="docutils literal notranslate"><span class="pre">h</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">[c]</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>当 m = [] 时
+
+左边 = m &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= concatMap (\x -&gt; k x &gt;&gt;= h) m
+= concatMap (\x -&gt; k x &gt;&gt;= h) []
+= []
+= [] &gt;&gt;= h
+= ([] &gt;&gt;= k) &gt;&gt;= h
+= (m &gt;&gt;= k) &gt;&gt;= h = 右边
+
+当 m = (x:xs) 时，假设结合律对xs成立，即`xs &gt;&gt;= (\x -&gt; k x &gt;&gt;= h) = (m1 &gt;&gt;= k) &gt;&gt;= h`成立
+
+左边 = m &gt;&gt;= (\x -&gt; k x &gt;&gt;= h)
+= concatMap (\x -&gt; k x &gt;&gt;= h) m 
+= concatMap (\x -&gt; k x &gt;&gt;= h) (x:xs)
+= (k x &gt;&gt;= h) ++ (concatMap (\x -&gt; k x &gt;&gt;= h) xs)
+= (k x &gt;&gt;= h) ++ (xs &gt;&gt;= (\x -&gt; k x &gt;&gt;= h))
+= (k x &gt;&gt;= h) ++ ((m1 &gt;&gt;= k) &gt;&gt;= h)
+= (([x] &gt;&gt;= k) &gt;&gt;= h) ++ ((m1 &gt;&gt;= k) &gt;&gt;= h)
+= concatMap h ([x] &gt;&gt;= k) ++ concatMap h (m1 &gt;&gt;= k)
+= concatMap h (([x] &gt;&gt;= k) ++ (m1 &gt;&gt;= k)) -- 分配律
+= concatMap h ((concatMap k [x]) ++ (concatMap k xs))
+= concatMap h (concatMap k ([x] ++ xs)) -- 分配律
+= concatMap h (concatMap k (x:xs)) 
+= concatMap h (m &gt;&gt;= k)
+= (m &gt;&gt;= k) &gt;&gt;= h = 右边
+</pre></div>
+</div>
+<p>这里需要证明的一点是<code class="docutils literal notranslate"><span class="pre">concatMap</span> <span class="pre">_</span></code>和<code class="docutils literal notranslate"><span class="pre">++</span></code>是满足分配律的，即<code class="docutils literal notranslate"><span class="pre">concatMap</span> <span class="pre">f</span> <span class="pre">l1</span> <span class="pre">++</span> <span class="pre">concatMap</span> <span class="pre">f</span> <span class="pre">l2</span> <span class="pre">=</span> <span class="pre">concatMap</span> <span class="pre">f</span> <span class="pre">(l1</span> <span class="pre">++</span> <span class="pre">l2)</span></code>成立。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>当 l1 = [] 时
+
+concatMap f l1 ++ concatMap f l2 
+= concatMap f [] ++ concatMap f l2 
+= [] ++ concatMap f l2
+= concatMap f l2
+= concatMap f ([] ++ l2)
+= concatMap f (l1 ++ l2)
+
+当 l1 == (x:xs) 时，假设分配律对长度不大于xs的列表均成立
+
+concatMap f l1 ++ concatMap f l2
+= concatMap f (x:xs) ++ concatMap f l2
+= concatMap f (x:xs) ++ concatMap f l2 
+= concatMap f [x] ++ concatMap f xs ++ concatMap f l2 -- 归纳假设
+= concatMap f [x] ++ (concatMap f xs ++ conacatMap f l2) -- 结合律 (列表满足半群结构，其中二元运算为拼接操作)
+= concatMap f [x] ++ concatMap f (xs ++ l2)
+= concatMap f ([x] ++ xs ++ l2) -- 归纳假设
+= concatMap f ((x:xs) ++ l2) -- 结合律
+= concatMap f (l1 ++ l2)
+</pre></div>
+</div>
+<p>综上，列表满足成为monad条件。</p>
+</section>
+<section id="do">
+<h3>do-标记<a class="headerlink" href="#do" title="此标题的永久链接"></a></h3>
+</section>
+<section id="io-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad<a class="headerlink" href="#io-monad" title="此标题的永久链接"></a></h3>
+<p>– 更多内容见系统编程一章</p>
+</section>
+<section id="state-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">State</span></code> monad<a class="headerlink" href="#state-monad" title="此标题的永久链接"></a></h3>
+</section>
+<section id="reader-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad<a class="headerlink" href="#reader-monad" title="此标题的永久链接"></a></h3>
+</section>
+<section id="writer-monad">
+<h3><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad<a class="headerlink" href="#writer-monad" title="此标题的永久链接"></a></h3>
+<p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
+<p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p></section>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="函子专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
 
   <hr/>
 

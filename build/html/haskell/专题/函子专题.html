@@ -27,6 +27,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="Monad专题" href="Monad%E4%B8%93%E9%A2%98.html" />
     <link rel="prev" title="类型类" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html" /> 
 </head>
 
@@ -58,12 +59,19 @@
 <li class="toctree-l2"><a class="reference internal" href="../%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">函子专题</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#functor">函子类型类 <code class="docutils literal notranslate"><span class="pre">Functor</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#applicative">应用函子类型类 <code class="docutils literal notranslate"><span class="pre">Applicative</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functor">函子类型类 <code class="docutils literal notranslate"><span class="pre">Functor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">函子律</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#applicative">应用函子类型类 <code class="docutils literal notranslate"><span class="pre">Applicative</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">应用函子律</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#alternative">可选择应用函子类型类 <code class="docutils literal notranslate"><span class="pre">Alternative</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monad">单子类型类 <code class="docutils literal notranslate"><span class="pre">Monad</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
 </ul>
 </li>
 </ul>
@@ -95,7 +103,7 @@
              
   <section id="id1">
 <h1>函子专题<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
-<p>本专题主要讲解范畴论中<code class="docutils literal notranslate"><span class="pre">Functor</span></code>、<code class="docutils literal notranslate"><span class="pre">Applicative</span></code>、<code class="docutils literal notranslate"><span class="pre">Monad</span></code>三种函子类型类，但我们尽量避免涉及过多的范畴相关的内容，而是以工程的视角将其视为特殊的类型类进行讲解，对于更深入有关范畴的内容，可参考后续<a class="reference external" href="#">Haskell范畴论专题</a>。</p>
+<p>本专题主要讲解范畴论中<code class="docutils literal notranslate"><span class="pre">Functor</span></code>、<code class="docutils literal notranslate"><span class="pre">Applicative</span></code>、<code class="docutils literal notranslate"><span class="pre">Monad</span></code>三种函子对应的类型类，但我们尽量避免涉及的范畴相关的内容，而是以工程的视角将其视为特殊的类型类进行讲解，对于更深入有关范畴的内容，可参考后续<a class="reference external" href="#">Haskell范畴论专题</a>。</p>
 <section id="functor">
 <h2>函子类型类 <code class="docutils literal notranslate"><span class="pre">Functor</span></code><a class="headerlink" href="#functor" title="此标题的永久链接"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Functor</span></code>类型类定义如下：</p>
@@ -164,6 +172,44 @@ Prelude&gt;<span class="w"> </span><span class="o">(</span>fmap<span class="w"> 
 Node<span class="w"> </span><span class="s1">&#39;a&#39;</span><span class="w"> </span><span class="o">(</span>Node<span class="w"> </span><span class="s1">&#39;a&#39;</span><span class="w"> </span>Empty<span class="w"> </span>Empty<span class="o">)</span><span class="w"> </span><span class="o">(</span>Node<span class="w"> </span><span class="s1">&#39;a&#39;</span><span class="w"> </span>Empty<span class="w"> </span>Empty<span class="o">)</span>
 </pre></div>
 </div>
+<section id="id2">
+<h3>函子律<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<p>函子必须满足函子律：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fmap</span> <span class="pre">id</span> <span class="pre">=</span> <span class="pre">id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fmap</span> <span class="pre">(f</span> <span class="pre">.</span> <span class="pre">g)</span> <span class="pre">=</span> <span class="pre">fmap</span> <span class="pre">f</span> <span class="pre">.</span> <span class="pre">fmap</span> <span class="pre">g</span></code></p></li>
+</ul>
+<p>虽然我们可以为特定类型声明<code class="docutils literal notranslate"><span class="pre">Functor</span></code>实例，但这并不能保证这个类型确实是函子，因此开发者必须保证声明的实例满足函子律。</p>
+<p>以上面我们自行定义的<code class="docutils literal notranslate"><span class="pre">Tree</span></code>类型为例，我们来证明其保证了函子律：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- fmap id = id </span>
+
+<span class="nf">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span>
+
+<span class="nf">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 归纳假设</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="c1">-- fmap (f . g) = fmap f . fmap g</span>
+
+<span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="kt">Empty</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="kt">Empty</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="kt">Empty</span>
+
+<span class="nf">fmap</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">((</span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">a</span><span class="p">))</span><span class="w"> </span><span class="p">((</span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">((</span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 归纳假设</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">rchild</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">fmap</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">fmap</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">lchld</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：上述证明过程中使用到了结构归纳法，对此概念陌生的读者可以自行搜索了解</p>
+</div></blockquote>
+</section>
 </section>
 <section id="applicative">
 <h2>应用函子类型类 <code class="docutils literal notranslate"><span class="pre">Applicative</span></code><a class="headerlink" href="#applicative" title="此标题的永久链接"></a></h2>
@@ -260,6 +306,48 @@ Just<span class="w"> </span><span class="m">3</span>
 <span class="w">  </span><span class="kt">Node</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">flchild</span><span class="w"> </span><span class="n">frchild</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">flchild</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">frchild</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span>
 </pre></div>
 </div>
+<blockquote>
+<div><p>提示： <code class="docutils literal notranslate"><span class="pre">pure</span></code>的定义中出现了一个循环定义的树，这似乎很奇怪，这是因为需要其需要满足应用函子律（如下）</p>
+</div></blockquote>
+<section id="id3">
+<h3>应用函子律<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>类似的，应用函子必须满足应用函子律，这些条件必须由开发者自行保证。</p>
+<ul class="simple">
+<li><p>同一律： <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">id</span> <span class="pre">&lt;*&gt;</span> <span class="pre">v</span> <span class="pre">=</span> <span class="pre">v</span></code></p></li>
+<li><p>同态律： <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">f</span> <span class="pre">&lt;*&gt;</span> <span class="pre">pure</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">pure</span> <span class="pre">(f</span> <span class="pre">x)</span></code></p></li>
+<li><p>互换律： <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">&lt;*&gt;</span> <span class="pre">pure</span> <span class="pre">y</span> <span class="pre">=</span> <span class="pre">pure</span> <span class="pre">($</span> <span class="pre">y)</span> <span class="pre">&lt;*&gt;</span> <span class="pre">u</span></code></p></li>
+<li><p>组合律： <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">(.)</span> <span class="pre">&lt;*&gt;</span> <span class="pre">u</span> <span class="pre">&lt;*&gt;</span> <span class="pre">v</span> <span class="pre">&lt;*&gt;</span> <span class="pre">w</span> <span class="pre">=</span> <span class="pre">u</span> <span class="pre">&lt;*&gt;</span> <span class="pre">(v</span> <span class="pre">&lt;*&gt;</span> <span class="pre">w)</span></code></p></li>
+</ul>
+<p>下面证明二叉树满足应用函子律：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- pure id &lt;*&gt; v = v </span>
+
+<span class="nf">pure</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span>
+
+<span class="nf">pure</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="n">tree</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span><span class="c1">-- tree = Node id tree tree = pure id</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">lchild</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">rchild</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">lchild</span><span class="w"> </span><span class="n">rchild</span>
+
+<span class="c1">-- pure f &lt;*&gt; pure x = pure (f x)</span>
+<span class="nf">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span>
+<span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">treef</span><span class="w"> </span><span class="n">treef</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">treex</span><span class="w"> </span><span class="n">treex</span><span class="p">)</span><span class="w"> </span>
+<span class="w">  </span><span class="c1">-- treef = Node f treef treef = pure f</span>
+<span class="w">  </span><span class="c1">-- treex = Node x treex treex = pure x</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">treef</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">treex</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">treef</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">treex</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">...</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">...</span><span class="p">)</span>
+
+<span class="nf">pure</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">treefx</span><span class="w"> </span><span class="n">treefx</span><span class="w"> </span>
+<span class="w">  </span><span class="c1">-- treefx = Node (f x) treefx treefx = pure (f x)</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">))</span>
+<span class="ow">=</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">...</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="alternative">
 <h2>可选择应用函子类型类 <code class="docutils literal notranslate"><span class="pre">Alternative</span></code><a class="headerlink" href="#alternative" title="此标题的永久链接"></a></h2>
@@ -322,6 +410,7 @@ Prelude&gt;<span class="w"> </span><span class="o">[(</span>+1<span class="o">)<
 <span class="nf">ma</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mb</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">ma</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">const</span><span class="w"> </span><span class="n">mb</span>
 </pre></div>
 </div>
+<hr class="docutils" />
 <p id="ref1">[1] Typeclassopedia. (2022, December 30). HaskellWiki, . Retrieved 07:43, April 19, 2024 from https://wiki.haskell.org/index.php?title=Typeclassopedia&oldid=65490.</p></section>
 </section>
 
@@ -330,6 +419,7 @@ Prelude&gt;<span class="w"> </span><span class="o">[(</span>+1<span class="o">)<
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html" class="btn btn-neutral float-left" title="类型类" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="Monad%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-right" title="Monad专题" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

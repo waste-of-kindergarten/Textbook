@@ -1,6 +1,6 @@
 # 函子专题
 
-本专题主要讲解范畴论中`Functor`、`Applicative`、`Monad`三种函子类型类，但我们尽量避免涉及过多的范畴相关的内容，而是以工程的视角将其视为特殊的类型类进行讲解，对于更深入有关范畴的内容，可参考后续[Haskell范畴论专题](#)。
+本专题主要讲解范畴论中`Functor`、`Applicative`、`Monad`三种函子对应的类型类，但我们尽量避免涉及的范畴相关的内容，而是以工程的视角将其视为特殊的类型类进行讲解，对于更深入有关范畴的内容，可参考后续[Haskell范畴论专题](#)。
 
 ## 函子类型类 `Functor` 
 
@@ -86,6 +86,46 @@ Node 'a' (Node 'a' Empty Empty) (Node 'a' Empty Empty)
 Prelude> (fmap . const) 'a' tree
 Node 'a' (Node 'a' Empty Empty) (Node 'a' Empty Empty)
 ```
+
+### 函子律
+
+函子必须满足函子律：
+
+- `fmap id = id`
+
+- `fmap (f . g) = fmap f . fmap g`
+
+虽然我们可以为特定类型声明`Functor`实例，但这并不能保证这个类型确实是函子，因此开发者必须保证声明的实例满足函子律。
+
+以上面我们自行定义的`Tree`类型为例，我们来证明其保证了函子律：
+
+```hs
+-- fmap id = id 
+
+fmap id Empty = Empty = id Empty 
+
+fmap id (Node a lchild rchild) 
+= Node (id a) (fmap id lchild) (fmap id rchild)
+= Node a (fmap id lchild) (fmap id rchild) -- 归纳假设
+= Node a lchild rchild
+= id (Node a lchild rchild)
+-- fmap (f . g) = fmap f . fmap g
+
+fmap (f . g) Empty 
+= Empty 
+= fmap f Empty
+= fmap f (fmap g Empty)
+= (fmap f . fmap g) Empty
+
+fmap (f . g) (Node a lchild rchild)
+= Node ((f . g) a) (fmap (f . g) lchild) (fmap (f . g) rchild)
+= Node (f (g a)) ((fmap f . fmap g) lchild) ((fmap f . fmap g) rchild) -- 归纳假设
+= fmap f (Node (g a) (fmap g lchild) (fmap g rchild))
+= fmap f (fmap g (Node a lchild rchild))
+= (fmap f . fmap g) (Node a lchld rchild)
+```
+
+> 提示：上述证明过程中使用到了结构归纳法，对此概念陌生的读者可以自行搜索了解
 
 ## 应用函子类型类 `Applicative`
 
@@ -197,6 +237,49 @@ instance Applicative Tree where
   Node f flchild frchild <*> Node x lchild rchild = Node (f x) (flchild <*> lchild) (frchild <*> rchild) 
 ```
 
+> 提示： `pure`的定义中出现了一个循环定义的树，这似乎很奇怪，这是因为需要其需要满足应用函子律（如下）
+
+### 应用函子律
+
+类似的，应用函子必须满足应用函子律，这些条件必须由开发者自行保证。
+
+- 同一律： `pure id <*> v = v`
+- 同态律： `pure f <*> pure x = pure (f x)`
+- 互换律： `u <*> pure y = pure ($ y) <*> u`
+- 组合律： `pure (.) <*> u <*> v <*> w = u <*> (v <*> w)`
+
+下面证明二叉树满足应用函子律：
+
+```hs
+-- pure id <*> v = v 
+
+pure id <*> Empty 
+= Empty 
+
+pure id <*> (Node x lchild rchild)
+= (Node id tree tree) <*> (Node x lchild rchild) -- tree = Node id tree tree = pure id
+= Node (id x) (tree <*> lchild) (tree <*> rchild)
+= Node x (tree <*> lchild) (tree <*> rchild) 
+= Node x (pure id <*> lchild) (pure id <*> rchild)
+= Node x lchild rchild
+
+-- pure f <*> pure x = pure (f x)
+pure f <*> pure x
+= (Node f treef treef) <*> (Node x treex treex) 
+  -- treef = Node f treef treef = pure f
+  -- treex = Node x treex treex = pure x
+= Node (f x) (treef <*> treex) (treef <*> treex)
+= Node (f x) (pure f <*> pure x) (pure f <*> pure x)
+= Node (f x) (Node (f x) ...) (Node (f x) ...)
+
+pure (f x) 
+= Node (f x) treefx treefx 
+  -- treefx = Node (f x) treefx treefx = pure (f x)
+= Node (f x) (pure (f x)) (pure (f x))
+= Node (f x) (Node (f x) ...) (Node (f x) ...)
+```
+
+
 ## 可选择应用函子类型类 `Alternative`
 
 `Applicative`类型类在应用函子的基础上添加了一些特性。
@@ -266,5 +349,6 @@ return = pure
 ma >> mb = ma >>= const mb
 ```
 
+------------------------------------------
 
 <p id="ref1">[1] Typeclassopedia. (2022, December 30). HaskellWiki, . Retrieved 07:43, April 19, 2024 from https://wiki.haskell.org/index.php?title=Typeclassopedia&oldid=65490.</p>
