@@ -248,6 +248,8 @@ instance Applicative Tree where
 - 互换律： `u <*> pure y = pure ($ y) <*> u`
 - 组合律： `pure (.) <*> u <*> v <*> w = u <*> (v <*> w)`
 
+> 提示：在互换律中首次出现运算符`$`，该运算符类型为`(a -> b) -> a -> b`,结合性与优先级为`infixr 0 $`。该运算符是一个语法糖，可以用于去除过多括号，如`f (...)`可以写为`f $ ...`
+
 下面证明二叉树满足应用函子律：
 
 ```hs
@@ -277,38 +279,49 @@ pure (f x)
   -- treefx = Node (f x) treefx treefx = pure (f x)
 = Node (f x) (pure (f x)) (pure (f x))
 = Node (f x) (Node (f x) ...) (Node (f x) ...)
+
+-- u <*> pure y = pure ($ y) <*> u
+当 u = Empty 时：
+
+u <*> pure y 
+= Empty <*> pure y
+= Empty 
+= pure ($ y) <*> Empty = pure ($ y) <*> u
+
+当 u = Node f lchild rchild 时,
+
+u <*> pure y 
+= Node f lchild rchild <*> Node y tree tree 
+  -- tree = Node y tree tree = pure y 
+= Node (f y) (lchild <*> tree) (rchild <*> tree)
+= Node (f y) (lchild <*> pure y) (rchild <*> pure y)
+= Node (($ y) f) (pure ($ y) <*> lchild) (pure ($ y) <*> rchild) -- 归纳假设
+= pure ($ y) <*> Node f lchild rchild 
+= pure ($ y) <*> u
+
+-- pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
+当 u, v, w 任一为 Empty 时，等式均成立
+
+
+
+令 u = Node f lchild rchild , 
+v = Node g lchild' rchild', 
+w = Node x lchild'' rchild''
+
+pure (.) <*> u <*> v <*> w
+= Node (.) tree tree <*> Node f lchild rchild <*> v <*> w
+  -- tree = Node (.) tree tree = pure (.)
+= Node (f .) (tree <*> lchild) (tree <*> rchild) <*> v <*> w
+= Node (f .) (tree <*> lchild) (tree <*> rchild) <*> Node g lchild' rchild' <*> Node x lchild'' rchild''
+= Node (f . g) (tree <*> lchild <*> lchild') (tree <*> rchild <*> rchild') <*> Node x lchild'' rchild''
+= Node ((f . g) x) (tree <*> lchild <*> lchild' <*> lchild'') (tree <*> rchild <*> rchild' <*> rchild'')
+= Node (f (g x)) (pure (.) <*> lchild <*> lchild' <*> lchild'')
+(pure (.) <*> rchild <*> rchild' <*> rchild'')
+= Node (f (g x)) (lchild <*> (lchild' <*> lchild'')) (rchild <*> (rchild' <*> rchild'')) -- 归纳假设
+= Node f lchild rchild <*> Node (g x) (lchild' <*> lchild'') (rchild' <*> rchild'')
+= Node f lchild rchild <*> (Node g lchild' rchild' <*> Node x lchild'' rchild'')
+= u <*> (v <*> w)
 ```
-
-
-## 可选择应用函子类型类 `Alternative`
-
-`Applicative`类型类在应用函子的基础上添加了一些特性。
-
-```hs
-class Applicative f => Alternative f where 
-  empty :: f a 
-  (<|>) :: f a -> f a -> f a
-  some :: f a -> f [a] 
-  many :: f a -> f [a]
-  {-# MINIMAL empty, (<|>) #-}
-```
-
-其中`empty`函数用于表示某种“错误”，例如`Maybe a`类型中的`Nothing`或者`[a]`类型中的`[]`。`<|>`表示在若干“选项”中的选择。
-
-```bash
-Prelude> empty :: Maybe a 
-Nothing 
-Prelude> empty :: [a] 
-[]
-Prelude> [1] <|> [1,2,3,4] <|> []
-[1,1,2,3]
-Prelude> [1] <|> [] <|> [1,2,3,4]
-[1,1,2,3,4]
-Prelude> Nothing <|> Just 1 <|> Just 2
-Just 1
-```
-
-> 提示： `some`和`many`函数的使用方法和使用场景比较复杂，感兴趣的读者可以阅读相关内容请参阅[[1]](#ref1)
 
 ## 单子类型类 `Monad`
 

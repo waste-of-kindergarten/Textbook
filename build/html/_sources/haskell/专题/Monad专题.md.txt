@@ -35,12 +35,56 @@ class Applicative m => Monad m where
 
 下面依次介绍几个Haskell内置的 monad，并验证其确实满足单子律。
 
+### `Identity` monad
+
+`Identity` monad 作为最简单的具有单子性质的类型，它仅仅定义了一个容器，以容纳某个类型的值。其定义如下：
+
+```hs
+newtype Identity a = Idnetity {runIdentity :: a}
+
+instance Monad Identity where 
+    Identity m >>= k = k m 
+```
+
+> 提示：`Identity`可从`Control.Monad.Identity`导入，或者从定义处`Data.Functor.Identity`导入
+
+下面证明其满足单子律。
+
+对于左单位元，有：
+
+```hs
+左边 = return a >>= k 
+= Identity a >>= k 
+= k a = 右边
+```
+
+对于右单位元，令`m = Identity a`：
+
+```hs
+左边 = m >>= return 
+= Identity a >>= return 
+= return a
+= Identity a = m = 右边
+```
+
+对于结合律，仍然令`m = Identity a`:
+
+```hs
+左边 = m >>= (\x -> k x >>= h)
+= Identity a >>= (\x -> k x >>= h)
+= k a >>= h
+= (Identity a >>= k) >>= h
+= (m >>= k) >>= h = 右边
+```
+
+因此，`Identity`满足单子律。
+
 ### `Maybe` monad
 
 `Maybe` monad定义如下：
 
 ```hs
-instance Monad maybe where 
+instance Monad Maybe where 
     Nothing >>= _ = Nothing
     (Just a) >>= f = f a 
 ```
@@ -117,6 +161,16 @@ maybeMonadDemo =
                 (y ++) <$> string3 >>=
                     \z -> 
                         Just ( foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> z))
+
+-- 等效于
+maybeMonadDemo' :: Maybe Int
+maybeMonadDemo' =
+    string1 >>= \x ->
+        string2 >>= (
+            \y ->
+                string3 >>= (
+                    \z ->
+                        Just ( foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> z))) . (y ++)) . (x ++)
 ```
 
 尝试在GHCi中运行查看结果：
@@ -232,11 +286,141 @@ concatMap f l1 ++ concatMap f l2
 
 ### do-标记
 
+do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算[3](#ref3)。
+
+do-标记使用`do`关键字开头，并允许在过程中使用`<-`符号将monad“赋值”（或使用`let ... = ...`进行一般的赋值），最终以一个单子表达式结束。
+
+回顾前面的`Maybe` monad中的示例，`maybeMonadDemo`和等效的`maybeMonadDemo'`看起来都比较抽象而难以理解，使用do-标记可以使其更简洁和方便。
+
+```hs
+-- code'2.hs
+
+maybeMonadDoDemo :: Maybe Int 
+maybeMonadDoDemo = 
+    do 
+        x <- string1
+        y <- string2
+        z <- string3
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+```
+
+实际上，do-标记只是一种语法糖，在使用`maybeMonadDoDemo`与`maybeMonadDemo`和`maybeMonadDemo'`是完全等效的。
+
+> 注意：应当区分Haskell中的`return`函数与其在其他语言中的区别，在Haskell中`return`是一个函数，其本质上是将值封装为monad;而一般语言中的`return`则直接用于表示函数的返回值
+
+一般地，对于do-标记中的每一行，都有如下大致的转换过程[3](#ref3)：
+
+```hs
+x <- monad 表达式
+...
+
+-- 转换后
+monad 表达式 >>= (\x -> ...)
+```
+
+```hs
+monad 表达式
+...
+
+-- 转换后
+monad 表达式 >>= (\_ -> ...)
+```
+
+```hs
+let x = 表达式
+...
+
+-- 转换后
+let x = 表达式 in ...
+```
+
 ### `IO` monad
 
--- 更多内容见系统编程一章
+`IO` monad 用于控制程序的输入输出，对于Haskell这种纯函数式语言来说，IO操作与其 ***引用透明(referntial transparency)*** 和 ***无副作用(side-effect free)*** 的特性相违背。通过使用`IO` monad 可以将有副作用的IO操作限制在`IO` monad中，从而保证了Haskell的纯度不会被破坏。
+
+> 补充：对于纯函数而言，一旦参数确定，那么结果就唯一确定，因此在任何时候对于纯函数的调用都可以被替换为计算结果，这种特性就是引用透明。
+
+> 提示：本节主要对`IO` monad 作为单子的用法进行一些简要的介绍，侧重点在 monad 而非对IO操作的处理，更多内容读者可以移步 [IO 专题](#)
+
+在此之前，我们已经了解了`putStrLn`函数用于输出字符串，下面我们将结合`getLine`这一输入函数讲解`IO` monad的使用方法。
+
+`getLine`函数的类型为`IO String`，即进行输入IO操作后返回一个`String`类型的值；对比之下`putStrLn`函数类型为`String -> IO ()`，接受字符串后进行输出操作，但不返回任何值。
+
+<center>
+
+![](/_static/Monad_1.png)
+
+</center>
+
+> 注意：这里的“返回”指`IO` monad中封装的类型或者说传递给其他monad的数据的类型。因为对于`a >>= b`这种表达式，`a`计算后的值会传递给`b`，这有点类似“返回”这一行为；另外，`IO ()`并非不传递任何值，`()`类型本身拥有唯一的值`()`，因此当我们尝试对`IO ()`进行传值时，我们会得到一个`()`。
+
+一个最简单的应用场景就是先从键盘获取输入后，将输入值进行输出。
+
+```bash
+Prelude> getLine >>= putStrLn 
+hello
+hello
+Prelude> :{
+Prelude| do
+Prelude|   input <- getLine 
+Prelude|   putStrLn input
+Prelude| :}
+hello
+hello
+```
+
+整个过程示意图如下：
+
+<center>
+
+![](/_static/Monad_2.png)
+
+</center>
+
+`getLine`先通过键盘读取一行字符串，并返回一个`String`类型，这个返回的数据被传入`putStrLn`函数作为参数，之后`putStrLn`将这个字符串输出[4](#ref4)。
 
 ### `State` monad
+
+在纯函数式语言中，我们无法进行有状态的计算，一种常见的模拟有状态计算的方法是使用`State` monad，将一个状态参数“贯穿”一系列函数[3](#ref3)。
+
+`State` monad定义如下：
+
+```hs
+-- code'2.hs
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE TupleSections #-}
+newtype State s a = State {runState :: s -> (a, s)} deriving (Functor)
+
+instance Applicative (State s) where
+    pure x = State (x,)
+    State f <*> State x = State $ \s -> (fst (f s) (fst (x s)),snd (x s))
+
+instance Monad (State s) where 
+    State x >>= f = State $ \s -> let (v,s') = x s in runState (f v) s'
+```
+
+> 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[3](#ref4)，读者可以自行参考。
+
+我们可以为`State`单子提供一个标准而简单的接口--`MonadState`类型类（可以在库中找到），其定义如下：
+
+```hs
+-- code'2.hs
+
+class MonadState s m | m -> s where 
+    get :: m s
+    get = state (\s -> (s,s)) 
+    put :: s -> m ()
+    put s = state (\_ -> ((),s))
+    state :: (s -> (a, s)) -> m a
+    state f = do
+        s <- get 
+        let (a, s') = f s 
+        put s'
+        return a
+    {-# MINIMAL state | get, put #-}
+```
+
+
 
 ### `Reader` monad
 
@@ -244,3 +428,5 @@ concatMap f l1 ++ concatMap f l2
 
 <p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>
+<p id="ref3">[3] All About Monads. (2021, September 19). HaskellWiki, . Retrieved 03:13, April 22, 2024 from https://wiki.haskell.org/index.php?title=All_About_Monads&oldid=64741.</p>
+<p id="ref4">[4] State Monad. (2018, December 21). HaskellWiki, . Retrieved 06:21, April 22, 2024 from https://wiki.haskell.org/index.php?title=State_Monad&oldid=62675.</p>

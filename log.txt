@@ -30,323 +30,17 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [100%] _static/Monad_1.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded.
+build succeeded, 11 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 3 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 3 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/_static/Monad_2.png
 [sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
 Running Sphinx v5.3.0
 loading translations [zh_CN]... done
@@ -380,67 +74,130 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 11 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 3 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/_static/Monad_2.png
 [sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
 Running Sphinx v5.3.0
 loading translations [zh_CN]... done
 loading pickled environment... done
 building [mo]: targets for 0 po files that are out of date
 building [html]: targets for 0 source files that are out of date
-updating environment: 0 added, 0 changed, 0 removed
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
 looking for now-outdated files... none found
-no targets are out of date.
-build succeeded.
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 11 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 11 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/IO 专题.md
 [sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
 Running Sphinx v5.3.0
 loading translations [zh_CN]... done
 loading pickled environment... done
 building [mo]: targets for 0 po files that are out of date
 building [html]: targets for 0 source files that are out of date
-updating environment: 0 added, 0 changed, 0 removed
+updating environment: 1 added, 0 changed, 0 removed
+reading sources... [100%] haskell/专题/IO 专题
+
 looking for now-outdated files... none found
-no targets are out of date.
-build succeeded.
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 50%] haskell/专题/IO 专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 1 warning.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/IO 专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/IO 专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 50%] haskell/专题/IO 专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 1 warning.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -464,11 +221,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 12 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -492,11 +252,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 12 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -520,25 +283,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 0 source files that are out of date
-updating environment: 0 added, 0 changed, 0 removed
-looking for now-outdated files... none found
-no targets are out of date.
-build succeeded.
+build succeeded, 12 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -562,11 +314,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -590,11 +345,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -618,11 +376,169 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] haskell/专题/Monad专题
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 33%] haskell/index
+writing output... [ 66%] haskell/专题/Monad专题
+writing output... [100%] index
+
+generating indices... genindex done
+writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
+copying static files... done
+copying extra files... done
+dumping search index in Chinese (code: zh)... done
+dumping object inventory... done
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -674,11 +590,28 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -702,11 +635,70 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -730,11 +722,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 3 warnings.
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -758,11 +753,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 6 warnings.
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -786,11 +784,28 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 6 warnings.
+build succeeded, 15 warnings.
+
+The HTML pages are in build/html.
+[sphinx-autobuild] Serving on http://0.0.0.0:8000
+[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/resource/code'2.hs
+[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
+Running Sphinx v5.3.0
+loading translations [zh_CN]... done
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking for now-outdated files... none found
+no targets are out of date.
+build succeeded.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
@@ -814,571 +829,14 @@ writing output... [100%] index
 
 generating indices... genindex done
 writing additional pages... search done
+copying images... [ 50%] _static/Monad_1.png
+copying images... [100%] _static/Monad_2.png
+
 copying static files... done
 copying extra files... done
 dumping search index in Chinese (code: zh)... done
 dumping object inventory... done
-build succeeded, 6 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 6 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/Monad专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/Monad专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/Monad专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 7 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
-
-The HTML pages are in build/html.
-[sphinx-autobuild] Serving on http://0.0.0.0:8000
-[sphinx-autobuild] Detected change: /home/user/project/Sphinx/Textbook/source/haskell/专题/函子专题.md
-[sphinx-autobuild] > sphinx-build /home/user/project/Sphinx/Textbook/source /home/user/project/Sphinx/Textbook/build/html
-Running Sphinx v5.3.0
-loading translations [zh_CN]... done
-loading pickled environment... done
-building [mo]: targets for 0 po files that are out of date
-building [html]: targets for 1 source files that are out of date
-updating environment: 0 added, 1 changed, 0 removed
-reading sources... [100%] haskell/专题/函子专题
-
-looking for now-outdated files... none found
-pickling environment... done
-checking consistency... done
-preparing documents... done
-writing output... [ 33%] haskell/index
-writing output... [ 66%] haskell/专题/函子专题
-writing output... [100%] index
-
-generating indices... genindex done
-writing additional pages... search done
-copying static files... done
-copying extra files... done
-dumping search index in Chinese (code: zh)... done
-dumping object inventory... done
-build succeeded, 2 warnings.
+build succeeded, 15 warnings.
 
 The HTML pages are in build/html.
 [sphinx-autobuild] Serving on http://0.0.0.0:8000
