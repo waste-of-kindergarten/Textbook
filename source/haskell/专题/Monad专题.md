@@ -284,6 +284,10 @@ concatMap f l1 ++ concatMap f l2
 
 综上，列表满足成为monad条件。
 
+## 更多 monad
+
+接下来我们了解更多的monad，我们将侧重点放在这些monad的功能和使用上。
+
 ### do-标记
 
 do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算[3](#ref3)。
@@ -302,6 +306,15 @@ maybeMonadDoDemo =
         y <- string2
         z <- string3
         return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+-- 等效于
+maybeMonadDoDemo' :: Maybe Int 
+maybeMonadDoDemo' = 
+    do {    x <- string1;
+            y <- string2;
+            z <- string3;
+            return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+    }
 ```
 
 实际上，do-标记只是一种语法糖，在使用`maybeMonadDoDemo`与`maybeMonadDemo`和`maybeMonadDemo'`是完全等效的。
@@ -401,7 +414,20 @@ instance Monad (State s) where
 
 > 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[3](#ref4)，读者可以自行参考。
 
-我们可以为`State`单子提供一个标准而简单的接口--`MonadState`类型类（可以在库中找到），其定义如下：
+
+我们有`evalState`和`execState`分别用于获取最终结果和最终状态（可以在库中找到，下同）,定义如下：
+
+```hs
+-- code'2.hs
+
+evalState :: State s a -> s -> a 
+evalState act = fst . runState act 
+
+execState :: State s a -> s -> s 
+execState act = snd . runState act
+```
+
+我们还可以为`State`单子提供一个标准而简单的接口--`MonadState`类型类，其定义如下：
 
 ```hs
 -- code'2.hs
@@ -426,18 +452,44 @@ instance MonadState s (State s) where
     put s = State $ \_ -> ((),s)
 ```
 
-另外还有`evalState`和`execState`分别用于获取最终结果和最终状态,定义如下：
+其中`get`函数...，`put`函数，`state`函数。
+
+下面我们尝试应用`State` monad实现一个栈结构，一个栈结构需要压入栈(push)、弹出栈(pop)以及查看栈顶(peek)三种操作。
+
+首先实现栈数据结构，我们使用列表进行存储。
 
 ```hs
 -- code'2.hs
 
-evalState :: State s a -> s -> a 
-evalState act = fst . runState act 
-
-execState :: State s a -> s -> s 
-execState act = snd . runState act
+type Stack = [Int]
 ```
 
+对于入栈，应当接受一个`Int`参数，并改变栈的状态，如下：
+
+```hs
+-- code'2.hs
+
+push :: Int -> State Stack ()
+push x = state $ \xs -> ((),x : xs)
+```
+
+对于出栈，应当改变栈的状态，将栈顶元素弹出并作为最终结果，如下：
+
+```hs
+-- code'2.hs
+
+pop :: State Stack Int 
+pop = state $ \(x:xs) -> (x, xs)
+```
+
+最后，观察函数不改变状态，但将栈顶元素作为最终结果，如下：
+
+```hs
+-- code'2.hs
+
+peek :: State Stack Int 
+peek = state $ \(x:xs) -> (x, x:xs)
+```
 
 
 ### `Reader` monad

@@ -35,6 +35,14 @@ maybeMonadDoDemo =
         z <- string3
         return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
 
+-- 等效于
+maybeMonadDoDemo' :: Maybe Int 
+maybeMonadDoDemo' = 
+    do {    x <- string1;
+            y <- string2;
+            z <- string3;
+            return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+    }
 newtype State s a = State {runState :: s -> (a, s)} deriving (Functor)
 
 instance Applicative (State s) where
@@ -55,12 +63,19 @@ class Monad m => MonadState s m | m -> s where
         let (a, s') = f s 
         put s'
         return a
-    state' :: (s -> (a,s)) -> m a
-    state' f = get >>= (\s -> let (a,s') = f s in 
-        put s' >>= \_ -> return a)
     {-# MINIMAL state | get, put #-}
 
-instance Num s => MonadState s (State s) where 
+instance MonadState s (State s) where 
     get = State $ \s -> (s,s)
-    put s = State $ \_ -> ((),s + 1)
+    put s = State $ \_ -> ((),s)
 
+type Stack = [Int]
+
+push :: Int -> State Stack ()
+push x = state $ \xs -> ((),x : xs)
+
+pop :: State Stack Int 
+pop = state $ \(x:xs) -> (x, xs)
+
+peek :: State Stack Int 
+peek = state $ \(x:xs) -> (x, x:xs)
