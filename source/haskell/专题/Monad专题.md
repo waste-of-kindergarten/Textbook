@@ -290,7 +290,7 @@ concatMap f l1 ++ concatMap f l2
 
 ### do-标记
 
-do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算[3](#ref3)。
+do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算[[3]](#ref3)。
 
 do-标记使用`do`关键字开头，并允许在过程中使用`<-`符号将monad“赋值”（或使用`let ... = ...`进行一般的赋值），最终以一个单子表达式结束。
 
@@ -321,7 +321,7 @@ maybeMonadDoDemo' =
 
 > 注意：应当区分Haskell中的`return`函数与其在其他语言中的区别，在Haskell中`return`是一个函数，其本质上是将值封装为monad;而一般语言中的`return`则直接用于表示函数的返回值
 
-一般地，对于do-标记中的每一行，都有如下大致的转换过程[3](#ref3)：
+一般地，对于do-标记中的每一行，都有如下大致的转换过程[[3]](#ref3)：
 
 ```hs
 x <- monad 表达式
@@ -390,11 +390,11 @@ hello
 
 </center>
 
-`getLine`先通过键盘读取一行字符串，并返回一个`String`类型，这个返回的数据被传入`putStrLn`函数作为参数，之后`putStrLn`将这个字符串输出[4](#ref4)。
+`getLine`先通过键盘读取一行字符串，并返回一个`String`类型，这个返回的数据被传入`putStrLn`函数作为参数，之后`putStrLn`将这个字符串输出[[4]](#ref4)。
 
 ### `State` monad
 
-在纯函数式语言中，我们无法进行有状态的计算，一种常见的模拟有状态计算的方法是使用`State` monad，将一个状态参数“贯穿”一系列函数[3](#ref3)。
+在纯函数式语言中，我们无法进行有状态的计算，一种常见的模拟有状态计算的方法是使用`State` monad，将一个状态参数“贯穿”一系列函数[[3]](#ref3)。
 
 `State` monad定义如下：
 
@@ -412,7 +412,7 @@ instance Monad (State s) where
     State x >>= f = State $ \s -> let (v,s') = x s in runState (f v) s'
 ```
 
-> 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[3](#ref4)，读者可以自行参考。这里使用简化版本并不影响读者对该monad的理解和使用。
+> 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[[3]](#ref4)，读者可以自行参考。这里使用简化版本并不影响读者对该monad的理解和使用。
 
 
 我们有`evalState`和`execState`分别用于获取最终结果和最终状态（可以在库中找到，下同）,定义如下：
