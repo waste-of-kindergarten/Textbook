@@ -14,7 +14,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 import Data.Dynamic
-import Data.Default
+
 
 
 -- 圆形直径

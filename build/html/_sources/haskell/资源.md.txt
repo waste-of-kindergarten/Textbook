@@ -1,0 +1,15 @@
+# 资源
+
+<a href="/_static/code/code1.hs" download>数据类型与函数</a>
+
+<a href="/_static/code/code2.hs" download>表达式</a>
+
+<a href="/_static/code/code3.hs" download>递归与高阶函数</a>
+
+<a href="/_static/code/code4.hs" download>类型类</a>
+
+<a href="/_static/code/code'1.hs">函子专题</a>
+
+<a href="/_static/code/code'2.hs">Monad专题</a>
+
+<a href="/_static/code/code'3.hs">IO专题</a>

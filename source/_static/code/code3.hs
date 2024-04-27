@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+
 length' :: [a] -> Int 
 length' [] = 0
 length' (x:xs) = 1 + length' xs
@@ -30,6 +32,7 @@ factorial' n = if n == 0 then 1 else helper n 1
     where 
         helper 1 m = m 
         helper n !m = helper (n - 1) (n * m)
+
           
 factorial'' :: Int -> Int
 factorial'' n = if n == 0 then 1 else helper n 1

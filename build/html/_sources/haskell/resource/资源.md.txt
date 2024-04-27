@@ -1,6 +1,6 @@
 # 资源
 
-[数据类型与函数](code1.hs)
+[数据类型与函数](/_static/code/code1.hs)
 
 [表达式](code2.hs)
 

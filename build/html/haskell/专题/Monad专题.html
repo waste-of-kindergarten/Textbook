@@ -27,6 +27,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="资源" href="../resource/%E8%B5%84%E6%BA%90.html" />
     <link rel="prev" title="函子专题" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" /> 
 </head>
 
@@ -64,6 +65,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#identity-monad"><code class="docutils literal notranslate"><span class="pre">Identity</span></code> monad</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#maybe-monad"><code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#list-monad"><code class="docutils literal notranslate"><span class="pre">List</span></code> monad</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">更多 monad</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#do">do-标记</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#io-monad"><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#state-monad"><code class="docutils literal notranslate"><span class="pre">State</span></code> monad</a></li>
@@ -73,6 +77,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../resource/%E8%B5%84%E6%BA%90.html">资源</a></li>
 </ul>
 </li>
 </ul>
@@ -107,7 +112,7 @@
 <p>在<a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html"><span class="doc">函子专题</span></a>中已经简要介绍了<code class="docutils literal notranslate"><span class="pre">Monad</span></code>类型类的定义与用法。本章将针对<code class="docutils literal notranslate"><span class="pre">Monad</span></code>展开，讲解有关<code class="docutils literal notranslate"><span class="pre">Monad</span></code>更多有关特性与用法。</p>
 <section id="id1">
 <h2><code class="docutils literal notranslate"><span class="pre">Monad</span></code>介绍<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
-<p>在Haskell中，monad经常被认为是计算的抽象描述符,本质上这些描述符可以进行组合，使用较小的表达式构建更大的表达式<a class="reference external" href="#ref1">1</a>。Monad可以作为各种数据或控制结构的标准编程接口<a class="reference external" href="#ref2">2</a>。</p>
+<p>在Haskell中，monad经常被认为是计算的抽象描述符,本质上这些描述符可以进行组合，使用较小的表达式构建更大的表达式<a class="reference external" href="#ref1">[1]</a>。Monad可以作为各种数据或控制结构的标准编程接口<a class="reference external" href="#ref2">[2]</a>。</p>
 <blockquote>
 <div><p>补充： 这里的表达式有时也被称为“动作”(actions)</p>
 </div></blockquote>
@@ -115,7 +120,7 @@
 <ul class="simple">
 <li><p>模块化： monad允许计算由更简单的计算组合而合成，并将组合策略与正在执行的实际计算分开。</p></li>
 <li><p>灵活性： monad使得其函数式程序相比等价的不适用单子书写的程序更具有适应性。monad将计算策略集中到一个位置，而无需分散在整个程序中。</p></li>
-<li><p>隔离性：monad可以用于创建命令式计算结构，这些结构与程序主体保持安全的隔离。<a class="reference external" href="#ref2">2</a></p></li>
+<li><p>隔离性：monad可以用于创建命令式计算结构，这些结构与程序主体保持安全的隔离。<a class="reference external" href="#ref2">[2]</a></p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">Monad</span></code>类型类定义如下：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
@@ -352,9 +357,13 @@ concatMap f l1 ++ concatMap f l2
 </div>
 <p>综上，列表满足成为monad条件。</p>
 </section>
+</section>
+<section id="id3">
+<h2>更多 monad<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<p>接下来我们了解更多的monad，我们将侧重点放在这些monad的功能和使用上。</p>
 <section id="do">
 <h3>do-标记<a class="headerlink" href="#do" title="此标题的永久链接"></a></h3>
-<p>do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算<a class="reference external" href="#ref3">3</a>。</p>
+<p>do-标记是用于构建单子运算的快速记法，任何单子的实例都可以使用do-标记。通过使用do-标记可以使得程序模拟带有命名变量的命令式程序进行单子计算<a class="reference external" href="#ref3">[3]</a>。</p>
 <p>do-标记使用<code class="docutils literal notranslate"><span class="pre">do</span></code>关键字开头，并允许在过程中使用<code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>符号将monad“赋值”（或使用<code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">...</span> <span class="pre">=</span> <span class="pre">...</span></code>进行一般的赋值），最终以一个单子表达式结束。</p>
 <p>回顾前面的<code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad中的示例，<code class="docutils literal notranslate"><span class="pre">maybeMonadDemo</span></code>和等效的<code class="docutils literal notranslate"><span class="pre">maybeMonadDemo'</span></code>看起来都比较抽象而难以理解，使用do-标记可以使其更简洁和方便。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
@@ -366,13 +375,22 @@ concatMap f l1 ++ concatMap f l2
 <span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string2</span>
 <span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string3</span>
 <span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+
+<span class="c1">-- 等效于</span>
+<span class="nf">maybeMonadDoDemo&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">maybeMonadDoDemo&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">do</span><span class="w"> </span><span class="p">{</span><span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string2</span><span class="p">;</span>
+<span class="w">            </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string3</span><span class="p">;</span>
+<span class="w">            </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
 </pre></div>
 </div>
 <p>实际上，do-标记只是一种语法糖，在使用<code class="docutils literal notranslate"><span class="pre">maybeMonadDoDemo</span></code>与<code class="docutils literal notranslate"><span class="pre">maybeMonadDemo</span></code>和<code class="docutils literal notranslate"><span class="pre">maybeMonadDemo'</span></code>是完全等效的。</p>
 <blockquote>
 <div><p>注意：应当区分Haskell中的<code class="docutils literal notranslate"><span class="pre">return</span></code>函数与其在其他语言中的区别，在Haskell中<code class="docutils literal notranslate"><span class="pre">return</span></code>是一个函数，其本质上是将值封装为monad;而一般语言中的<code class="docutils literal notranslate"><span class="pre">return</span></code>则直接用于表示函数的返回值</p>
 </div></blockquote>
-<p>一般地，对于do-标记中的每一行，都有如下大致的转换过程<a class="reference external" href="#ref3">3</a>：</p>
+<p>一般地，对于do-标记中的每一行，都有如下大致的转换过程<a class="reference external" href="#ref3">[3]</a>：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span>x &lt;- monad 表达式
 ...
 
@@ -425,11 +443,11 @@ hello
 </div>
 <p>整个过程示意图如下：</p>
 <center><p><img alt="../../_images/Monad_2.png" src="../../_images/Monad_2.png" /></p>
-</center><p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>先通过键盘读取一行字符串，并返回一个<code class="docutils literal notranslate"><span class="pre">String</span></code>类型，这个返回的数据被传入<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数作为参数，之后<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>将这个字符串输出<a class="reference external" href="#ref4">4</a>。</p>
+</center><p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>先通过键盘读取一行字符串，并返回一个<code class="docutils literal notranslate"><span class="pre">String</span></code>类型，这个返回的数据被传入<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数作为参数，之后<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>将这个字符串输出<a class="reference external" href="#ref4">[4]</a>。</p>
 </section>
 <section id="state-monad">
 <h3><code class="docutils literal notranslate"><span class="pre">State</span></code> monad<a class="headerlink" href="#state-monad" title="此标题的永久链接"></a></h3>
-<p>在纯函数式语言中，我们无法进行有状态的计算，一种常见的模拟有状态计算的方法是使用<code class="docutils literal notranslate"><span class="pre">State</span></code> monad，将一个状态参数“贯穿”一系列函数<a class="reference external" href="#ref3">3</a>。</p>
+<p>在纯函数式语言中，我们无法进行有状态的计算，一种常见的模拟有状态计算的方法是使用<code class="docutils literal notranslate"><span class="pre">State</span></code> monad，将一个状态参数“贯穿”一系列函数<a class="reference external" href="#ref3">[3]</a>。</p>
 <p><code class="docutils literal notranslate"><span class="pre">State</span></code> monad定义如下：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
 <span class="cm">{-# LANGUAGE DeriveFunctor #-}</span>
@@ -445,10 +463,22 @@ hello
 </pre></div>
 </div>
 <blockquote>
-<div><p>注意： 这里的<code class="docutils literal notranslate"><span class="pre">State</span></code> monad定义为简化版的定义，实际的<code class="docutils literal notranslate"><span class="pre">State</span></code>类型是<code class="docutils literal notranslate"><span class="pre">StateT</span></code>类型部分参数实例化的别名，类似地，也没有对于<code class="docutils literal notranslate"><span class="pre">State</span></code>的单子实例声明，而是针对<code class="docutils literal notranslate"><span class="pre">StateT</span></code>的实例声明。类型<code class="docutils literal notranslate"><span class="pre">StateT</span></code>位于<code class="docutils literal notranslate"><span class="pre">Control.Monad.State.Lazy</span></code>中<a class="reference external" href="#ref4">3</a>，读者可以自行参考。</p>
+<div><p>注意： 这里的<code class="docutils literal notranslate"><span class="pre">State</span></code> monad定义为简化版的定义，实际的<code class="docutils literal notranslate"><span class="pre">State</span></code>类型是<code class="docutils literal notranslate"><span class="pre">StateT</span></code>类型部分参数实例化的别名，类似地，也没有对于<code class="docutils literal notranslate"><span class="pre">State</span></code>的单子实例声明，而是针对<code class="docutils literal notranslate"><span class="pre">StateT</span></code>的实例声明。类型<code class="docutils literal notranslate"><span class="pre">StateT</span></code>位于<code class="docutils literal notranslate"><span class="pre">Control.Monad.State.Lazy</span></code>中<a class="reference external" href="#ref4">[3]</a>，读者可以自行参考。这里使用简化版本并不影响读者对该monad的理解和使用。</p>
 </div></blockquote>
-<p>我们可以为<code class="docutils literal notranslate"><span class="pre">State</span></code>单子提供一个标准而简单的接口–<code class="docutils literal notranslate"><span class="pre">MonadState</span></code>类型类（可以在库中找到），其定义如下：</p>
+<p>我们有<code class="docutils literal notranslate"><span class="pre">evalState</span></code>和<code class="docutils literal notranslate"><span class="pre">execState</span></code>分别用于获取最终结果和最终状态（可以在库中找到，下同）,定义如下：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">evalState</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="nf">evalState</span><span class="w"> </span><span class="n">act</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">fst</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">runState</span><span class="w"> </span><span class="n">act</span><span class="w"> </span>
+
+<span class="nf">execState</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span>
+<span class="nf">execState</span><span class="w"> </span><span class="n">act</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">snd</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">runState</span><span class="w"> </span><span class="n">act</span>
+</pre></div>
+</div>
+<p>我们还可以为<code class="docutils literal notranslate"><span class="pre">State</span></code>单子提供一个标准而简单的接口–<code class="docutils literal notranslate"><span class="pre">MonadState</span></code>类型类，其定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+<span class="cm">{-# LANGUAGE FunctionalDependencies #-}</span>
+<span class="cm">{-# LANGUAGE FlexibleInstances #-}</span>
 
 <span class="kr">class</span><span class="w"> </span><span class="kt">MonadState</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
 <span class="w">    </span><span class="n">get</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">s</span>
@@ -462,14 +492,153 @@ hello
 <span class="w">        </span><span class="n">put</span><span class="w"> </span><span class="n">s&#39;</span>
 <span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="n">a</span>
 <span class="w">    </span><span class="cm">{-# MINIMAL state | get, put #-}</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">MonadState</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="kt">State</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">get</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">s</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+<span class="w">    </span><span class="n">put</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="nb">()</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">get</span></code>函数检索状态并将其作为值复制一份；<code class="docutils literal notranslate"><span class="pre">put</span></code>函数只设定状态但不生成值，<code class="docutils literal notranslate"><span class="pre">state</span></code>函数则是对原来的状态和结果进行更新。</p>
+<p>下面我们尝试应用<code class="docutils literal notranslate"><span class="pre">State</span></code> monad实现一个栈结构，一个栈结构需要压入栈(push)、弹出栈(pop)以及查看栈顶(peek)三种操作。</p>
+<p>首先实现栈数据结构，我们使用列表进行存储。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="kt">Int</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>对于入栈，应当接受一个<code class="docutils literal notranslate"><span class="pre">Int</span></code>参数，并改变栈的状态，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">push</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">push</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">xs</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="nb">()</span><span class="p">,</span><span class="n">x</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>对于出栈，应当改变栈的状态，将栈顶元素弹出并作为最终结果，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">pop</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">pop</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>最后，观察函数不改变状态，但将栈顶元素作为最终结果，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">peek</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">peek</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>下面尝试测试这些栈活动，例如可以使用栈进行加法运算<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">2</span></code>:</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+<span class="nf">makestack</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">makestack</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">    </span><span class="n">push</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">push</span><span class="w"> </span><span class="mi">2</span>
+
+<span class="nf">add</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">State</span><span class="w"> </span><span class="kt">Stack</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">add</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">pop</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">pop</span>
+<span class="w">    </span><span class="kr">let</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="w">    </span><span class="n">push</span><span class="w"> </span><span class="n">c</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">makestack</span></code>将两个数字压入栈中，<code class="docutils literal notranslate"><span class="pre">add</span></code>将两个数字弹出栈，并将计算结果重新压入栈中。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>evalState<span class="w"> </span><span class="o">(</span>makestack<span class="w"> </span>&gt;&gt;<span class="w"> </span>add<span class="w"> </span>&gt;&gt;<span class="w"> </span>peek<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="m">3</span>
 </pre></div>
 </div>
 </section>
 <section id="reader-monad">
 <h3><code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad<a class="headerlink" href="#reader-monad" title="此标题的永久链接"></a></h3>
+<p>当我们需要从一个共享环境中读取信息并进行计算时，但不需要改变环境的状态时，就可以使用<code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad。<code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad可以在这种特定的场景下替代<code class="docutils literal notranslate"><span class="pre">State</span></code> monad，以便表达更清晰容易<a class="reference external" href="#ref3">[3]</a>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">Reader</span></code> monad 定义如下（同样，这也是简化后的版本）：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="p">{</span><span class="n">runReader</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="p">(</span><span class="kt">Reader</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">pure</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">    </span><span class="kt">Reader</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="n">e</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="p">(</span><span class="kt">Reader</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">Reader</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">runReader</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="n">e</span><span class="p">))</span><span class="w"> </span><span class="n">e</span>
+</pre></div>
+</div>
+<p>类似<code class="docutils literal notranslate"><span class="pre">MonadState</span></code>，我们也可以写一个<code class="docutils literal notranslate"><span class="pre">MonadReader</span></code>提供一些基础的函数。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadReader</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">ask</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">e</span><span class="w"> </span>
+<span class="w">    </span><span class="n">ask</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">reader</span><span class="w"> </span><span class="n">id</span><span class="w"> </span>
+<span class="w">    </span><span class="n">local</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="n">reader</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="n">reader</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">r</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">ask</span><span class="w"> </span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">r</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">MonadReader</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="kt">Reader</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">local</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Reader</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="nf">\</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">runReader</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">ask</span></code>函数用于读取当前环境，<code class="docutils literal notranslate"><span class="pre">local</span></code>函数进行环境的局部修改（即不会影响到全局环境）。</p>
+<p>由于<code class="docutils literal notranslate"><span class="pre">Reader</span></code>中并没有保存有关环境的信息（相比之下<code class="docutils literal notranslate"><span class="pre">State</span></code>中将<code class="docutils literal notranslate"><span class="pre">s</span></code>存储在元组中），因此<code class="docutils literal notranslate"><span class="pre">local</span></code>只是局部有效。</p>
 </section>
 <section id="writer-monad">
 <h3><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad<a class="headerlink" href="#writer-monad" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad 在计算的同时还生成输出，例如日志记录和跟踪。这些输出不是计算的主要结果，但是必要保留的信息，通过使用<code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad可以更简洁地管理输出，不会使主要地计算变得混乱<a class="reference external" href="#ref3">[3]</a>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad 的（简化后的）定义如下:</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">{</span><span class="n">runWriter</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="p">(</span><span class="kt">Writer</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">pure</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">mempty</span><span class="p">)</span>
+<span class="w">    </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">w&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">fa</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="n">w&#39;</span><span class="w"> </span><span class="p">`</span><span class="n">mappend</span><span class="p">`</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="p">(</span><span class="kt">Writer</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">let</span><span class="w"> </span><span class="p">(</span><span class="n">a&#39;</span><span class="p">,</span><span class="n">w&#39;</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">runWriter</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span>
+<span class="w">        </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">a&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="p">`</span><span class="n">mappend</span><span class="p">`</span><span class="w"> </span><span class="n">w&#39;</span><span class="p">)</span><span class="w">     </span>
+</pre></div>
+</div>
+<p>类似地，我们可以写一个<code class="docutils literal notranslate"><span class="pre">MonadWriter</span></code>类型类，提供一些基础函数。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="p">(</span><span class="kt">Monoid</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadWriter</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">pass</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="n">listen</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="n">tell</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="nb">()</span><span class="w"> </span>
+<span class="w">    </span><span class="n">tell</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">writer</span><span class="w"> </span><span class="p">(</span><span class="nb">()</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="n">writer</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="w">    </span><span class="n">writer</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">            </span><span class="n">tell</span><span class="w"> </span><span class="n">w</span><span class="w"> </span>
+<span class="w">            </span><span class="n">return</span><span class="w"> </span><span class="n">a</span><span class="w">  </span>
+<span class="w">    </span><span class="cm">{-# MINIMAL (writer | tell), listen, pass #-}</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monoid</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadWriter</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="p">(</span><span class="kt">Writer</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">pass</span><span class="w"> </span><span class="p">(</span><span class="kt">Writer</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="p">),</span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="w"> </span><span class="n">w</span><span class="p">)</span>
+<span class="w">  </span><span class="n">listen</span><span class="w"> </span><span class="p">(</span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">),</span><span class="n">w</span><span class="p">)</span>
+<span class="w">  </span><span class="n">tell</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Writer</span><span class="w"> </span><span class="p">(</span><span class="nb">()</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tell</span></code>函数单纯产生一个输出；<code class="docutils literal notranslate"><span class="pre">listen</span></code>函数将<code class="docutils literal notranslate"><span class="pre">Writer</span></code>中的输出<code class="docutils literal notranslate"><span class="pre">w</span></code>作为值的一部分，连同原来的值一起形成新的值（元组）<code class="docutils literal notranslate"><span class="pre">(a,w)</span></code>，这允许计算能够“听到”输出的内容；<code class="docutils literal notranslate"><span class="pre">pass</span></code>函数将值中函数<code class="docutils literal notranslate"><span class="pre">f</span></code>移除，并作用在输出中。</p>
+<p>一般情况下，<code class="docutils literal notranslate"><span class="pre">pass</span></code>会有些麻烦，因为<code class="docutils literal notranslate"><span class="pre">f</span></code>位于值中，通常我们使用一个类似的函数<code class="docutils literal notranslate"><span class="pre">censor</span></code>，该函数将<code class="docutils literal notranslate"><span class="pre">f</span></code>作为一个参数吸收进来，并生成为<code class="docutils literal notranslate"><span class="pre">pass</span></code>函数可以处理的结构。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">censor</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">MonadWriter</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="nf">censor</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">            </span><span class="n">a</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">m</span>
+<span class="w">            </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>另一个常用的函数是<code class="docutils literal notranslate"><span class="pre">listens</span></code>,它可以看作<code class="docutils literal notranslate"><span class="pre">listen</span></code>函数的升级版, 提供对输出进行处理的功能。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">listens</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">MonadWriter</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="nf">listens</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">listen</span><span class="w"> </span><span class="n">m</span><span class="w"> </span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="w"> </span><span class="n">w</span><span class="p">)</span>
+</pre></div>
+</div>
 <p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>
 <p id="ref3">[3] All About Monads. (2021, September 19). HaskellWiki, . Retrieved 03:13, April 22, 2024 from https://wiki.haskell.org/index.php?title=All_About_Monads&oldid=64741.</p>
@@ -482,6 +651,7 @@ hello
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="函子专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../resource/%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
