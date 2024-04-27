@@ -412,7 +412,7 @@ instance Monad (State s) where
     State x >>= f = State $ \s -> let (v,s') = x s in runState (f v) s'
 ```
 
-> 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[3](#ref4)，读者可以自行参考。
+> 注意： 这里的`State` monad定义为简化版的定义，实际的`State`类型是`StateT`类型部分参数实例化的别名，类似地，也没有对于`State`的单子实例声明，而是针对`StateT`的实例声明。类型`StateT`位于`Control.Monad.State.Lazy`中[3](#ref4)，读者可以自行参考。这里使用简化版本并不影响读者对该monad的理解和使用。
 
 
 我们有`evalState`和`execState`分别用于获取最终结果和最终状态（可以在库中找到，下同）,定义如下：
@@ -452,7 +452,7 @@ instance MonadState s (State s) where
     put s = State $ \_ -> ((),s)
 ```
 
-其中`get`函数...，`put`函数，`state`函数。
+其中`get`函数检索状态并将其作为值复制一份；`put`函数只设定状态但不生成值，`state`函数则是对原来的状态和结果进行更新。
 
 下面我们尝试应用`State` monad实现一个栈结构，一个栈结构需要压入栈(push)、弹出栈(pop)以及查看栈顶(peek)三种操作。
 
@@ -491,10 +491,138 @@ peek :: State Stack Int
 peek = state $ \(x:xs) -> (x, x:xs)
 ```
 
+下面尝试测试这些栈活动，例如可以使用栈进行加法运算`1 + 2`:
+
+```hs
+-- code'2.hs
+makestack :: State Stack ()
+makestack = do
+    push 1
+    push 2
+
+add :: State Stack ()
+add = do 
+    a <- pop
+    b <- pop
+    let c = a + b
+    push c
+```
+
+`makestack`将两个数字压入栈中，`add`将两个数字弹出栈，并将计算结果重新压入栈中。
+
+```bash
+Prelude> evalState (makestack >> add >> peek) []
+3
+```
 
 ### `Reader` monad
 
+当我们需要从一个共享环境中读取信息并进行计算时，但不需要改变环境的状态时，就可以使用`Reader` monad。`Reader` monad可以在这种特定的场景下替代`State` monad，以便表达更清晰容易[[3]](#ref3)。
+
+`Reader` monad 定义如下（同样，这也是简化后的版本）：
+
+```hs
+-- code'2.hs
+
+newtype Reader e a = Reader {runReader :: e -> a} deriving (Functor)
+
+instance Applicative (Reader e) where
+    pure a = Reader $ \e -> a
+    Reader f <*> Reader x = Reader $ \e -> f e (x e)
+
+instance Monad (Reader e) where
+    (Reader r) >>= f = Reader $ \e -> runReader (f (r e)) e
+```
+
+类似`MonadState`，我们也可以写一个`MonadReader`提供一些基础的函数。
+
+```hs
+-- code'2.hs
+
+class Monad m => MonadReader e m | m -> e where 
+    ask :: m e 
+    ask = reader id 
+    local :: (e -> e) -> m a -> m a 
+    reader :: (e -> a) -> m a 
+    reader f = do 
+        r <- ask 
+        return (f r)
+
+instance MonadReader e (Reader e) where 
+    local f c = Reader $ \e -> runReader c (f e)
+```
+
+其中`ask`函数用于读取当前环境，`local`函数进行环境的局部修改（即不会影响到全局环境）。
+
+由于`Reader`中并没有保存有关环境的信息（相比之下`State`中将`s`存储在元组中），因此`local`只是局部有效。
+
+
 ### `Writer` monad
+
+`Writer` monad 在计算的同时还生成输出，例如日志记录和跟踪。这些输出不是计算的主要结果，但是必要保留的信息，通过使用`Writer` monad可以更简洁地管理输出，不会使主要地计算变得混乱[[3]](#ref3)。
+
+`Writer` monad 的（简化后的）定义如下:
+
+```hs
+-- code'2.hs
+
+newtype Writer w a = Writer {runWriter :: (a,w) } deriving (Functor)
+
+instance Monoid w => Applicative (Writer w) where 
+    pure x = Writer (x,mempty)
+    Writer (fa,w') <*> Writer (a,w) = Writer (fa a,w' `mappend` w) 
+
+instance Monoid w => Monad (Writer w) where 
+    Writer (a,w) >>= f = let (a',w') = runWriter (f a) in 
+        Writer (a', w `mappend` w')     
+```
+
+类似地，我们可以写一个`MonadWriter`类型类，提供一些基础函数。
+
+```hs
+-- code'2.hs
+
+class (Monoid w, Monad m) => MonadWriter w m | m -> w where 
+    pass :: m (a, w -> w) -> m a 
+    listen :: m a -> m (a,w)
+    tell :: w -> m () 
+    tell w = writer ((),w)
+    writer :: (a,w) -> m a
+    writer (a, w) = do 
+            tell w 
+            return a  
+    {-# MINIMAL (writer | tell), listen, pass #-}
+
+instance Monoid w => MonadWriter w (Writer w) where 
+  pass (Writer ((a,f),w)) = Writer (a,f w)
+  listen (Writer (a,w)) = Writer ((a,w),w)
+  tell s = Writer ((),s)
+```
+
+`tell`函数单纯产生一个输出；`listen`函数将`Writer`中的输出`w`作为值的一部分，连同原来的值一起形成新的值（元组）`(a,w)`，这允许计算能够“听到”输出的内容；`pass`函数将值中函数`f`移除，并作用在输出中。
+
+一般情况下，`pass`会有些麻烦，因为`f`位于值中，通常我们使用一个类似的函数`censor`，该函数将`f`作为一个参数吸收进来，并生成为`pass`函数可以处理的结构。
+
+```hs
+-- code'2.hs
+
+censor :: (MonadWriter w m) => (w -> w) -> m a -> m a
+censor f m = pass $ do 
+            a <- m
+            return (a, f)
+```
+
+另一个常用的函数是`listens`,它可以看作`listen`函数的升级版, 提供对输出进行处理的功能。
+
+```hs
+-- code'2.hs
+
+listens :: (MonadWriter w m) => (w -> b) -> m a -> m (a,b)
+listens f m = do 
+        (a,w) <- listen m 
+        return (a,f w)
+```
+
 
 <p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>
