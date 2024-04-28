@@ -361,7 +361,7 @@ let x = 表达式 in ...
 
 <center>
 
-![](/_static/Monad_1.png)
+![](/_static/image/Monad_1.png)
 
 </center>
 
@@ -386,7 +386,7 @@ hello
 
 <center>
 
-![](/_static/Monad_2.png)
+![](/_static/image/Monad_2.png)
 
 </center>
 
