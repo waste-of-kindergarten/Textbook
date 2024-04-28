@@ -623,6 +623,82 @@ listens f m = do
         return (a,f w)
 ```
 
+## monad 转换器
+
+***monad 转换器(Monad Transformer)*** 将不同的monad组合起来，使其同时具备多种monad的行为。monad 转换器通过将原始monad构造函数进行参数化，生成新的构造函数，最后得到组合的单子类型[[3]](#ref3)。
+
+### IdentityT monad 转换器
+
+`IdentityT` 是 `Identity` 的转换器，其原理为添加了容纳单子参数的`m`，如下：
+
+```hs
+-- code'2.hs
+
+newtype IdentityT m a = IdentityT { runIdentityT :: m a } deriving (Functor)
+```
+
+我们为其声明单子实例：
+
+```hs
+-- code'2.hs
+
+instance Applicative m => Applicative (IdentityT m) where 
+  pure a = IdentityT $ pure a
+  IdentityT mf <*> IdentityT ma = IdentityT (mf <*> ma)
+
+instance Monad m => Monad (IdentityT m) where 
+  m >>= k = IdentityT $ do 
+            a <- runIdentityT m 
+            runIdentityT (k a)
+```
+
+至此我们可以将`IdnetityT`与其他monad组合，例如`Maybe` monad。
+
+```hs
+-- code'2.hs
+
+type IdentityMaybe a = IdentityT Maybe a
+```
+
+我们沿用`Maybe` monad中的示例，演示如何使用`IdentityT` monad转换器。
+
+```hs
+-- code'2.hs
+
+string1' = IdentityT string1
+
+string2' = IdentityT string2
+
+string3' = IdentityT string3
+
+identityMaybeMonadTDemo :: IdentityMaybe Int 
+identityMaybeMonadTDemo = 
+    do 
+        x <- string1'
+        y <- string2'
+        z <- string3'
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+```
+
+### 
+
+
+
+
+### MondTrans 类型类
+
+`MonadTrans`类型类位于`Control.Monad.Trans`，该类型类提供了`lift`函数，可以将原始的单子提升到组合单子。
+
+```hs
+class MonadTrans t where 
+    lift :: (Monad m) => m a -> t m a
+```
+
+
+
+
+
+-------------------------------------------
 
 <p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>

@@ -157,3 +157,30 @@ listens f m = do
         (a,w) <- listen m 
         return (a,f w)
 
+newtype IdentityT m a = IdentityT {runIdentityT :: m a} deriving (Functor)
+
+instance Applicative m => Applicative (IdentityT m) where 
+  pure a = IdentityT $ pure a
+  IdentityT mf <*> IdentityT ma = IdentityT (mf <*> ma)
+
+instance Monad m => Monad (IdentityT m) where 
+  m >>= k = IdentityT $ do 
+            a <- runIdentityT m 
+            runIdentityT (k a)
+
+type IdentityMaybe a = IdentityT Maybe a 
+
+string1' = IdentityT string1
+
+string2' = IdentityT string2
+
+string3' = IdentityT string3
+
+
+identityMaybeMonadTDemo :: IdentityMaybe Int 
+identityMaybeMonadTDemo = 
+    do 
+        x <- string1'
+        y <- string2'
+        z <- string3'
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
