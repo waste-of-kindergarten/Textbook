@@ -623,13 +623,26 @@ listens f m = do
         return (a,f w)
 ```
 
+## 增强Monad `MonadPlus`
+
+`MonadPlus`可以认为是`Monad`的增强版，其定义的是满足幺半群的单子类型类，定义如下：
+
+```hs
+class (Monad m,Alternative m) => MonadPlus (m :: * -> *) where 
+    mzero :: m a 
+    mplus :: m a -> m a -> m a
+```
+
+
+
+
 ## monad 转换器
 
 ***monad 转换器(Monad Transformer)*** 将不同的monad组合起来，使其同时具备多种monad的行为。monad 转换器通过将原始monad构造函数进行参数化，生成新的构造函数，最后得到组合的单子类型[[3]](#ref3)。
 
 ### IdentityT monad 转换器
 
-`IdentityT` 是 `Identity` 的转换器，其原理为添加了容纳单子参数的`m`，如下：
+我们首先介绍最简单的转换器以便读者能够有一个简单的认识，`IdentityT` 是 `Identity` 的转换器，其原理为添加了容纳单子参数的`m`，如下：
 
 ```hs
 -- code'2.hs
@@ -680,21 +693,67 @@ identityMaybeMonadTDemo =
         return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
 ```
 
-### MaybeT monad 转换器
+### 转换器类型类 `MonadTrans`
 
+Haskell中有很多monad 转换器，它们可以归纳出共同的性质，这些性质被封装到了`MonadTrans`类型类中，该类型类位于`Control.Monad.Trans`。
 
-
-
-
-
-### MondTrans 类型类
-
-`MonadTrans`类型类位于`Control.Monad.Trans`，该类型类提供了`lift`函数，可以将原始的单子提升到组合单子。
+`MonadTrans`定义如下：
 
 ```hs
+-- code'2.hs
+
 class MonadTrans t where 
-    lift :: (Monad m) => m a -> t m a
+    lift :: Monad m => m a -> t m a
 ```
+
+其中`lift`意为“提升函数”，它可以将某个monad提升为与某个转换器的组合。
+
+例如前面的`IdentityT`转换器：
+
+```hs
+-- code'2.hs
+
+instance MonadTrans IdentityT  where 
+  lift m =  IdentityT m
+```
+
+因此，前面的示例可以写成：
+
+```hs
+-- code'2.hs
+
+identityMaybeMoandTDemo' :: IdentityMaybe Int 
+identityMaybeMoandTDemo' = 
+    do 
+        x <- lift string1 
+        y <- lift string2 
+        z <- lift string3 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+```
+
+`lift`函数允许我们仅仅定义原始monad值，并自动转换为带有转换器的组合monad类型。
+
+#### `lift` 定律
+
+`lift`函数应当人为保证满足以下定律：
+
+- `lift . return = return`
+
+- `lift (m >>= f) = lift m >>= (lift . f)`
+
+
+### IO 转换器类型类 `MonadIO`
+
+由于我们并没有IO monad的转换器，因此当组合的monad行为中需要IO操作时，IO monad往往作为其他转换器的参数，当然也就无法使用`MonadTrans`类型类。
+
+Haskell中提供了一个`MonadIO`用于将IO操作提升的函数`liftIO`，具体定义如下：
+
+```hs
+class Monad m => MonadIO m where 
+    liftIO :: IO a -> m a 
+```
+
+
 
 
 
