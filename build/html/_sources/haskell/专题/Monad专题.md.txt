@@ -787,6 +787,8 @@ identityIOMonadTDemo =
 
 类似`IO`这类无法实现转换器的monad有很多，因此一种比较好的方法是将这类monad的性质抽象出来。`MonadBase`位于`transformers-base`库的`Control.Monad.Base`，其内含有函数`liftBase`，能够一次性将monad提升到顶层，而无需多次使用lift函数[[5]](#ref5)。
 
+> 可以使用`cabal install package --lib`全局安装额外的包，或者在项目中导入包（该方式详见IO专题）
+
 ```hs
 class (Applicative b,Applicative m, Monad b,Monad m) => MonadBase b m | m -> b where 
     liftBase :: b α -> m α
