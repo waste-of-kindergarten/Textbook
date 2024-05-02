@@ -26,7 +26,9 @@
         <script src="../../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
-    <link rel="search" title="搜索" href="../../search.html" /> 
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="资源" href="../%E8%B5%84%E6%BA%90.html" />
+    <link rel="prev" title="Monad专题" href="Monad%E4%B8%93%E9%A2%98.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +51,23 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Haskell TextBook</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">IO 专题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">纯度与副作用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#io-monad"><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -67,6 +84,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Haskell TextBook</a></li>
       <li class="breadcrumb-item active">IO 专题</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/haskell/专题/IO 专题.md.txt" rel="nofollow"> 查看页面源码</a>
@@ -79,12 +97,62 @@
              
   <section id="io">
 <h1>IO 专题<a class="headerlink" href="#io" title="此标题的永久链接"></a></h1>
+<p>在<a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html"><span class="doc">Monad专题</span></a>中，我们已经介绍了一些有关<code class="docutils literal notranslate"><span class="pre">IO</span></code>作为monad的性质和用法，本章我们将着重讲解使用<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad进行系统编程。</p>
+<section id="id1">
+<h2>纯度与副作用<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<p><em><strong>纯代码(purity)</strong></em> 和无 <em><strong>副作用(side effect)</strong></em> 是Haskell最基本的特性。对于一个纯函数，其结果完全由参数决定，一旦参数确定了，那么结果是唯一确定的，且不受时间或外界环境的影响。纯函数是无副作用的，与之相对的，不纯函数往往会伴随除了计算之外的行为，如程序的输入和输出等。Haskell作为程序语言，需要与现实世界产生作用，这将不可避免地带来副作用。</p>
+</section>
+<section id="io-monad">
+<h2><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad<a class="headerlink" href="#io-monad" title="此标题的永久链接"></a></h2>
+<p>Haskell将IO操作装入monad中，得到<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad。一方面，我们可以在<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad中执行副作用，而不会将影响传到其他纯代码中；另一方面，我们仍然可以在IO操作中进行计算，并传递计算结果。</p>
+<p>对于一个类型为<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">a</span></code>的值，它表示该值进行若干的IO操作，并最终得到一个类型为<code class="docutils literal notranslate"><span class="pre">a</span></code>的计算结果，这个计算结果存储在monad内部，可以通过特定的方式进行传递。</p>
+<p>回顾单子类型类的定义：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="p">(</span><span class="o">&gt;&gt;=</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="p">(</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="w">    </span><span class="n">return</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="n">fail</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL (&gt;&gt;=) #-}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Monad</span></code>类型类的最小实现为<code class="docutils literal notranslate"><span class="pre">(&gt;&gt;=)</span></code>，它接受一个容器<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">a</span></code>，以及一个类型为<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">m</span> <span class="pre">b</span></code>的函数,并将第二个函数依次应用于第一个容器中的元素，最后生成新的容器。<code class="docutils literal notranslate"><span class="pre">return</span></code>函数将一个数值<code class="docutils literal notranslate"><span class="pre">a</span></code>映射为包含该元素的容器，对应了<code class="docutils literal notranslate"><span class="pre">Applicative</span></code>中的<code class="docutils literal notranslate"><span class="pre">pure</span></code>函数；<code class="docutils literal notranslate"><span class="pre">(&gt;&gt;)</span></code>类似<code class="docutils literal notranslate"><span class="pre">(&gt;&gt;=)</span></code>，区别是<code class="docutils literal notranslate"><span class="pre">(&gt;&gt;)</span></code>并没有将第一个参数传入第二个参数中；最后<code class="docutils literal notranslate"><span class="pre">fail</span></code>用于计算错误时进行报错。</p>
+<p>使用<code class="docutils literal notranslate"><span class="pre">&gt;&gt;=</span></code>可以将IO操作串联起来，例如计算三个输入的字符串的长度和：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="nf">threeStrLn</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">threeStrLn</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="n">getLine</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span>
+<span class="w">        </span><span class="p">(</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span>
+<span class="w">            </span><span class="p">(</span><span class="nf">\</span><span class="n">y</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="p">(</span>
+<span class="w">                </span><span class="nf">\</span><span class="n">z</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">z</span><span class="p">)</span>
+<span class="w">            </span><span class="p">))</span>
+</pre></div>
+</div>
+<p>三个<code class="docutils literal notranslate"><span class="pre">getLine</span></code>分别从键盘读取一行字符串，并分别传递给<code class="docutils literal notranslate"><span class="pre">x</span></code>，<code class="docutils literal notranslate"><span class="pre">y</span></code>和<code class="docutils literal notranslate"><span class="pre">z</span></code>,最后计算三个字符串的长度并封装到<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad中。</p>
+<p>当然上述代码也可以使用<code class="docutils literal notranslate"><span class="pre">do</span></code> 语句改写：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="nf">threeStrLn&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">threeStrLn&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">    </span><span class="n">return</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">z</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>两者是完全等效的。</p>
+<center><p><img alt="../../_images/IOMonad.png" src="../../_images/IOMonad.png" /></p>
+</center><hr class="docutils" />
+<p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p></section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="Monad%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="Monad专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

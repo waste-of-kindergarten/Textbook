@@ -27,7 +27,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
-    <link rel="next" title="资源" href="../%E8%B5%84%E6%BA%90.html" />
+    <link rel="next" title="IO 专题" href="IO%20%E4%B8%93%E9%A2%98.html" />
     <link rel="prev" title="函子专题" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" /> 
 </head>
 
@@ -86,6 +86,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="IO%20%E4%B8%93%E9%A2%98.html">IO 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
 </ul>
 </li>
@@ -429,7 +430,7 @@ let x = 表达式 in ...
 <div><p>补充：对于纯函数而言，一旦参数确定，那么结果就唯一确定，因此在任何时候对于纯函数的调用都可以被替换为计算结果，这种特性就是引用透明。</p>
 </div></blockquote>
 <blockquote>
-<div><p>提示：本节主要对<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad 作为单子的用法进行一些简要的介绍，侧重点在 monad 而非对IO操作的处理，更多内容读者可以移步 <a class="reference external" href="#">IO 专题</a></p>
+<div><p>提示：本节主要对<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad 作为单子的用法进行一些简要的介绍，侧重点在 monad 而非对IO操作的处理，更多内容读者可以移步 <a class="reference internal" href="IO%20%E4%B8%93%E9%A2%98.html"><span class="doc">IO 专题</span></a></p>
 </div></blockquote>
 <p>在此之前，我们已经了解了<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数用于输出字符串，下面我们将结合<code class="docutils literal notranslate"><span class="pre">getLine</span></code>这一输入函数讲解<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad的使用方法。</p>
 <p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">String</span></code>，即进行输入IO操作后返回一个<code class="docutils literal notranslate"><span class="pre">String</span></code>类型的值；对比之下<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数类型为<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>，接受字符串后进行输出操作，但不返回任何值。</p>
@@ -895,7 +896,7 @@ hello
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="函子专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
-        <a href="../%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="IO%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-right" title="IO 专题" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
