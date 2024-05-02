@@ -4,7 +4,7 @@
 
 <center>
 
-![](/_static/haskell-logo.svg)
+![](/_static/code/haskell-logo.svg)
 
 </center>
 
