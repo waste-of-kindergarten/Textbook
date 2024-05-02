@@ -2,7 +2,12 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 import Data.Char (isAlpha)
+import Control.Monad.IO.Class
+import Control.Monad.Base (MonadBase (liftBase))
+
 string1 = Just "My name is "
 
 string2 = Just "L fried."
@@ -107,53 +112,124 @@ instance Applicative (Reader e) where
 instance Monad (Reader e) where
     (Reader r) >>= f = Reader $ \e -> runReader (f (r e)) e
 
-class Monad m => MonadReader e m | m -> e where 
-    ask :: m e 
-    ask = reader id 
-    local :: (e -> e) -> m a -> m a 
-    reader :: (e -> a) -> m a 
-    reader f = do 
-        r <- ask 
+class Monad m => MonadReader e m | m -> e where
+    ask :: m e
+    ask = reader id
+    local :: (e -> e) -> m a -> m a
+    reader :: (e -> a) -> m a
+    reader f = do
+        r <- ask
         return (f r)
     {-# MINIMAL (ask | reader), local #-}
 
-instance MonadReader e (Reader e) where 
+instance MonadReader e (Reader e) where
     local f c = Reader $ \e -> runReader c (f e)
-    ask = Reader id 
+    ask = Reader id
 
 newtype Writer w a = Writer {runWriter :: (a,w) } deriving (Functor)
 
-instance Monoid w => Applicative (Writer w) where 
+instance Monoid w => Applicative (Writer w) where
     pure x = Writer (x,mempty)
-    Writer (fa,w') <*> Writer (a,w) = Writer (fa a,w' `mappend` w) 
+    Writer (fa,w') <*> Writer (a,w) = Writer (fa a,w' `mappend` w)
 
-instance Monoid w => Monad (Writer w) where 
-    Writer (a,w) >>= f = let (a',w') = runWriter (f a) in 
-        Writer (a', w `mappend` w') 
+instance Monoid w => Monad (Writer w) where
+    Writer (a,w) >>= f = let (a',w') = runWriter (f a) in
+        Writer (a', w `mappend` w')
 
-class (Monoid w, Monad m) => MonadWriter w m | m -> w where 
-    pass :: m (a, w -> w) -> m a 
+class (Monoid w, Monad m) => MonadWriter w m | m -> w where
+    pass :: m (a, w -> w) -> m a
     listen :: m a -> m (a,w)
-    tell :: w -> m () 
+    tell :: w -> m ()
     tell w = writer ((),w)
     writer :: (a,w) -> m a
-    writer (a, w) = do 
-            tell w 
-            return a  
+    writer (a, w) = do
+            tell w
+            return a
     {-# MINIMAL (writer | tell), listen, pass #-}
 
-instance Monoid w => MonadWriter w (Writer w) where 
+instance Monoid w => MonadWriter w (Writer w) where
   pass (Writer ((a,f),w)) = Writer (a,f w)
   listen (Writer (a,w)) = Writer ((a,w),w)
   tell s = Writer ((),s)
 
 censor :: (MonadWriter w m) => (w -> w) -> m a -> m a
-censor f m = pass $ do 
+censor f m = pass $ do
             a <- m
             return (a, f)
 
 listens :: (MonadWriter w m) => (w -> b) -> m a -> m (a,b)
-listens f m = do 
-        (a,w) <- listen m 
+listens f m = do
+        (a,w) <- listen m
         return (a,f w)
+
+newtype IdentityT m a = IdentityT {runIdentityT :: m a} deriving (Functor)
+
+instance Applicative m => Applicative (IdentityT m) where
+  pure a = IdentityT $ pure a
+  IdentityT mf <*> IdentityT ma = IdentityT (mf <*> ma)
+
+instance Monad m => Monad (IdentityT m) where
+  m >>= k = IdentityT $ do
+            a <- runIdentityT m
+            runIdentityT (k a)
+
+type IdentityMaybe a = IdentityT Maybe a
+
+string1' = IdentityT string1
+
+string2' = IdentityT string2
+
+string3' = IdentityT string3
+
+
+identityMaybeMonadTDemo :: IdentityMaybe Int
+identityMaybeMonadTDemo =
+    do
+        x <- string1'
+        y <- string2'
+        z <- string3'
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+class MonadTrans t where
+    lift :: Monad m => m a -> t m a
+
+instance MonadTrans IdentityT  where
+  lift m =  IdentityT m
+
+identityMaybeMoandTDemo' :: IdentityMaybe Int
+identityMaybeMoandTDemo' =
+    do
+        x <- lift string1
+        y <- lift string2
+        z <- lift string3
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+              
+instance MonadIO m => MonadIO (IdentityT m) where 
+    liftIO = IdentityT . liftIO  
+
+identityIOMonadTDemo :: IdentityT IO Int 
+identityIOMonadTDemo = 
+    do 
+        x <- liftIO getLine
+        y <- liftIO getLine 
+        z <- liftIO getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+
+liftBaseDefault :: (MonadTrans t, MonadBase b m) => b α -> t m α
+liftBaseDefault = lift . liftBase 
+
+instance (MonadTrans t,MonadBase b m,Monad (t m)) => MonadBase b (t m) where
+    liftBase = liftBaseDefault 
+
+
+liftBaseDemo :: IdentityT (IdentityT IO) Int
+liftBaseDemo = 
+    do 
+        x <- liftBase getLine 
+        y <- liftBase getLine 
+        z <- liftBase getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z)) 
+         
 

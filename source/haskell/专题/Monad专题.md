@@ -623,6 +623,7 @@ listens f m = do
         return (a,f w)
 ```
 
+
 ## 增强Monad `MonadPlus`
 
 `MonadPlus`可以认为是`Monad`的增强版，其定义的是满足幺半群的单子类型类，定义如下：
@@ -633,12 +634,11 @@ class (Monad m,Alternative m) => MonadPlus (m :: * -> *) where
     mplus :: m a -> m a -> m a
 ```
 
-
-
+例如前面的`MonadWriter` 实例就可以使用`MonadPlus`约束替换。
 
 ## monad 转换器
 
-***monad 转换器(Monad Transformer)*** 将不同的monad组合起来，使其同时具备多种monad的行为。monad 转换器通过将原始monad构造函数进行参数化，生成新的构造函数，最后得到组合的单子类型[[3]](#ref3)。
+***monad 转换器(Monad Transformer)*** 将不同的monad组合起来，使其同时具备多种monad的行为。monad 转换器通过将原始monad构造函数中添加monad参数，以生成新的构造函数，从而得到组合的单子类型[[3]](#ref3)。
 
 ### IdentityT monad 转换器
 
@@ -693,7 +693,7 @@ identityMaybeMonadTDemo =
         return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
 ```
 
-### 转换器类型类 `MonadTrans`
+### monad 提升 `MonadTrans`
 
 Haskell中有很多monad 转换器，它们可以归纳出共同的性质，这些性质被封装到了`MonadTrans`类型类中，该类型类位于`Control.Monad.Trans`。
 
@@ -742,7 +742,7 @@ identityMaybeMoandTDemo' =
 - `lift (m >>= f) = lift m >>= (lift . f)`
 
 
-### IO 转换器类型类 `MonadIO`
+### IO monad 提升 `MonadIO`
 
 由于我们并没有IO monad的转换器，因此当组合的monad行为中需要IO操作时，IO monad往往作为其他转换器的参数，当然也就无法使用`MonadTrans`类型类。
 
@@ -751,11 +751,94 @@ Haskell中提供了一个`MonadIO`用于将IO操作提升的函数`liftIO`，具
 ```hs
 class Monad m => MonadIO m where 
     liftIO :: IO a -> m a 
+    {-# MINIMAL liftIO #-}
 ```
 
+该定义位于`Control.Monad.IO.Class`，一旦我们拥有`MonadIO`实现的转换器（或者说组合monad），就可以将其IO操作提升至该monad。
+
+例如最简单的转换器`IdentityT`。
+
+```hs
+-- code'2.hs
+
+import Control.Monad.IO.Class
+
+instance MonadIO m => MonadIO (IdentityT m) where 
+    liftIO = IdentityT . liftIO  
+```
+
+> 提示：实际上，该实例已经在`Control.Monad.Trans.Identity`中定义
+
+模仿前面的示例，但改为读取三行字符串，并计算其中非字母的字符数。
+
+```hs
+-- code'2.hs
+
+identityIOMonadTDemo :: IdentityT IO Int 
+identityIOMonadTDemo = 
+    do 
+        x <- liftIO getLine
+        y <- liftIO getLine 
+        z <- liftIO getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+```
+
+### 多次 monad 提升
+
+类似`IO`这类无法实现转换器的monad有很多，因此一种比较好的方法是将这类monad的性质抽象出来。`MonadBase`位于`transformers-base`库的`Control.Monad.Base`，其内含有函数`liftBase`，能够一次性将monad提升到顶层，而无需多次使用lift函数[[5]](#ref5)。
+
+```hs
+class (Applicative b,Applicative m, Monad b,Monad m) => MonadBase b m | m -> b where 
+    liftBase :: b α -> m α
+    {-# MINIMAL liftBase #-}
+```
+
+Haskell提供了提升的默认递归实现`liftBaseDefault`，即
+
+```hs
+-- code'2.hs
+
+import Control.Monad.Base(MonadBase,liftBase)
+
+liftBaseDefault :: (MonadTrans t, MonadBase b m) => b α -> t m α
+liftBaseDefault = lift . liftBase 
+
+instance (MonadTrans t,MonadBase b m,Monad (t m)) => MonadBase b (t m) where
+  liftBase = liftBaseDefault 
+```
+
+> 注意：使用这种递归必须保证递归的基本情况的实例已经被声明，Haskell已经内置了一些实例，如`MonadBase IO IO`等，读者可以自行查阅
 
 
+使用`IdentityT`嵌套转换器，并使用`liftBase`提升至顶层：
 
+```hs
+-- code'2.hs
+
+liftBaseDemo :: IdentityT (IdentityT IO) Int
+liftBaseDemo = 
+    do 
+        x <- liftBase getLine 
+        y <- liftBase getLine 
+        z <- liftBase getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z)) 
+```
+
+`getLine`类型为`IO String`，根据前面声明的实例，`liftBase`函数将`IO String`先提升为`IdentityT IO String`，然后又提升为 `IdentityT (IdentityT IO) String`，使其能够在`do`标记的语法块中进行运算。
+
+### 更多 monad 转换器
+
+
+下面列出一些内置的标准monad转换器版本：
+
+| 原始单子 | 原始类型 | 转换器版本 | 组合类型 | 位置 |
+|--|--|--|--|--|
+| Maybe | Maybe a | MaybeT | MaybeT (m (Maybe a)) | transformers `Control.Monad.Trans.Maybe` | 
+|  Either | Either e a | EitherT | m (Either e a) | transformers-either `Control.Monad.Trans.Either` |
+| State | State (s -> (a,s)) | StateT | StateT (s -> m (a, s)) | transformers `Control.Monad.Trans.State.Lazy` |
+| Reader | Reader (e -> a) | ReaderT | ReaderT (r -> m a) | transformers `Control.Monad.Trans.State.Lazy` | 
+| Writer | Writer (a, w) | WriterT | WriterT (m (a, w))| transformers `Control.Monad.Trans.Writer.Lazy` | 
+| 
 
 
 
@@ -765,3 +848,4 @@ class Monad m => MonadIO m where
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>
 <p id="ref3">[3] All About Monads. (2021, September 19). HaskellWiki, . Retrieved 03:13, April 22, 2024 from https://wiki.haskell.org/index.php?title=All_About_Monads&oldid=64741.</p>
 <p id="ref4">[4] State Monad. (2018, December 21). HaskellWiki, . Retrieved 06:21, April 22, 2024 from https://wiki.haskell.org/index.php?title=State_Monad&oldid=62675.</p>
+<p id="ref5">[5] New monads/MonadBase. (2006, October 26). HaskellWiki, . Retrieved 06:36, May 2, 2024 from https://wiki.haskell.org/index.php?title=New_monads/MonadBase&oldid=7351.</p>

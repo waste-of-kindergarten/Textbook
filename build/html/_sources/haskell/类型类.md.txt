@@ -788,6 +788,9 @@ class Num a where
 ```
 
 
+--------------------------
+
+
 
 <p id="ref1">[1] Polymorphism. (2015, January 21). HaskellWiki, . Retrieved 02:37, April 10, 2024 from https://wiki.haskell.org/index.php?title=Polymorphism&oldid=59216.</p>
 <p id="ref2">[2] Language options. Glasgow Haskell Compiler 8.6.5 User's Guide. Retrieved 10:06, April 13, 2024 from https://downloads.haskell.org/~ghc/8.6.5/docs/html/users_guide/glasgow_exts.html#nullary-type-classes</p>

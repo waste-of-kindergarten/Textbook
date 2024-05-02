@@ -75,6 +75,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#writer-monad"><code class="docutils literal notranslate"><span class="pre">Writer</span></code> monad</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#monad-monadplus">增强Monad <code class="docutils literal notranslate"><span class="pre">MonadPlus</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">monad 转换器</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#identityt-monad">IdentityT monad 转换器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#monad-monadtrans">monad 提升 <code class="docutils literal notranslate"><span class="pre">MonadTrans</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#io-monad-monadio">IO monad 提升 <code class="docutils literal notranslate"><span class="pre">MonadIO</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">多次 monad 提升</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">更多 monad 转换器</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -424,7 +433,7 @@ let x = 表达式 in ...
 </div></blockquote>
 <p>在此之前，我们已经了解了<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数用于输出字符串，下面我们将结合<code class="docutils literal notranslate"><span class="pre">getLine</span></code>这一输入函数讲解<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad的使用方法。</p>
 <p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">String</span></code>，即进行输入IO操作后返回一个<code class="docutils literal notranslate"><span class="pre">String</span></code>类型的值；对比之下<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数类型为<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>，接受字符串后进行输出操作，但不返回任何值。</p>
-<center><p><img alt="_static/Monad_1.png" src="_static/Monad_1.png" /></p>
+<center><p><img alt="../../_images/Monad_1.png" src="../../_images/Monad_1.png" /></p>
 </center><blockquote>
 <div><p>注意：这里的“返回”指<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad中封装的类型或者说传递给其他monad的数据的类型。因为对于<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&gt;&gt;=</span> <span class="pre">b</span></code>这种表达式，<code class="docutils literal notranslate"><span class="pre">a</span></code>计算后的值会传递给<code class="docutils literal notranslate"><span class="pre">b</span></code>，这有点类似“返回”这一行为；另外，<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">()</span></code>并非不传递任何值，<code class="docutils literal notranslate"><span class="pre">()</span></code>类型本身拥有唯一的值<code class="docutils literal notranslate"><span class="pre">()</span></code>，因此当我们尝试对<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">()</span></code>进行传值时，我们会得到一个<code class="docutils literal notranslate"><span class="pre">()</span></code>。</p>
 </div></blockquote>
@@ -442,7 +451,7 @@ hello
 </pre></div>
 </div>
 <p>整个过程示意图如下：</p>
-<center><p><img alt="_static/Monad_2.png" src="_static/Monad_2.png" /></p>
+<center><p><img alt="../../_images/Monad_2.png" src="../../_images/Monad_2.png" /></p>
 </center><p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>先通过键盘读取一行字符串，并返回一个<code class="docutils literal notranslate"><span class="pre">String</span></code>类型，这个返回的数据被传入<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>函数作为参数，之后<code class="docutils literal notranslate"><span class="pre">putStrLn</span></code>将这个字符串输出<a class="reference external" href="#ref4">[4]</a>。</p>
 </section>
 <section id="state-monad">
@@ -639,10 +648,242 @@ hello
 <span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="w"> </span><span class="n">w</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="monad-monadplus">
+<h2>增强Monad <code class="docutils literal notranslate"><span class="pre">MonadPlus</span></code><a class="headerlink" href="#monad-monadplus" title="此标题的永久链接"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MonadPlus</span></code>可以认为是<code class="docutils literal notranslate"><span class="pre">Monad</span></code>的增强版，其定义的是满足幺半群的单子类型类，定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="p">(</span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="kt">Alternative</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadPlus</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">mzero</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="n">mplus</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+</pre></div>
+</div>
+<p>例如前面的<code class="docutils literal notranslate"><span class="pre">MonadWriter</span></code> 实例就可以使用<code class="docutils literal notranslate"><span class="pre">MonadPlus</span></code>约束替换。</p>
+</section>
+<section id="id4">
+<h2>monad 转换器<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h2>
+<p><em><strong>monad 转换器(Monad Transformer)</strong></em> 将不同的monad组合起来，使其同时具备多种monad的行为。monad 转换器通过将原始monad构造函数中添加monad参数，以生成新的构造函数，从而得到组合的单子类型<a class="reference external" href="#ref3">[3]</a>。</p>
+<section id="identityt-monad">
+<h3>IdentityT monad 转换器<a class="headerlink" href="#identityt-monad" title="此标题的永久链接"></a></h3>
+<p>我们首先介绍最简单的转换器以便读者能够有一个简单的认识，<code class="docutils literal notranslate"><span class="pre">IdentityT</span></code> 是 <code class="docutils literal notranslate"><span class="pre">Identity</span></code> 的转换器，其原理为添加了容纳单子参数的<code class="docutils literal notranslate"><span class="pre">m</span></code>，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">runIdentityT</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>我们为其声明单子实例：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Applicative</span><span class="w"> </span><span class="p">(</span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">pure</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">pure</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">mf</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">ma</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="p">(</span><span class="n">mf</span><span class="w"> </span><span class="o">&lt;*&gt;</span><span class="w"> </span><span class="n">ma</span><span class="p">)</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="p">(</span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">m</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">            </span><span class="n">a</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">runIdentityT</span><span class="w"> </span><span class="n">m</span><span class="w"> </span>
+<span class="w">            </span><span class="n">runIdentityT</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>至此我们可以将<code class="docutils literal notranslate"><span class="pre">IdnetityT</span></code>与其他monad组合，例如<code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">IdentityMaybe</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span>
+</pre></div>
+</div>
+<p>我们沿用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code> monad中的示例，演示如何使用<code class="docutils literal notranslate"><span class="pre">IdentityT</span></code> monad转换器。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">string1&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">string1</span>
+
+<span class="nf">string2&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">string2</span>
+
+<span class="nf">string3&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">string3</span>
+
+<span class="nf">identityMaybeMonadTDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IdentityMaybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">identityMaybeMonadTDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string1&#39;</span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string2&#39;</span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">string3&#39;</span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="monad-monadtrans">
+<h3>monad 提升 <code class="docutils literal notranslate"><span class="pre">MonadTrans</span></code><a class="headerlink" href="#monad-monadtrans" title="此标题的永久链接"></a></h3>
+<p>Haskell中有很多monad 转换器，它们可以归纳出共同的性质，这些性质被封装到了<code class="docutils literal notranslate"><span class="pre">MonadTrans</span></code>类型类中，该类型类位于<code class="docutils literal notranslate"><span class="pre">Control.Monad.Trans</span></code>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">MonadTrans</span></code>定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">MonadTrans</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">lift</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">lift</span></code>意为“提升函数”，它可以将某个monad提升为与某个转换器的组合。</p>
+<p>例如前面的<code class="docutils literal notranslate"><span class="pre">IdentityT</span></code>转换器：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">MonadTrans</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w">  </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">lift</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w">  </span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">m</span>
+</pre></div>
+</div>
+<p>因此，前面的示例可以写成：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">identityMaybeMoandTDemo&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IdentityMaybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">identityMaybeMoandTDemo&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">lift</span><span class="w"> </span><span class="n">string1</span><span class="w"> </span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">lift</span><span class="w"> </span><span class="n">string2</span><span class="w"> </span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">lift</span><span class="w"> </span><span class="n">string3</span><span class="w"> </span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">lift</span></code>函数允许我们仅仅定义原始monad值，并自动转换为带有转换器的组合monad类型。</p>
+<section id="lift">
+<h4><code class="docutils literal notranslate"><span class="pre">lift</span></code> 定律<a class="headerlink" href="#lift" title="此标题的永久链接"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">lift</span></code>函数应当人为保证满足以下定律：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lift</span> <span class="pre">.</span> <span class="pre">return</span> <span class="pre">=</span> <span class="pre">return</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lift</span> <span class="pre">(m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">f)</span> <span class="pre">=</span> <span class="pre">lift</span> <span class="pre">m</span> <span class="pre">&gt;&gt;=</span> <span class="pre">(lift</span> <span class="pre">.</span> <span class="pre">f)</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="io-monad-monadio">
+<h3>IO monad 提升 <code class="docutils literal notranslate"><span class="pre">MonadIO</span></code><a class="headerlink" href="#io-monad-monadio" title="此标题的永久链接"></a></h3>
+<p>由于我们并没有IO monad的转换器，因此当组合的monad行为中需要IO操作时，IO monad往往作为其他转换器的参数，当然也就无法使用<code class="docutils literal notranslate"><span class="pre">MonadTrans</span></code>类型类。</p>
+<p>Haskell中提供了一个<code class="docutils literal notranslate"><span class="pre">MonadIO</span></code>用于将IO操作提升的函数<code class="docutils literal notranslate"><span class="pre">liftIO</span></code>，具体定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadIO</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">liftIO</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="cm">{-# MINIMAL liftIO #-}</span>
+</pre></div>
+</div>
+<p>该定义位于<code class="docutils literal notranslate"><span class="pre">Control.Monad.IO.Class</span></code>，一旦我们拥有<code class="docutils literal notranslate"><span class="pre">MonadIO</span></code>实现的转换器（或者说组合monad），就可以将其IO操作提升至该monad。</p>
+<p>例如最简单的转换器<code class="docutils literal notranslate"><span class="pre">IdentityT</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">import</span><span class="w"> </span><span class="nn">Control.Monad.IO.Class</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">MonadIO</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadIO</span><span class="w"> </span><span class="p">(</span><span class="kt">IdentityT</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">liftIO</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">liftIO</span><span class="w">  </span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示：实际上，该实例已经在<code class="docutils literal notranslate"><span class="pre">Control.Monad.Trans.Identity</span></code>中定义</p>
+</div></blockquote>
+<p>模仿前面的示例，但改为读取三行字符串，并计算其中非字母的字符数。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">identityIOMonadTDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">identityIOMonadTDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftIO</span><span class="w"> </span><span class="n">getLine</span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftIO</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftIO</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>多次 monad 提升<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>类似<code class="docutils literal notranslate"><span class="pre">IO</span></code>这类无法实现转换器的monad有很多，因此一种比较好的方法是将这类monad的性质抽象出来。<code class="docutils literal notranslate"><span class="pre">MonadBase</span></code>位于<code class="docutils literal notranslate"><span class="pre">transformers-base</span></code>库的<code class="docutils literal notranslate"><span class="pre">Control.Monad.Base</span></code>，其内含有函数<code class="docutils literal notranslate"><span class="pre">liftBase</span></code>，能够一次性将monad提升到顶层，而无需多次使用lift函数<a class="reference external" href="#ref5">[5]</a>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="p">(</span><span class="kt">Applicative</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="kt">Applicative</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadBase</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">liftBase</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">α</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL liftBase #-}</span>
+</pre></div>
+</div>
+<p>Haskell提供了提升的默认递归实现<code class="docutils literal notranslate"><span class="pre">liftBaseDefault</span></code>，即</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="kr">import</span><span class="w"> </span><span class="nn">Control.Monad.Base</span><span class="p">(</span><span class="kt">MonadBase</span><span class="p">,</span><span class="n">liftBase</span><span class="p">)</span>
+
+<span class="nf">liftBaseDefault</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">MonadTrans</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="kt">MonadBase</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">α</span>
+<span class="nf">liftBaseDefault</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">lift</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">liftBase</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">MonadTrans</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="kt">MonadBase</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="kt">Monad</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="n">m</span><span class="p">))</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadBase</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="n">liftBase</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">liftBaseDefault</span><span class="w"> </span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>注意：使用这种递归必须保证递归的基本情况的实例已经被声明，Haskell已经内置了一些实例，如<code class="docutils literal notranslate"><span class="pre">MonadBase</span> <span class="pre">IO</span> <span class="pre">IO</span></code>等，读者可以自行查阅</p>
+</div></blockquote>
+<p>使用<code class="docutils literal notranslate"><span class="pre">IdentityT</span></code>嵌套转换器，并使用<code class="docutils literal notranslate"><span class="pre">liftBase</span></code>提升至顶层：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;2.hs</span>
+
+<span class="nf">liftBaseDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IdentityT</span><span class="w"> </span><span class="p">(</span><span class="kt">IdentityT</span><span class="w"> </span><span class="kt">IO</span><span class="p">)</span><span class="w"> </span><span class="kt">Int</span>
+<span class="nf">liftBaseDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftBase</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftBase</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">liftBase</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">        </span><span class="n">return</span><span class="w"> </span><span class="p">(</span><span class="n">foldr</span><span class="w"> </span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">(((</span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">isAlpha</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">z</span><span class="p">))</span><span class="w"> </span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">getLine</span></code>类型为<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">String</span></code>，根据前面声明的实例，<code class="docutils literal notranslate"><span class="pre">liftBase</span></code>函数将<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">String</span></code>先提升为<code class="docutils literal notranslate"><span class="pre">IdentityT</span> <span class="pre">IO</span> <span class="pre">String</span></code>，然后又提升为 <code class="docutils literal notranslate"><span class="pre">IdentityT</span> <span class="pre">(IdentityT</span> <span class="pre">IO)</span> <span class="pre">String</span></code>，使其能够在<code class="docutils literal notranslate"><span class="pre">do</span></code>标记的语法块中进行运算。</p>
+</section>
+<section id="id6">
+<h3>更多 monad 转换器<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<p>下面列出一些内置的标准monad转换器版本：</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>原始单子</th>
+<th>原始类型</th>
+<th>转换器版本</th>
+<th>组合类型</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maybe</td>
+<td>Maybe a</td>
+<td>MaybeT</td>
+<td>MaybeT (m (Maybe a))</td>
+<td>transformers <code>Control.Monad.Trans.Maybe</code></td>
+</tr>
+<tr>
+<td>Either</td>
+<td>Either e a</td>
+<td>EitherT</td>
+<td>m (Either e a)</td>
+<td>transformers-either <code>Control.Monad.Trans.Either</code></td>
+</tr>
+<tr>
+<td>State</td>
+<td>State (s -&gt; (a,s))</td>
+<td>StateT</td>
+<td>StateT (s -&gt; m (a, s))</td>
+<td>transformers <code>Control.Monad.Trans.State.Lazy</code></td>
+</tr>
+<tr>
+<td>Reader</td>
+<td>Reader (e -&gt; a)</td>
+<td>ReaderT</td>
+<td>ReaderT (r -&gt; m a)</td>
+<td>transformers <code>Control.Monad.Trans.State.Lazy</code></td>
+</tr>
+<tr>
+<td>Writer</td>
+<td>Writer (a, w)</td>
+<td>WriterT</td>
+<td>WriterT (m (a, w))</td>
+<td>transformers <code>Control.Monad.Trans.Writer.Lazy</code></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table><hr class="docutils" />
 <p id="ref1">[1] Merely monadic. (2021, March 16). HaskellWiki, . Retrieved 02:27, April 20, 2024 from https://wiki.haskell.org/index.php?title=Merely_monadic&oldid=64044.</p>
 <p id="ref2">[2] Monad. (2022, October 22). HaskellWiki, . Retrieved 02:46, April 20, 2024 from https://wiki.haskell.org/index.php?title=Monad&oldid=65405.</p>
 <p id="ref3">[3] All About Monads. (2021, September 19). HaskellWiki, . Retrieved 03:13, April 22, 2024 from https://wiki.haskell.org/index.php?title=All_About_Monads&oldid=64741.</p>
-<p id="ref4">[4] State Monad. (2018, December 21). HaskellWiki, . Retrieved 06:21, April 22, 2024 from https://wiki.haskell.org/index.php?title=State_Monad&oldid=62675.</p></section>
+<p id="ref4">[4] State Monad. (2018, December 21). HaskellWiki, . Retrieved 06:21, April 22, 2024 from https://wiki.haskell.org/index.php?title=State_Monad&oldid=62675.</p>
+<p id="ref5">[5] New monads/MonadBase. (2006, October 26). HaskellWiki, . Retrieved 06:36, May 2, 2024 from https://wiki.haskell.org/index.php?title=New_monads/MonadBase&oldid=7351.</p></section>
 </section>
 </section>
 

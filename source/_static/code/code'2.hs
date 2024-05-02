@@ -2,8 +2,11 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 import Data.Char (isAlpha)
-import Control.Monad.IO.Class (MonadIO(..))
+import Control.Monad.IO.Class
+import Control.Monad.Base (MonadBase (liftBase))
 
 string1 = Just "My name is "
 
@@ -200,4 +203,33 @@ identityMaybeMoandTDemo' =
         y <- lift string2
         z <- lift string3
         return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+              
+instance MonadIO m => MonadIO (IdentityT m) where 
+    liftIO = IdentityT . liftIO  
+
+identityIOMonadTDemo :: IdentityT IO Int 
+identityIOMonadTDemo = 
+    do 
+        x <- liftIO getLine
+        y <- liftIO getLine 
+        z <- liftIO getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z))
+
+
+liftBaseDefault :: (MonadTrans t, MonadBase b m) => b α -> t m α
+liftBaseDefault = lift . liftBase 
+
+instance (MonadTrans t,MonadBase b m,Monad (t m)) => MonadBase b (t m) where
+    liftBase = liftBaseDefault 
+
+
+liftBaseDemo :: IdentityT (IdentityT IO) Int
+liftBaseDemo = 
+    do 
+        x <- liftBase getLine 
+        y <- liftBase getLine 
+        z <- liftBase getLine 
+        return (foldr (+) 0 (((\x -> if x then 0 else 1) . isAlpha) <$> x ++ y ++ z)) 
+         
 
