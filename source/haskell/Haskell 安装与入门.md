@@ -4,7 +4,7 @@
 
 <center>
 
-![](/_static/code/haskell-logo.svg)
+![](/_static/image/haskell-logo.svg)
 
 </center>
 
@@ -82,7 +82,7 @@ source ~/.bashrc
 
 支持Haskell语言的编辑器有很多，这里推荐使用VSCode作为编辑器。为了使VSCode能够支持Haskell语言，我们需要下载`haskell.haskell`插件，安装完成后编辑器会自动搜索GHCup并完成配置。
 
-![](/_static/vscode.png)
+![](/_static/image/vscode.png)
 
 > 提示：如果无法自动配置，需要手动为插件提供ghcup的位置，默认路径`~/.ghcup/bin/ghcup`
 
