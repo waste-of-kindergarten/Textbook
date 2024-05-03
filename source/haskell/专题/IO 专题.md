@@ -119,7 +119,17 @@ hello haskell
 > 提示： 有关严格求值版本的细节可参阅[Data.IORef](https://hackage.haskell.org/package/base-4.19.1.0/docs/Data-IORef.html)，有关弱指针的细节可参阅[System.Mem.Weak](https://hackage.haskell.org/package/base-4.19.1.0/docs/System-Mem-Weak.html)
 
 
+## 数据读写
+
+## 文件操作
+
+## 系统进程
+
+## 系统时间
+
+## 不安全的IO
 
 ---------------------------
 
 <p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p>
+
