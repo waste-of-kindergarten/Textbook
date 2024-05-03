@@ -842,7 +842,201 @@ liftBaseDemo =
 | Writer | Writer (a, w) | WriterT | WriterT (m (a, w))| transformers `Control.Monad.Trans.Writer.Lazy` | 
 | 
 
+## `Control.Monad` 常用函数
 
+`import Control.Monad`
+
+读者可以按需查看`Control.Monad`中的函数。
+
+- `mapM`
+
+`mapM`函数的类型为`(Traversable t, Monad m) => (a -> m b) -> t a -> m (t b)`，将一个容器结构`t a`中每个元素`a`映射到一个monad`m b`中，并将这些monad内的元素合并`m (t b)`。
+
+```bash
+Prelude> mapM (\x -> Just x) [1,2,3,4]
+Just [1,2,3,4]
+```
+
+- `mapM_`
+
+类型为`(Traversable t, Monad m) => (a -> m b) -> t a -> m ()`，该函数为`mapM`忽略映射结果的版本。
+
+```bash
+Prelude> mapM_ (\x -> Just x) [1,2,3,4]
+Just ()
+```
+
+- `forM`
+
+`forM`的类型为`(Traversable t, Monad m) => t a -> (a -> m b) -> m (t b)`。`forM`函数是`mapM`的翻转版本，即接受参数的顺序发生调换。
+
+```bash
+Prelude> forM [1,2,3,4] (\x -> Just x)
+Just [1,2,3,4]
+Prelude> (flip mapM) [1,2,3,4] (\x -> Just x)
+Just [1,2,3,4]
+```
+
+- `forM_`
+
+类似的，`forM_`为`forM`忽略结果的版本。
+
+```bash
+Prelude> forM_ [1,2,3,4] (\x -> Just x)
+Just ()
+```
+
+- `sequence`
+
+`sequence`函数的类型为`(Traversable t, Monad m) => t (m a) -> m (t a)`。 对容器`t (m a)`中的每个monad`m a`中的元素进行合并`t a`并用monad包裹得到`m (t a)`。
+
+```bash
+Prelude> sequence [Just 1,Just 2,Just 3,Just 4]
+Just [1,2,3,4]
+```
+
+- `sequence_`
+
+`sequence`忽略结果的版本，类型为`(Foldable t, Monad m) => t (m a) -> m ()`。
+
+- `=<<`
+
+`>>=`的反转版本。
+
+- `>=>`
+
+`>=>`的类型为`Monad m => (a -> m b) -> (b -> m c) -> a -> m c`。`(bs >=> cs) a`可以理解为`bs a >>= cs`。
+
+- `<=<`
+
+`>=>`的反转版本。
+
+- `forever`
+
+`forever`函数的类型为`Applicative f => f a -> f b`。该函数会无限重复某个行为。
+
+```bash
+Prelude> forever $ print 1
+1
+1
+1
+...
+```
+
+- `join`
+
+`join`类型为`Monad m => m (m a) -> m a`。该函数将一层的单子结构移除，将绑定的参数投影到外层。
+
+```bash
+Prelude> join [[1,2],[3,4]]
+[1,2,3,4]
+```
+
+- `msum`
+
+`msum`函数的类型为`(Foldable t, MonadPlus m) => t (m a) -> m a`。其将一个容器`t (m a)`中的每个monad元素`m a`使用`mplus`函数进行合并，最终得到一个`m a`。
+
+```bash
+Prelude> msum [[1,2],[3,4]]
+[1,2,3,4]
+Prelude> msum [Nothing, Just 1]
+Just 1
+```
+
+- `mfilter`
+
+`MonadPlus`版本的`filter`函数，类型为`MonadPlus m => (a -> Bool) -> m a -> m a`。
+
+```bash
+Prelude> mfilter odd (Just 1)
+Just 1
+Prelude> mfilter odd (Just 2)
+Nothing
+```
+
+- `filterM`
+
+`filterM`的类型为`Applicative m => (a -> m Bool) -> [a] -> m [a]`。该函数可以用来生成`filter`函数。
+
+```bash
+Prelude> filterM (\x -> [odd x]) [1,2,3,4]
+[[1,3]]
+```
+
+- `mapAndUnzipM`
+
+该函数的类型为`Applicative m => (a -> m (b, c)) -> [a] -> m ([b], [c])`。它将第一个参数函数作用在第二个参数列表中的每一个元素，此时得到了一系列`m (b,c)`的元素，接着将每个monad元素中元组中两个部分分别进行合并，最终得到`m ([b],[c])`。
+
+```bash
+Prelude> mapAndUnzipM (\x -> [(x,x + 1)]) [1,2,3,4]
+[([1,2,3,4],[2,3,4,5])]
+```
+
+该函数主要用于处理`State` monad或者复杂的数据结果。
+
+- `zipWithM`
+
+`zipWithM`的类型为`Applicative m => (a -> b -> m c) -> [a] -> [b] -> m [c]`，该函数可以用于生成针对列表的函数`zipWith`。
+
+```bash
+Prelude> zipWithM (\x y -> Just $ x + y) [1,2] [3,4]
+Just [4,6]
+```
+
+- `zipWithM_`
+
+忽略结果版本的`zipWithM`。
+
+- `foldM`
+
+`foldM`函数类似`foldl`函数，不同的是结果被封装在了monad中，因此类型为`(Foldable t,Monad m) => (b -> a -> m b) -> b -> t a -> m b`。
+
+```bash
+Prelude> foldM (\x y -> return $ x + y ) 0 [1,2,3,4]
+10
+```
+
+- `foldM_`
+
+丢弃结果版本的`foldM`。
+
+- `replicateM`
+
+`replicateM`重复某个行为n次，类型为`Applicative m => Int -> m a -> m [a]`。
+
+```bash
+Prelude> replicateM 2 [1]
+[[1,1]]
+```
+
+- `replicateM_`
+
+丢弃结果版本的`replicateM`。
+
+- `when`
+
+有条件执行应用函子表达式，类型为`Applicative f => Bool -> f () -> f ()`。
+
+```bash
+Prelude> when True (print ())
+()
+Prelude> when False (print ())
+-- 没有输出
+```
+
+- `unless`
+
+与`when`执行条件相反。
+
+- 单子提升操作符
+
+`Control.Monad`提供了单子提升的操作符，用于将函数应用在由单子包裹的元素上，并最终将结果包裹在同样的单子中。根据被应用函数的参数数目，分别有`liftM`、`liftM2`、`liftM3`、`liftM4`以及`liftM5`，其中`liftM`的类型为`Monad m => (a1 -> r) -> m a1 -> m r`，`liftM2`的类型为`Monad m => (a1 -> a2 -> r) -> m a1 -> m a2 -> m r`依此类推。
+
+另外，`ap`函数可以用来替换上述的五个提升函数，或者构造用于接受更高参数数目函数的提升函数，其类型为`Monad m => m (a -> b) -> m a -> m b`。对于一个`liftMn`函数（其中`n`表示被应用函数的参数数目），`liftMn f x1 x2 ... xn`等效于`return f \`ap\` x1 \`ap\` ... \`ap\` xn`。
+
+- `(<$!>)`
+
+严格求值版本的`<$>`函数。
 
 -------------------------------------------
 

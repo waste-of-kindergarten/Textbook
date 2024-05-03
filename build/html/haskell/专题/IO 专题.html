@@ -63,6 +63,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">IO 专题</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id1">纯度与副作用</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#io-monad"><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-ioref">可变数据 <code class="docutils literal notranslate"><span class="pre">Data.IORef</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -142,7 +143,103 @@
 </div>
 <p>两者是完全等效的。</p>
 <center><p><img alt="../../_images/IOMonad.png" src="../../_images/IOMonad.png" /></p>
-</center><hr class="docutils" />
+</center></section>
+<section id="data-ioref">
+<h2>可变数据 <code class="docutils literal notranslate"><span class="pre">Data.IORef</span></code><a class="headerlink" href="#data-ioref" title="此标题的永久链接"></a></h2>
+<p>在纯代码中，“变量”是不可变的，即一旦我们为变量分配了值后，就不能修改这个值。Haskell 提供了一个在<code class="docutils literal notranslate"><span class="pre">IO</span></code> monad中修改变量内存的模块<code class="docutils literal notranslate"><span class="pre">Data.IORef</span></code>，该模块提供了<code class="docutils literal notranslate"><span class="pre">IORef</span></code>容器以及相关的功能函数，使我们能够直接修改容器中的变量。</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>函数名称</th>
+<th>类型签名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>newIORef</td>
+<td>a -&gt; IO (IORef a)</td>
+<td>新建IORef</td>
+</tr>
+<tr>
+<td>readIORef</td>
+<td>IORef a -&gt; IO a</td>
+<td>读取IORef中的值</td>
+</tr>
+<tr>
+<td>writeIORef</td>
+<td>IORef a -&gt; a -&gt; IO ()</td>
+<td>向IORef写入值</td>
+</tr>
+<tr>
+<td>modifyIORef</td>
+<td>IORef a -&gt; (a -&gt; a) -&gt; IO ()</td>
+<td>修改IORef中的值</td>
+</tr>
+<tr>
+<td>modifyIORef'</td>
+<td>IORef a -&gt; (a -&gt; a) -&gt; IO ()</td>
+<td>严格（非惰性）修改IORef中的值</td>
+</tr>
+<tr>
+<td>atomicModifyIORef</td>
+<td>IORef a -&gt; (a -&gt; (a, b)) -&gt; IO b</td>
+<td>原子地修改IORef中的值</td>
+</tr>
+<tr>
+<td>atuomicModifyIORef'</td>
+<td>IORef a -&gt; (a -&gt; (a,b)) -&gt; IO b</td>
+<td>原子地严格（非惰性）修改IORef中的值</td>
+</tr>
+<tr>
+<td>atomicWriteIORef</td>
+<td>IORef a -&gt; a -&gt; IO ()</td>
+<td>原子地向IORef写入值</td>
+</tr>
+<tr>
+<td>mkWeakIORef</td>
+<td>IORef a -&gt; IO () -&gt; IO (Weak (IORef a))</td>
+<td>创建弱指针对象</td>
+</tr>
+</tbody>
+</table><p>上述函数中，前四个比较基础，下面给出使用示例：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="nf">iorefDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">iorefDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">    </span><span class="n">aref</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">newIORef</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">aref</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">val</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">getLine</span><span class="w"> </span>
+<span class="w">    </span><span class="n">writeIORef</span><span class="w"> </span><span class="n">aref</span><span class="w"> </span><span class="n">y</span><span class="w"> </span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">aref</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">val</span><span class="w"> </span>
+<span class="w">    </span><span class="n">modifyIORef</span><span class="w"> </span><span class="n">aref</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;modified :&quot;</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">aref</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">val</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>该示例首先读取一行字符串<code class="docutils literal notranslate"><span class="pre">x</span></code>，使用<code class="docutils literal notranslate"><span class="pre">newIORef</span></code>创建一个<code class="docutils literal notranslate"><span class="pre">IORef</span></code>容器<code class="docutils literal notranslate"><span class="pre">aref</span></code>，并将<code class="docutils literal notranslate"><span class="pre">x</span></code>赋值，赋值后使用<code class="docutils literal notranslate"><span class="pre">readIORef</span></code>将值读入<code class="docutils literal notranslate"><span class="pre">val</span></code>并输出；接着读取新的一行字符串<code class="docutils literal notranslate"><span class="pre">y</span></code>，并通过<code class="docutils literal notranslate"><span class="pre">writeIORef</span></code>将其写入<code class="docutils literal notranslate"><span class="pre">aref</span></code>中，写入后将值读入<code class="docutils literal notranslate"><span class="pre">val</span></code>并输出；最后，用<code class="docutils literal notranslate"><span class="pre">modifyIORef</span></code>对<code class="docutils literal notranslate"><span class="pre">aref</span></code>内的值进行修改，在其字符串前添加<code class="docutils literal notranslate"><span class="pre">&quot;modified</span> <span class="pre">:&quot;</span></code>，重新读取值到<code class="docutils literal notranslate"><span class="pre">val</span></code>并输出。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code<span class="s1">&#39;3.hs</span>
+<span class="s1">[1 of 1] Compiling Main             ( code&#39;</span><span class="m">3</span>.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>iorefDemo
+hello<span class="w"> </span>
+<span class="s2">&quot;hello&quot;</span>
+hello<span class="w"> </span>haskell
+<span class="s2">&quot;hello haskell&quot;</span>
+<span class="s2">&quot;modified :hello haskell&quot;</span>
+</pre></div>
+</div>
+<p>除了基础的四个函数操作，<code class="docutils literal notranslate"><span class="pre">atomicModifyIORef</span></code>以原子方式进行修改，该函数对于在多线程中使用<code class="docutils literal notranslate"><span class="pre">IORef</span></code>非常有用,当只有一个<code class="docutils literal notranslate"><span class="pre">IORef</span></code>时，<code class="docutils literal notranslate"><span class="pre">atomicModifyIORef</span></code>函数，可以阻止多个线程因访问其而可能产生的竞争状态；<code class="docutils literal notranslate"><span class="pre">atomicWriteIORef</span></code>以原子方式进行写入；最后<code class="docutils literal notranslate"><span class="pre">mkWeakIORef</span></code>创建一个指向<code class="docutils literal notranslate"><span class="pre">IORef</span></code>的弱指针。</p>
+<blockquote>
+<div><p>补充：大多数现代的CPU架构都有一个内存模型，这个模型会允许线程对读取操作和写入进行重排，以使读取早于写入，例如x86/64架构，而原子方式则会强制一个内存屏障以阻止原子块中的读写操作的重排</p>
+</div></blockquote>
+<blockquote>
+<div><p>提示： 有关严格求值版本的细节可参阅<a class="reference external" href="https://hackage.haskell.org/package/base-4.19.1.0/docs/Data-IORef.html">Data.IORef</a>，有关弱指针的细节可参阅<a class="reference external" href="https://hackage.haskell.org/package/base-4.19.1.0/docs/System-Mem-Weak.html">System.Mem.Weak</a></p>
+</div></blockquote>
+<hr class="docutils" />
 <p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p></section>
 </section>
 

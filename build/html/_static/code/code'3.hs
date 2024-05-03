@@ -1,3 +1,5 @@
+import Data.IORef
+
 threeStrLn :: IO Int 
 threeStrLn = 
     getLine >>= 
@@ -12,3 +14,19 @@ threeStrLn' = do
     y <- getLine 
     z <- getLine 
     return $ length x + length y + length z 
+
+iorefDemo :: IO ()
+iorefDemo = do 
+    x <- getLine 
+    aref <- newIORef x
+    val <- readIORef aref 
+    print val
+    y <- getLine 
+    writeIORef aref y 
+    val <- readIORef aref 
+    print val 
+    modifyIORef aref ("modified :" ++ )
+    val <- readIORef aref 
+    print val 
+
+    

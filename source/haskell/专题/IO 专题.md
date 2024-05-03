@@ -63,6 +63,62 @@ threeStrLn' = do
 </center>
 
 
+## 可变数据 `Data.IORef`
+
+在纯代码中，“变量”是不可变的，即一旦我们为变量分配了值后，就不能修改这个值。Haskell 提供了一个在`IO` monad中修改变量内存的模块`Data.IORef`，该模块提供了`IORef`容器以及相关的功能函数，使我们能够直接修改容器中的变量。
+
+|函数名称|类型签名|功能|
+|---|---|---|
+| newIORef | a -> IO (IORef a) | 新建IORef |
+| readIORef | IORef a -> IO a | 读取IORef中的值 | 
+| writeIORef | IORef a -> a -> IO () | 向IORef写入值 |
+| modifyIORef | IORef a -> (a -> a) -> IO () | 修改IORef中的值 |
+| modifyIORef' | IORef a -> (a -> a) -> IO () | 严格（非惰性）修改IORef中的值 | 
+| atomicModifyIORef | IORef a -> (a -> (a, b)) -> IO b | 原子地修改IORef中的值 |
+| atuomicModifyIORef' | IORef a -> (a -> (a,b)) -> IO b | 原子地严格（非惰性）修改IORef中的值 |
+| atomicWriteIORef | IORef a -> a -> IO () | 原子地向IORef写入值 | 
+| mkWeakIORef | IORef a -> IO () -> IO (Weak (IORef a)) | 创建弱指针对象 |
+
+上述函数中，前四个比较基础，下面给出使用示例：
+
+```hs
+-- code'3.hs
+
+iorefDemo :: IO ()
+iorefDemo = do 
+    x <- getLine 
+    aref <- newIORef x
+    val <- readIORef aref 
+    print val
+    y <- getLine 
+    writeIORef aref y 
+    val <- readIORef aref 
+    print val 
+    modifyIORef aref ("modified :" ++ )
+    val <- readIORef aref 
+    print val 
+```
+
+该示例首先读取一行字符串`x`，使用`newIORef`创建一个`IORef`容器`aref`，并将`x`赋值，赋值后使用`readIORef`将值读入`val`并输出；接着读取新的一行字符串`y`，并通过`writeIORef`将其写入`aref`中，写入后将值读入`val`并输出；最后，用`modifyIORef`对`aref`内的值进行修改，在其字符串前添加`"modified :"`，重新读取值到`val`并输出。
+
+```bash
+Prelude> :load code'3.hs
+[1 of 1] Compiling Main             ( code'3.hs, interpreted )
+Ok, one module loaded.
+Prelude> iorefDemo
+hello 
+"hello"
+hello haskell
+"hello haskell"
+"modified :hello haskell"
+```
+
+除了基础的四个函数操作，`atomicModifyIORef`以原子方式进行修改，该函数对于在多线程中使用`IORef`非常有用,当只有一个`IORef`时，`atomicModifyIORef`函数，可以阻止多个线程因访问其而可能产生的竞争状态；`atomicWriteIORef`以原子方式进行写入；最后`mkWeakIORef`创建一个指向`IORef`的弱指针。
+
+> 补充：大多数现代的CPU架构都有一个内存模型，这个模型会允许线程对读取操作和写入进行重排，以使读取早于写入，例如x86/64架构，而原子方式则会强制一个内存屏障以阻止原子块中的读写操作的重排
+
+> 提示： 有关严格求值版本的细节可参阅[Data.IORef](https://hackage.haskell.org/package/base-4.19.1.0/docs/Data-IORef.html)，有关弱指针的细节可参阅[System.Mem.Weak](https://hackage.haskell.org/package/base-4.19.1.0/docs/System-Mem-Weak.html)
+
 
 ---------------------------
 
