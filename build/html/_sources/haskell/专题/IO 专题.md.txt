@@ -62,7 +62,6 @@ threeStrLn' = do
 
 </center>
 
-
 ## 可变数据 `Data.IORef`
 
 在纯代码中，“变量”是不可变的，即一旦我们为变量分配了值后，就不能修改这个值。Haskell 提供了一个在`IO` monad中修改变量内存的模块`Data.IORef`，该模块提供了`IORef`容器以及相关的功能函数，使我们能够直接修改容器中的变量。
@@ -118,6 +117,7 @@ hello haskell
 > 补充：大多数现代的CPU架构都有一个内存模型，这个模型会允许线程对读取操作和写入进行重排，以使读取早于写入，例如x86/64架构，而原子方式则会强制一个内存屏障以阻止原子块中的读写操作的重排
 
 > 提示： 有关严格求值版本的细节可参阅[Data.IORef](https://hackage.haskell.org/package/base-4.19.1.0/docs/Data-IORef.html)，有关弱指针的细节可参阅[System.Mem.Weak](https://hackage.haskell.org/package/base-4.19.1.0/docs/System-Mem-Weak.html)
+
 
 
 ---------------------------
