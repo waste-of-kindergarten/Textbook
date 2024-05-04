@@ -163,6 +163,34 @@ Haskell提供了一些句柄读操作，这里给出一些常见的函数。
 > 3. `hGetContents` 在句柄完全关闭的状态是无法进行读取的，因此当我们执行完`hGetContents`函数后，在使用`hClose`关闭句柄后尝试读取`hGetContents`得到的结果时，会产生异常
 > 4. 因此，Haskell提供了一个严格求值版本的 `hGetContents'`
 
+另外，针对标准输入，Haskell还提供了一些特例函数，这些函数可以认为是上述函数的部分应用函数。
+
+- `getChar :: IO Char` :  向标准输入读取一个字符，等同于`hGetChar stdin`
+
+- `getLine :: IO String` : 向标准输入读取一行字符串，等同于`hGetLine stdin`
+
+- `getContents :: IO String` : 读取所有标准输入，等同于`hGetLine stdin`，严格求值版本为`getContents'`
+
+
+### 句柄写操作
+
+除了读操作，Haskell还提供了一些写操作，下面给出一些常见的函数。
+
+- `hPutChar :: Handle -> Char -> IO ()` : 向句柄中写入一个字符
+- `hPutStr :: Handle -> String -> IO ()` : 向句柄中写入一个字符串
+- `hPutStrLn :: Handle -> String -> IO ()` : 向句柄中写入一个字符串，并另起一行（添加一个换行符）
+-  `hPrint :: Show a => Handle -> a -> IO ()` : 向句柄中写入一个满足`Show`约束的类型的值
+
+特别地，针对标准输出，Haskell提供了一些特例函数。
+
+- `putChar :: Char -> IO ()` : 向标准输出写入一个字符，等同于`hPutChar stdout`
+
+- `putStr :: String -> IO ()` : 向标准输出写入一个字符串，等同于`hPutStr stdout`
+
+- `putStrLn :: String -> IO ()` : 向标准输出写入一个字符串，并另起一行，等同于`hPutStrLn stdout`
+
+- `print :: Show a => a -> IO ()` : 对可展示的类型（受到`Show`约束）的值输出，等同于`\t -> hPutStrLn stdout (show t)`
+
 ### 句柄访问位置
 
 当我们访问文件句柄时，会存在一个访问位置，从此位置可以进行读取或者写入操作。通过`hTell :: Handle -> IO Integer`函数可以获取当前句柄的绝对位置，即从初始位置到当前位置间隔的字节数目。特别地，`hIsEOF :: Handle -> IO Bool`函数用于判断是否到达了文件末尾。
@@ -177,9 +205,12 @@ data SeekMode = AbsoluteSeek | RelativeSeek | SeekFromEnd
 
 `hSeek`函数的类型为`Handle -> SeekMode -> Integer -> IO ()`，我们只需要提供句柄，移动参照模式以及一个偏移量即可改变句柄访问地位置。
 
+### 缓冲区模式
+
 
 
 ## 系统环境
+
 
 ## 文件操作
 
