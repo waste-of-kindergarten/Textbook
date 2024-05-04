@@ -64,6 +64,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#id1">纯度与副作用</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#io-monad"><code class="docutils literal notranslate"><span class="pre">IO</span></code> monad</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-ioref">可变数据 <code class="docutils literal notranslate"><span class="pre">Data.IORef</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">数据读写</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">读写模式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">句柄读操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">句柄访问位置</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">系统环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">文件操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">系统进程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">系统时间</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">不安全的IO</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -239,6 +250,70 @@ hello<span class="w"> </span>haskell
 <blockquote>
 <div><p>提示： 有关严格求值版本的细节可参阅<a class="reference external" href="https://hackage.haskell.org/package/base-4.19.1.0/docs/Data-IORef.html">Data.IORef</a>，有关弱指针的细节可参阅<a class="reference external" href="https://hackage.haskell.org/package/base-4.19.1.0/docs/System-Mem-Weak.html">System.Mem.Weak</a></p>
 </div></blockquote>
+</section>
+<section id="id2">
+<h2>数据读写<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>对于数据进行读写实际上是对于 <em><strong>句柄(handle)</strong></em> 的操作，无论对于文件或者数据流的读写，均基于句柄进行操作。句柄在Haskell中的类型为<code class="docutils literal notranslate"><span class="pre">Handle</span></code>，我们常用的标准输入输出<code class="docutils literal notranslate"><span class="pre">stdin</span></code>和<code class="docutils literal notranslate"><span class="pre">stdout</span></code>的类型均为<code class="docutils literal notranslate"><span class="pre">Handle</span></code>。数据读写相关的定义位于<code class="docutils literal notranslate"><span class="pre">Sytem.IO</span></code>。</p>
+<p>接下来我们依托文件系统讲解有关读写的相关定义和用法。</p>
+<section id="id3">
+<h3>读写模式<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">IOMode</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ReadMode</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">WriteMode</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">AppendMode</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">ReadWriteMode</span>
+</pre></div>
+</div>
+<p>系统为读写模式定义了四种模式，其中<code class="docutils literal notranslate"><span class="pre">ReadMode</span></code>为只读；<code class="docutils literal notranslate"><span class="pre">WriteMode</span></code>为只写,写入内容会覆盖已经存在的内容，如果不存在则先创建；<code class="docutils literal notranslate"><span class="pre">AppendMode</span></code>为只添加,写入内容会添加到末尾，如果不存在则先创建；<code class="docutils literal notranslate"><span class="pre">ReadWriteMode</span></code>为读写，既可以读也可以写，当文件不存在时自动创建。</p>
+<p>基于上面的模式，Haskell提供了若干打开文件的函数：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">readFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">String</span></code> : 读取模式打开文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">writeFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 写模式打开文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">appendFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 添加模式打开文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">openFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IOMode</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Handle</span></code> : （以某种模式）打开文件</p></li>
+</ul>
+<p>上述函数中前三个函数将句柄封装起来，方便我们根据需要直接进行相关文件操作；而第四个函数<code class="docutils literal notranslate"><span class="pre">openFile</span></code>允许我们更自由操作句柄，当我们完成对句柄的操作后，需要对句柄进行关闭<code class="docutils literal notranslate"><span class="pre">hClose</span></code>。</p>
+</section>
+<section id="id4">
+<h3>句柄读操作<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>Haskell提供了一些句柄读操作，这里给出一些常见的函数。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hGetChar</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Char</span></code> : 读取一个字符，访问位置向后移动一位（可能会导致isEOFError，位于<code class="docutils literal notranslate"><span class="pre">System.IO.Error</span></code>）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hGetLine</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">String</span></code> : 读取一行字符，访问位置向后移动一行（同样可能导致isEOFError）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hLookAhead</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Char</span></code> : 向后读取一个字符，但访问位置不移动（同样可能导致isEOFError）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hGetContents</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">String</span></code> : 读取全部内容，并自动关闭句柄</p></li>
+</ul>
+<blockquote>
+<div><p>补充：</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hGetContents</span></code>作为惰性求值的函数，因此当我们执行这个函数时并没有读取任何字符串，这允许其读取很大的文件而不必担心内存分配问题</p></li>
+<li><p>似乎<code class="docutils literal notranslate"><span class="pre">hGetContents</span></code>的惰性读取字符串和关闭句柄之间是矛盾的，实际上，这个关闭状态是一种中间态，<code class="docutils literal notranslate"><span class="pre">hGetContents</span></code>仍然可以从中读取内容，虽然使用<code class="docutils literal notranslate"><span class="pre">hIsClosed</span></code>函数查看到的状态是关闭的</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hGetContents</span></code> 在句柄完全关闭的状态是无法进行读取的，因此当我们执行完<code class="docutils literal notranslate"><span class="pre">hGetContents</span></code>函数后，在使用<code class="docutils literal notranslate"><span class="pre">hClose</span></code>关闭句柄后尝试读取<code class="docutils literal notranslate"><span class="pre">hGetContents</span></code>得到的结果时，会产生异常</p></li>
+<li><p>因此，Haskell提供了一个严格求值版本的 <code class="docutils literal notranslate"><span class="pre">hGetContents'</span></code></p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="id5">
+<h3>句柄访问位置<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>当我们访问文件句柄时，会存在一个访问位置，从此位置可以进行读取或者写入操作。通过<code class="docutils literal notranslate"><span class="pre">hTell</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Integer</span></code>函数可以获取当前句柄的绝对位置，即从初始位置到当前位置间隔的字节数目。特别地，<code class="docutils literal notranslate"><span class="pre">hIsEOF</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Bool</span></code>函数用于判断是否到达了文件末尾。</p>
+<p>我们还可以通过<code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数改变句柄访问位置，在介绍<code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数之前，我们首先了解句柄访问位置的移动参照。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">SeekMode</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">AbsoluteSeek</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">RelativeSeek</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">SeekFromEnd</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">AbsoluteSeek</span></code>为绝对移动，即从初始位置到目标位置间隔的字节数；<code class="docutils literal notranslate"><span class="pre">RelativeSeek</span></code>为相对移动，即从当前位置移动的字节数，可以为负值（表示向前）；<code class="docutils literal notranslate"><span class="pre">SeekFromEnd</span></code>从文件末尾向前移动一定的字节数。</p>
+<p><code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">SeekMode</span> <span class="pre">-&gt;</span> <span class="pre">Integer</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>，我们只需要提供句柄，移动参照模式以及一个偏移量即可改变句柄访问地位置。</p>
+</section>
+</section>
+<section id="id6">
+<h2>系统环境<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+</section>
+<section id="id7">
+<h2>文件操作<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+</section>
+<section id="id8">
+<h2>系统进程<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+</section>
+<section id="id9">
+<h2>系统时间<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h2>
+</section>
+<section id="id10">
+<h2>不安全的IO<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
 <hr class="docutils" />
 <p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p></section>
 </section>
