@@ -284,8 +284,34 @@ setBlockBufferingDemo = do
 
 ## 系统环境
 
+`System.Environment`库中包含了系统环境相关的函数。这里简要介绍如何获取环境变量以及调用程序时传入的命令行参数。
 
-## 文件操作
+### 环境变量
+
+`getEnv`函数的类型为`String -> IO String`，该函数接受一个字符串，并将这个字符串所对应的环境包裹在IO monad中返回。例如在本机的环境中，查看`PATH`变量对应的环境。
+
+```bash
+Prelude> import System.Environment
+Prelude> getEnv "PATH" >>= print
+"/home/user/.vscode-server/cli/servers/Stable-b58957e67ee1e712cebf466b995adf4c5307b2bd/server/bin/remote-cli:/home/user/.opam/CP.2023.11.0~8.18~2023.11/bin:/home/user/.local/bin:/home/user/.cabal/bin:/home/user/.ghcup/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+```
+
+### 命令行参数
+
+`getArgs`的类型为`IO [String]`，用于获取来自系统命令行中的参数。这里为了方便直接使用GHCi设置命令行参数，使用`getArgs`获取参数并计算参数的数目：
+
+```bash
+Prelude> :set args "1" "2" "3"
+Prelude> :{
+Prelude| main = do 
+Prelude|   args <- getArgs
+Prelude|   print $ length args
+Prelude|:}
+Prelude> main 
+3
+```
+
+## 目录操作
 
 ## 系统进程
 
