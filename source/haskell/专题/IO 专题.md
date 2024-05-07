@@ -171,7 +171,6 @@ Haskell提供了一些句柄读操作，这里给出一些常见的函数。
 
 - `getContents :: IO String` : 读取所有标准输入，等同于`hGetLine stdin`，严格求值版本为`getContents'`
 
-
 ### 句柄写操作
 
 除了读操作，Haskell还提供了一些写操作，下面给出一些常见的函数。
@@ -205,8 +204,82 @@ data SeekMode = AbsoluteSeek | RelativeSeek | SeekFromEnd
 
 `hSeek`函数的类型为`Handle -> SeekMode -> Integer -> IO ()`，我们只需要提供句柄，移动参照模式以及一个偏移量即可改变句柄访问地位置。
 
+下面提供一个综合的例子：
+
+```hs
+-- code'3.hs
+  
+fileDemo :: IO ()
+fileDemo = do 
+        file <- openFile "test.txt" ReadWriteMode 
+        pos <- hTell file 
+        print pos
+        hPutStr file "hello world"
+        pos <- hTell file 
+        print pos 
+        hSeek file AbsoluteSeek 6
+        c <- hLookAhead file 
+        print c
+        pos <- hTell file 
+        print pos 
+        hPutStr file "new world"
+        hClose file
+        x <- readFile "test.txt"
+        print x 
+```
+
+```bash
+Prelude> fileDemo
+0
+11
+'w'
+6
+
+```
+
+首先，程序以读写模式打开`test.txt`文件（如果没有直接创建），此时访问位置为0，从此处进行写入`"hello world"`，一共写入11个字符，因此访问位置变为11，接着移动到第六个字符的位置（访问得到此处字符为`'w'`，并保持访问位置不变），从此处写入`"new world"`之后关闭文件。重新读取文件，得到内容为覆盖后的内容`"hello new world"`。
+
 ### 缓冲区模式
 
+一般地，从数据流中进行读取或向其中写入数据要比处理这些内容的时间长，因此系统在内存中设置 ***缓冲区(buffer)*** ，用来临时处理读写的内容，只有当缓冲区装满后才会进行刷新（即将内容真正读写到数据流中）。
+
+在Haskell中定义了三种不同的缓冲区模式：
+
+```hs
+data BufferMode = NoBuffer | LineBuffering | BlockBuffering (Maybe Int)
+```
+
+可以看到缓冲区分为三类，`NoBuffer`表示无缓冲模式，此时字符将被逐个处理；`LineBuffering`表示行缓冲模式，字符串以行单位被处理；`BlockBuffering`表示块缓冲模式，字符串被存储在指定字节长度的缓冲区中被操作，这是Haskell默认的缓冲模式（参数设置为Nothing）。我们可以通过`hGetBuffering :: Handle -> IO BufferMode`查看句柄的缓冲区模式。
+
+另外，我们还可以使用`hSetBuffering :: Handle -> BufferMode -> IO ()`可以改变缓冲区的模式。下面的两个示例，通过更改缓冲区模式，在缓冲区未装满的情况下，使用`hFlush :: Handle -> IO ()`函数进行手动刷新，对比刷新前后的写入情况。
+
+```hs
+-- code'3.hs
+
+setLineBufferingDemo :: IO () 
+setLineBufferingDemo = do 
+        file <- openFile "test.txt" WriteMode 
+        hSetBuffering file LineBuffering 
+        hPutStr file "abc"
+        getLine -- 暂停查看test.txt 内容
+        hFlush file 
+        getLine -- 查看刷新后的test.txt 内容
+        hClose file 
+
+setBlockBufferingDemo :: IO () 
+setBlockBufferingDemo = do 
+        file <- openFile "test.txt" WriteMode 
+        hSetBuffering file (BlockBuffering (Just 10))
+        hPutStr file "abc"
+        getLine -- 暂停查看test.txt 内容
+        hFlush file 
+        getLine -- 查看刷新后的test.txt 内容
+        hClose file
+```
+
+以上两个示例分别将缓冲区模式设为行缓冲模式和10字符块缓冲模式，`"abc"`不能够填满缓冲区，此时暂停查看`test.txt`文件会发现内容为空；当我们使用`hFlush`函数手动刷新后，此时查看`test.txt`文件会发现内容已经出现在文件中。
+
+> 提示：实际上，当用户使用`hClose`函数时，`hFlush`函数将被自动调用，因此，即使我们不使用`hFlush`函数进行刷新，当我们关闭句柄后，内容仍然出现在了文件中
 
 
 ## 系统环境
