@@ -1,5 +1,6 @@
 import Data.IORef
 import System.IO
+import System.Directory
 
 
 
@@ -70,3 +71,14 @@ setBlockBufferingDemo = do
         hFlush file 
         getLine 
         hClose file 
+
+directoryDemo :: IO ()
+directoryDemo = do 
+        createDirectory "demo"
+        writeFile "demo/test.txt" "content"
+        renameFile "demo/test.txt" "demo/new.txt"
+        renameDirectory "demo" "newdemo"
+        getLine -- 暂停查看目录
+        removeDirectoryRecursive "newdemo"
+
+        

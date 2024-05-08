@@ -311,11 +311,153 @@ Prelude> main
 3
 ```
 
-## 目录操作
+## 文件及目录操作
+
+对于文件及目录进行操作是重要的IO操作之一，这些操作位于`System.Directory`中。
+
+首先，`createDirectory :: FilePath -> IO ()`可以用于创建目录，与之相对的`removeDirectory :: FilePath -> IO ()`用于移除目录。然而`removeDirectory`的移除功能比较首先，其要求目录必须为空，不能有任何文件或子目录，当我们需要不加考虑删除目录时，应当使用`removeDirectoryRecursive :: FilePath -> IO ()`。
+
+我们还可以对目录进行重命名或者移动。使用`renameDirectory :: FilePath -> FilePath -> IO ()`可以改变目录的名称；而使用`setCurrentDirectory :: FilePath -> IO ()`可以改变当前目录的路径。
+
+除此之外，我们还需要对目录中的文件（夹）做一些操作。例如通过`getDirectoryContents :: FilePath -> IO [FilePath]`获取特定目录下的内容；`findFile :: [FilePath] -> String -> IO (Maybe FilePath)` 在指定路径下查找文件（不进行递归查找）；`renameFile :: FilePath -> FilePath -> IO ()`对文件进行重命名；`renameFile :: FilePath -> FilePath -> IO ()`复制文件到另一个目录；`removeFile :: FilePath -> IO ()`对文件进行移除。
+
+下面给出一个示例：
+
+```hs
+-- code'3.hs
+
+directoryDemo :: IO ()
+directoryDemo = do 
+        createDirectory "demo"
+        writeFile "demo/test.txt" "content"
+        renameFile "demo/test.txt" "demo/new.txt"
+        renameDirectory "demo" "newdemo"
+        getLine -- 暂停查看目录
+        removeDirectoryRecursive "newdemo"
+```
+
+首先，函数创建了名为`demo`的文件夹，并向其中写入名为`test.txt`的文件，文件内容为`"content"`，接着重命名文件名为`new.txt`，重命名目录为`"newdemo"`；`getLine`函数中断程序执行，读者可以此时查看文件目录的状态，最后`removeDirectoryRecursive`函数将目录以及内部的全部内容删除。
+
+> 有关更多的操作可以参考[System.Directory](https://hackage.haskell.org/package/directory-1.3.8.4/docs/System-Directory.html)
 
 ## 系统进程
 
-## 系统时间
+下面介绍几个常用的系统进程相关的函数以及数据结构，读者可以自行查阅`System.Process`获取更多细节。
+
+一个用于执行命令行命令的简单函数是`callCommand`，该函数的类型为`String -> IO ()`，当我们使用该函数执行命令时，命令的回显将直接输出到终端上。
+
+```bash
+Prelude> import System.Process
+Preldue> callCommand "lsb_release -a"
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+有时我们需要将命令与参数分开进行分析，此时可以使用`callProess`函数，该函数的类型为`FilePath -> [String] -> IO ()`。
+
+```bash
+Prelude> callProcess "lsb_release" ["-a"]
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+然而有某些情况下，我们希望回显存在字符串中而不是直接输出，因此可以使用`readProcess`，该函数的类型为`FilePath -> [String] -> String -> IO String`。前两个参数与`callProcess`中参数含义对应一致，第三个参数用来表示标准输入，即执行命令后为可能存在的标准输入提供内容。
+
+```bash
+Prelude> readProcess "lsb_release" ["-a"] "abc" >>= putStrLn
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+下面介绍`CreateProcess`类型，该类型是调用操作系统命令基础的类型，该类型及相关定义如下：
+
+```hs
+data CmdSpec = ShellCommand String 
+    | RawCommand FilePath [String]
+
+data StdStream = Inherit 
+    | UseHandle Handle
+    | CreatePipe
+
+data CreateProcess {
+    cmdspec :: CmdSpec,
+    cwd :: Maybe FilePath,
+    env :: Maybe [(String,String)],
+    std_in :: StdStream,
+    std_out :: StdStream,
+    std_err :: StdStream,
+    close_fds :: Bool,
+    create_group :: Bool,
+    delegate_ctlc :: Bool,
+    detach_console :: Bool,
+    create_new_console :: Bool,
+    new_session :: Bool,
+    child_group :: Maybe GroupID,
+    use_process_jobs :: Bool
+} deriving (Show,Eq)
+```
+
+我们比较关心前六个参数，`cmdspec`表示命令，它要么是一条命令，此时参数与命令同为一个字符串，要么为原始命令，参数使用列表进行容纳。`cwd`表示运行命令所在的目录；`env`为执行命令添加了额外的环境变量；`std_in`、`std_out`和`std_err`表示处理标准输入输出和错误的方法，它们可以是从父继承过来、使用给定的句柄或者返回新的句柄。
+
+一般情况下，我们只需要使用库中提供的函数即可，而无需手动配置这些参数。
+
+`shell`函数的类型为`String -> CreateProcess`，可以用于生成带有`ShellCommand`模式的`CreateProcess`。
+
+```bash
+Prelude> shell "lsb_release -a"
+CreateProcess {cmdspec = ShellCommand "lsb_release -a", cwd = Nothing, env = Nothing, std_in = Inherit, std_out = Inherit, std_err = Inherit, close_fds = False, create_group = False, delegate_ctlc = False, detach_console = False, create_new_console = False, new_session = False, child_group = Nothing, child_user = Nothing, use_process_jobs = False}
+```
+
+另一个类似的函数`proc`类型为`FilePath -> [String] -> CreateProcess`，用来生成带有`RawCommand`模式的`CreateProcess`。
+
+```bash
+Prelude> proc "lsb_release" ["-a"]
+CreateProcess {cmdspec = RawCommand "lsb_release" ["-a"], cwd = Nothing, env = Nothing, std_in = Inherit, std_out = Inherit, std_err = Inherit, close_fds = False, create_group = False, delegate_ctlc = False, detach_console = False, create_new_console = False, new_session = False, child_group = Nothing, child_user = Nothing, use_process_jobs = False}
+```
+
+一旦我们创建了`CreateProcess`类型的值，就可以使用`createProcess`函数执行。`createProcess`的类型为`CreateProcess -> IO (Maybe Handle, Maybe Handle, Maybe Handle,ProcessHandle)`，返回的IO monad中包含了三个句柄，分别为输入，标准输出和错误输出，第四个`ProcessHandle`表示进程句柄，可用于后续程序等待其终止。
+
+```bash
+Prelude> createProcess $ proc "lsb_release" ["-a"]
+```
+
+当然，根据需要我们也可以手动创建`CreateProcess`，例如指定输入输出的句柄，使其重定向到合适的数据流（如文件或者网络）。这里不再过多赘述，感兴趣的读者可以自行尝试。
+
+有时，一个函数执行会消耗一定的时间，一般情况下我们可以在这段时间里处理其他的计算，然而，某些特殊的情况可能要求我们等待进程结束，此时可以使用`waitForProcess :: ProcessHandle -> IO ()`函数。
+
+```bash
+Prelude> createProcess (proc "sleep" ["3"]) >>= \(_,_,_,t) -> waitForProcess t >> print "wait for the process to be done"
+"wait for the process to be done"
+Prelude> createProcess (proc "sleep" ["3"]) >> print "without waiting for the process to be done"
+"without waiting for the process to be done"
+```
+
+我们还可以使用`getProcessExitCode :: ProcessHandle -> IO (Maybe ExitCode)`获取进程执行的退出码。
+
+```bash
+Prelude> createProcess (proc "sleep" ["3"]) >>= \(_,_,_,t) -> waitForProcess t >> getProcessExitCode t
+Just ExitSuccess
+```
+
+> 提示: `getProcessExitCode`需要与`waitForProcess`联合使用，否则返回的永远都是`Nothing`
+
+有时我们还希望直接结束某些耗时很长的进程：
+
+```bash
+Prelude> createProcess (proc "sleep" ["100"]) >>= \(_,_,_,t) -> terminateProcess t >> waitForProcess t >> getProcessExitCode t
+Just (ExitFailure (-15))
+```
+
+使用`terminateProcess :: ProcessHandle -> IO ()`可以终止程序，上述示例中，可以看到进程被强制终止后，获得的退出码是异常退出。
 
 ## 不安全的IO
 
