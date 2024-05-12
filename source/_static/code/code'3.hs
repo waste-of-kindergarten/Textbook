@@ -1,7 +1,7 @@
 import Data.IORef
 import System.IO
 import System.Directory
-
+import System.IO.Unsafe 
 
 
 threeStrLn :: IO Int 
@@ -81,4 +81,22 @@ directoryDemo = do
         getLine -- 暂停查看目录
         removeDirectoryRecursive "newdemo"
 
-        
+val :: IORef Int 
+val = unsafePerformIO $ newIORef 0  
+
+val' :: IORef Int 
+val' = unsafePerformIO $ newIORef 0
+
+unsafeDemo1 :: IO ()
+unsafeDemo1 = do 
+    x <- unsafeInterleaveIO $ readIORef val 
+    y <- unsafeInterleaveIO $ writeIORef val 1 >> readIORef val 
+    print x 
+    print y 
+
+unsafeDemo2 :: IO ()
+unsafeDemo2 = do 
+    x <- unsafeInterleaveIO $ readIORef val'
+    y <- unsafeInterleaveIO $ writeIORef val' 1 >> readIORef val' 
+    print y 
+    print x 

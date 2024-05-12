@@ -461,6 +461,61 @@ Just (ExitFailure (-15))
 
 ## 不安全的IO
 
+虽然我们希望将纯代码与不纯的代码进行隔离，但实际上Haskell仍然提供了一些后门操作`System.IO.Unsafe`。
+
+|函数|类型|
+|---|---|
+| unsafePerformIO | IO a -> a | 
+| unsafeDupablePerformIO | IO a -> a | 
+| unsafeInterleaveIO | IO a -> IO a | 
+| unsafeFixIO | (a -> IO a) -> IO a | 
+
+读者应当注意，在使用这一系列操作时，副作用发生的相对顺序是不确定的，因此需要格外小心。
+
+例如，我们考虑对于可变数据的操作，如下：
+
+```hs
+-- code'3.hs
+
+import System.IO.Unsafe
+
+val :: IORef Int 
+val = unsafePerformIO $ newIORef 0  
+
+val' :: IORef Int 
+val' = unsafePerformIO $ newIORef 0
+
+unsafeDemo1 :: IO ()
+unsafeDemo1 = do 
+    x <- unsafeInterleaveIO $ readIORef val 
+    y <- unsafeInterleaveIO $ writeIORef val 1 >> readIORef val 
+    print x 
+    print y 
+
+unsafeDemo2 :: IO ()
+unsafeDemo2 = do 
+    x <- unsafeInterleaveIO $ readIORef val'
+    y <- unsafeInterleaveIO $ writeIORef val' 1 >> readIORef val' 
+    print y 
+    print x 
+```
+
+在GHCi中执行这两个函数：
+
+```bash
+Prelude> unsafeDemo1
+0
+1
+Prelude> unsafeDemo2
+1
+1
+```
+
+`unsafeDemo1`函数先输出`x`，此时`val`中变量为`0`，因此读取的值也为0，接着输出更改后的`y`；`unsafeDemo2`函数先输出`y`，根据惰性求值，此时执行了对`val'`的修改，因此在后面输出`x`时，读取到的`val'`中的值为1。
+
+实际编码中应当尽可能避免这些操作，有关更多的使用细节，读者可以自行参考[System.IO.Unsafe](https://hackage.haskell.org/package/base-4.19.1.0/docs/System-IO-Unsafe.html)。
+
+
 ---------------------------
 
 <p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p>
