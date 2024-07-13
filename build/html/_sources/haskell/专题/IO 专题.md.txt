@@ -163,6 +163,33 @@ Haskell提供了一些句柄读操作，这里给出一些常见的函数。
 > 3. `hGetContents` 在句柄完全关闭的状态是无法进行读取的，因此当我们执行完`hGetContents`函数后，在使用`hClose`关闭句柄后尝试读取`hGetContents`得到的结果时，会产生异常
 > 4. 因此，Haskell提供了一个严格求值版本的 `hGetContents'`
 
+另外，针对标准输入，Haskell还提供了一些特例函数，这些函数可以认为是上述函数的部分应用函数。
+
+- `getChar :: IO Char` :  向标准输入读取一个字符，等同于`hGetChar stdin`
+
+- `getLine :: IO String` : 向标准输入读取一行字符串，等同于`hGetLine stdin`
+
+- `getContents :: IO String` : 读取所有标准输入，等同于`hGetLine stdin`，严格求值版本为`getContents'`
+
+### 句柄写操作
+
+除了读操作，Haskell还提供了一些写操作，下面给出一些常见的函数。
+
+- `hPutChar :: Handle -> Char -> IO ()` : 向句柄中写入一个字符
+- `hPutStr :: Handle -> String -> IO ()` : 向句柄中写入一个字符串
+- `hPutStrLn :: Handle -> String -> IO ()` : 向句柄中写入一个字符串，并另起一行（添加一个换行符）
+-  `hPrint :: Show a => Handle -> a -> IO ()` : 向句柄中写入一个满足`Show`约束的类型的值
+
+特别地，针对标准输出，Haskell提供了一些特例函数。
+
+- `putChar :: Char -> IO ()` : 向标准输出写入一个字符，等同于`hPutChar stdout`
+
+- `putStr :: String -> IO ()` : 向标准输出写入一个字符串，等同于`hPutStr stdout`
+
+- `putStrLn :: String -> IO ()` : 向标准输出写入一个字符串，并另起一行，等同于`hPutStrLn stdout`
+
+- `print :: Show a => a -> IO ()` : 对可展示的类型（受到`Show`约束）的值输出，等同于`\t -> hPutStrLn stdout (show t)`
+
 ### 句柄访问位置
 
 当我们访问文件句柄时，会存在一个访问位置，从此位置可以进行读取或者写入操作。通过`hTell :: Handle -> IO Integer`函数可以获取当前句柄的绝对位置，即从初始位置到当前位置间隔的字节数目。特别地，`hIsEOF :: Handle -> IO Bool`函数用于判断是否到达了文件末尾。
@@ -177,17 +204,317 @@ data SeekMode = AbsoluteSeek | RelativeSeek | SeekFromEnd
 
 `hSeek`函数的类型为`Handle -> SeekMode -> Integer -> IO ()`，我们只需要提供句柄，移动参照模式以及一个偏移量即可改变句柄访问地位置。
 
+下面提供一个综合的例子：
+
+```hs
+-- code'3.hs
+  
+fileDemo :: IO ()
+fileDemo = do 
+        file <- openFile "test.txt" ReadWriteMode 
+        pos <- hTell file 
+        print pos
+        hPutStr file "hello world"
+        pos <- hTell file 
+        print pos 
+        hSeek file AbsoluteSeek 6
+        c <- hLookAhead file 
+        print c
+        pos <- hTell file 
+        print pos 
+        hPutStr file "new world"
+        hClose file
+        x <- readFile "test.txt"
+        print x 
+```
+
+```bash
+Prelude> fileDemo
+0
+11
+'w'
+6
+
+```
+
+首先，程序以读写模式打开`test.txt`文件（如果没有直接创建），此时访问位置为0，从此处进行写入`"hello world"`，一共写入11个字符，因此访问位置变为11，接着移动到第六个字符的位置（访问得到此处字符为`'w'`，并保持访问位置不变），从此处写入`"new world"`之后关闭文件。重新读取文件，得到内容为覆盖后的内容`"hello new world"`。
+
+### 缓冲区模式
+
+一般地，从数据流中进行读取或向其中写入数据要比处理这些内容的时间长，因此系统在内存中设置 ***缓冲区(buffer)*** ，用来临时处理读写的内容，只有当缓冲区装满后才会进行刷新（即将内容真正读写到数据流中）。
+
+在Haskell中定义了三种不同的缓冲区模式：
+
+```hs
+data BufferMode = NoBuffer | LineBuffering | BlockBuffering (Maybe Int)
+```
+
+可以看到缓冲区分为三类，`NoBuffer`表示无缓冲模式，此时字符将被逐个处理；`LineBuffering`表示行缓冲模式，字符串以行单位被处理；`BlockBuffering`表示块缓冲模式，字符串被存储在指定字节长度的缓冲区中被操作，这是Haskell默认的缓冲模式（参数设置为Nothing）。我们可以通过`hGetBuffering :: Handle -> IO BufferMode`查看句柄的缓冲区模式。
+
+另外，我们还可以使用`hSetBuffering :: Handle -> BufferMode -> IO ()`可以改变缓冲区的模式。下面的两个示例，通过更改缓冲区模式，在缓冲区未装满的情况下，使用`hFlush :: Handle -> IO ()`函数进行手动刷新，对比刷新前后的写入情况。
+
+```hs
+-- code'3.hs
+
+setLineBufferingDemo :: IO () 
+setLineBufferingDemo = do 
+        file <- openFile "test.txt" WriteMode 
+        hSetBuffering file LineBuffering 
+        hPutStr file "abc"
+        getLine -- 暂停查看test.txt 内容
+        hFlush file 
+        getLine -- 查看刷新后的test.txt 内容
+        hClose file 
+
+setBlockBufferingDemo :: IO () 
+setBlockBufferingDemo = do 
+        file <- openFile "test.txt" WriteMode 
+        hSetBuffering file (BlockBuffering (Just 10))
+        hPutStr file "abc"
+        getLine -- 暂停查看test.txt 内容
+        hFlush file 
+        getLine -- 查看刷新后的test.txt 内容
+        hClose file
+```
+
+以上两个示例分别将缓冲区模式设为行缓冲模式和10字符块缓冲模式，`"abc"`不能够填满缓冲区，此时暂停查看`test.txt`文件会发现内容为空；当我们使用`hFlush`函数手动刷新后，此时查看`test.txt`文件会发现内容已经出现在文件中。
+
+> 提示：实际上，当用户使用`hClose`函数时，`hFlush`函数将被自动调用，因此，即使我们不使用`hFlush`函数进行刷新，当我们关闭句柄后，内容仍然出现在了文件中
 
 
 ## 系统环境
 
-## 文件操作
+`System.Environment`库中包含了系统环境相关的函数。这里简要介绍如何获取环境变量以及调用程序时传入的命令行参数。
+
+### 环境变量
+
+`getEnv`函数的类型为`String -> IO String`，该函数接受一个字符串，并将这个字符串所对应的环境包裹在IO monad中返回。例如在本机的环境中，查看`PATH`变量对应的环境。
+
+```bash
+Prelude> import System.Environment
+Prelude> getEnv "PATH" >>= print
+"/home/user/.vscode-server/cli/servers/Stable-b58957e67ee1e712cebf466b995adf4c5307b2bd/server/bin/remote-cli:/home/user/.opam/CP.2023.11.0~8.18~2023.11/bin:/home/user/.local/bin:/home/user/.cabal/bin:/home/user/.ghcup/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+```
+
+### 命令行参数
+
+`getArgs`的类型为`IO [String]`，用于获取来自系统命令行中的参数。这里为了方便直接使用GHCi设置命令行参数，使用`getArgs`获取参数并计算参数的数目：
+
+```bash
+Prelude> :set args "1" "2" "3"
+Prelude> :{
+Prelude| main = do 
+Prelude|   args <- getArgs
+Prelude|   print $ length args
+Prelude|:}
+Prelude> main 
+3
+```
+
+## 文件及目录操作
+
+对于文件及目录进行操作是重要的IO操作之一，这些操作位于`System.Directory`中。
+
+首先，`createDirectory :: FilePath -> IO ()`可以用于创建目录，与之相对的`removeDirectory :: FilePath -> IO ()`用于移除目录。然而`removeDirectory`的移除功能比较首先，其要求目录必须为空，不能有任何文件或子目录，当我们需要不加考虑删除目录时，应当使用`removeDirectoryRecursive :: FilePath -> IO ()`。
+
+我们还可以对目录进行重命名或者移动。使用`renameDirectory :: FilePath -> FilePath -> IO ()`可以改变目录的名称；而使用`setCurrentDirectory :: FilePath -> IO ()`可以改变当前目录的路径。
+
+除此之外，我们还需要对目录中的文件（夹）做一些操作。例如通过`getDirectoryContents :: FilePath -> IO [FilePath]`获取特定目录下的内容；`findFile :: [FilePath] -> String -> IO (Maybe FilePath)` 在指定路径下查找文件（不进行递归查找）；`renameFile :: FilePath -> FilePath -> IO ()`对文件进行重命名；`renameFile :: FilePath -> FilePath -> IO ()`复制文件到另一个目录；`removeFile :: FilePath -> IO ()`对文件进行移除。
+
+下面给出一个示例：
+
+```hs
+-- code'3.hs
+
+directoryDemo :: IO ()
+directoryDemo = do 
+        createDirectory "demo"
+        writeFile "demo/test.txt" "content"
+        renameFile "demo/test.txt" "demo/new.txt"
+        renameDirectory "demo" "newdemo"
+        getLine -- 暂停查看目录
+        removeDirectoryRecursive "newdemo"
+```
+
+首先，函数创建了名为`demo`的文件夹，并向其中写入名为`test.txt`的文件，文件内容为`"content"`，接着重命名文件名为`new.txt`，重命名目录为`"newdemo"`；`getLine`函数中断程序执行，读者可以此时查看文件目录的状态，最后`removeDirectoryRecursive`函数将目录以及内部的全部内容删除。
+
+> 有关更多的操作可以参考[System.Directory](https://hackage.haskell.org/package/directory-1.3.8.4/docs/System-Directory.html)
 
 ## 系统进程
 
-## 系统时间
+下面介绍几个常用的系统进程相关的函数以及数据结构，读者可以自行查阅`System.Process`获取更多细节。
+
+一个用于执行命令行命令的简单函数是`callCommand`，该函数的类型为`String -> IO ()`，当我们使用该函数执行命令时，命令的回显将直接输出到终端上。
+
+```bash
+Prelude> import System.Process
+Preldue> callCommand "lsb_release -a"
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+有时我们需要将命令与参数分开进行分析，此时可以使用`callProess`函数，该函数的类型为`FilePath -> [String] -> IO ()`。
+
+```bash
+Prelude> callProcess "lsb_release" ["-a"]
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+然而有某些情况下，我们希望回显存在字符串中而不是直接输出，因此可以使用`readProcess`，该函数的类型为`FilePath -> [String] -> String -> IO String`。前两个参数与`callProcess`中参数含义对应一致，第三个参数用来表示标准输入，即执行命令后为可能存在的标准输入提供内容。
+
+```bash
+Prelude> readProcess "lsb_release" ["-a"] "abc" >>= putStrLn
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 22.04.4 LTS
+Release:        22.04
+Codename:       jammy
+```
+
+下面介绍`CreateProcess`类型，该类型是调用操作系统命令基础的类型，该类型及相关定义如下：
+
+```hs
+data CmdSpec = ShellCommand String 
+    | RawCommand FilePath [String]
+
+data StdStream = Inherit 
+    | UseHandle Handle
+    | CreatePipe
+
+data CreateProcess {
+    cmdspec :: CmdSpec,
+    cwd :: Maybe FilePath,
+    env :: Maybe [(String,String)],
+    std_in :: StdStream,
+    std_out :: StdStream,
+    std_err :: StdStream,
+    close_fds :: Bool,
+    create_group :: Bool,
+    delegate_ctlc :: Bool,
+    detach_console :: Bool,
+    create_new_console :: Bool,
+    new_session :: Bool,
+    child_group :: Maybe GroupID,
+    use_process_jobs :: Bool
+} deriving (Show,Eq)
+```
+
+我们比较关心前六个参数，`cmdspec`表示命令，它要么是一条命令，此时参数与命令同为一个字符串，要么为原始命令，参数使用列表进行容纳。`cwd`表示运行命令所在的目录；`env`为执行命令添加了额外的环境变量；`std_in`、`std_out`和`std_err`表示处理标准输入输出和错误的方法，它们可以是从父继承过来、使用给定的句柄或者返回新的句柄。
+
+一般情况下，我们只需要使用库中提供的函数即可，而无需手动配置这些参数。
+
+`shell`函数的类型为`String -> CreateProcess`，可以用于生成带有`ShellCommand`模式的`CreateProcess`。
+
+```bash
+Prelude> shell "lsb_release -a"
+CreateProcess {cmdspec = ShellCommand "lsb_release -a", cwd = Nothing, env = Nothing, std_in = Inherit, std_out = Inherit, std_err = Inherit, close_fds = False, create_group = False, delegate_ctlc = False, detach_console = False, create_new_console = False, new_session = False, child_group = Nothing, child_user = Nothing, use_process_jobs = False}
+```
+
+另一个类似的函数`proc`类型为`FilePath -> [String] -> CreateProcess`，用来生成带有`RawCommand`模式的`CreateProcess`。
+
+```bash
+Prelude> proc "lsb_release" ["-a"]
+CreateProcess {cmdspec = RawCommand "lsb_release" ["-a"], cwd = Nothing, env = Nothing, std_in = Inherit, std_out = Inherit, std_err = Inherit, close_fds = False, create_group = False, delegate_ctlc = False, detach_console = False, create_new_console = False, new_session = False, child_group = Nothing, child_user = Nothing, use_process_jobs = False}
+```
+
+一旦我们创建了`CreateProcess`类型的值，就可以使用`createProcess`函数执行。`createProcess`的类型为`CreateProcess -> IO (Maybe Handle, Maybe Handle, Maybe Handle,ProcessHandle)`，返回的IO monad中包含了三个句柄，分别为输入，标准输出和错误输出，第四个`ProcessHandle`表示进程句柄，可用于后续程序等待其终止。
+
+```bash
+Prelude> createProcess $ proc "lsb_release" ["-a"]
+```
+
+当然，根据需要我们也可以手动创建`CreateProcess`，例如指定输入输出的句柄，使其重定向到合适的数据流（如文件或者网络）。这里不再过多赘述，感兴趣的读者可以自行尝试。
+
+有时，一个函数执行会消耗一定的时间，一般情况下我们可以在这段时间里处理其他的计算，然而，某些特殊的情况可能要求我们等待进程结束，此时可以使用`waitForProcess :: ProcessHandle -> IO ()`函数。
+
+```bash
+Prelude> createProcess (proc "sleep" ["3"]) >>= \(_,_,_,t) -> waitForProcess t >> print "wait for the process to be done"
+"wait for the process to be done"
+Prelude> createProcess (proc "sleep" ["3"]) >> print "without waiting for the process to be done"
+"without waiting for the process to be done"
+```
+
+我们还可以使用`getProcessExitCode :: ProcessHandle -> IO (Maybe ExitCode)`获取进程执行的退出码。
+
+```bash
+Prelude> createProcess (proc "sleep" ["3"]) >>= \(_,_,_,t) -> waitForProcess t >> getProcessExitCode t
+Just ExitSuccess
+```
+
+> 提示: `getProcessExitCode`需要与`waitForProcess`联合使用，否则返回的永远都是`Nothing`
+
+有时我们还希望直接结束某些耗时很长的进程：
+
+```bash
+Prelude> createProcess (proc "sleep" ["100"]) >>= \(_,_,_,t) -> terminateProcess t >> waitForProcess t >> getProcessExitCode t
+Just (ExitFailure (-15))
+```
+
+使用`terminateProcess :: ProcessHandle -> IO ()`可以终止程序，上述示例中，可以看到进程被强制终止后，获得的退出码是异常退出。
 
 ## 不安全的IO
+
+虽然我们希望将纯代码与不纯的代码进行隔离，但实际上Haskell仍然提供了一些后门操作`System.IO.Unsafe`。
+
+|函数|类型|
+|---|---|
+| unsafePerformIO | IO a -> a | 
+| unsafeDupablePerformIO | IO a -> a | 
+| unsafeInterleaveIO | IO a -> IO a | 
+| unsafeFixIO | (a -> IO a) -> IO a | 
+
+读者应当注意，在使用这一系列操作时，副作用发生的相对顺序是不确定的，因此需要格外小心。
+
+例如，我们考虑对于可变数据的操作，如下：
+
+```hs
+-- code'3.hs
+
+import System.IO.Unsafe
+
+val :: IORef Int 
+val = unsafePerformIO $ newIORef 0  
+
+val' :: IORef Int 
+val' = unsafePerformIO $ newIORef 0
+
+unsafeDemo1 :: IO ()
+unsafeDemo1 = do 
+    x <- unsafeInterleaveIO $ readIORef val 
+    y <- unsafeInterleaveIO $ writeIORef val 1 >> readIORef val 
+    print x 
+    print y 
+
+unsafeDemo2 :: IO ()
+unsafeDemo2 = do 
+    x <- unsafeInterleaveIO $ readIORef val'
+    y <- unsafeInterleaveIO $ writeIORef val' 1 >> readIORef val' 
+    print y 
+    print x 
+```
+
+在GHCi中执行这两个函数：
+
+```bash
+Prelude> unsafeDemo1
+0
+1
+Prelude> unsafeDemo2
+1
+1
+```
+
+`unsafeDemo1`函数先输出`x`，此时`val`中变量为`0`，因此读取的值也为0，接着输出更改后的`y`；`unsafeDemo2`函数先输出`y`，根据惰性求值，此时执行了对`val'`的修改，因此在后面输出`x`时，读取到的`val'`中的值为1。
+
+实际编码中应当尽可能避免这些操作，有关更多的使用细节，读者可以自行参考[System.IO.Unsafe](https://hackage.haskell.org/package/base-4.19.1.0/docs/System-IO-Unsafe.html)。
+
 
 ---------------------------
 

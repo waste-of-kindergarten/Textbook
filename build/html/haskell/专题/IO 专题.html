@@ -67,14 +67,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">数据读写</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id3">读写模式</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id4">句柄读操作</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id5">句柄访问位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">句柄写操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">句柄访问位置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">缓冲区模式</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id6">系统环境</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7">文件操作</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">系统进程</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id9">系统时间</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">不安全的IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">系统环境</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">环境变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">命令行参数</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">文件及目录操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">系统进程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">不安全的IO</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -288,9 +293,32 @@ hello<span class="w"> </span>haskell
 <li><p>因此，Haskell提供了一个严格求值版本的 <code class="docutils literal notranslate"><span class="pre">hGetContents'</span></code></p></li>
 </ol>
 </div></blockquote>
+<p>另外，针对标准输入，Haskell还提供了一些特例函数，这些函数可以认为是上述函数的部分应用函数。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getChar</span> <span class="pre">::</span> <span class="pre">IO</span> <span class="pre">Char</span></code> :  向标准输入读取一个字符，等同于<code class="docutils literal notranslate"><span class="pre">hGetChar</span> <span class="pre">stdin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getLine</span> <span class="pre">::</span> <span class="pre">IO</span> <span class="pre">String</span></code> : 向标准输入读取一行字符串，等同于<code class="docutils literal notranslate"><span class="pre">hGetLine</span> <span class="pre">stdin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getContents</span> <span class="pre">::</span> <span class="pre">IO</span> <span class="pre">String</span></code> : 读取所有标准输入，等同于<code class="docutils literal notranslate"><span class="pre">hGetLine</span> <span class="pre">stdin</span></code>，严格求值版本为<code class="docutils literal notranslate"><span class="pre">getContents'</span></code></p></li>
+</ul>
 </section>
 <section id="id5">
-<h3>句柄访问位置<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<h3>句柄写操作<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>除了读操作，Haskell还提供了一些写操作，下面给出一些常见的函数。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hPutChar</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">Char</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向句柄中写入一个字符</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hPutStr</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向句柄中写入一个字符串</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hPutStrLn</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向句柄中写入一个字符串，并另起一行（添加一个换行符）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hPrint</span> <span class="pre">::</span> <span class="pre">Show</span> <span class="pre">a</span> <span class="pre">=&gt;</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向句柄中写入一个满足<code class="docutils literal notranslate"><span class="pre">Show</span></code>约束的类型的值</p></li>
+</ul>
+<p>特别地，针对标准输出，Haskell提供了一些特例函数。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">putChar</span> <span class="pre">::</span> <span class="pre">Char</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向标准输出写入一个字符，等同于<code class="docutils literal notranslate"><span class="pre">hPutChar</span> <span class="pre">stdout</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">putStr</span> <span class="pre">::</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向标准输出写入一个字符串，等同于<code class="docutils literal notranslate"><span class="pre">hPutStr</span> <span class="pre">stdout</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">putStrLn</span> <span class="pre">::</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 向标准输出写入一个字符串，并另起一行，等同于<code class="docutils literal notranslate"><span class="pre">hPutStrLn</span> <span class="pre">stdout</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">::</span> <span class="pre">Show</span> <span class="pre">a</span> <span class="pre">=&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code> : 对可展示的类型（受到<code class="docutils literal notranslate"><span class="pre">Show</span></code>约束）的值输出，等同于<code class="docutils literal notranslate"><span class="pre">\t</span> <span class="pre">-&gt;</span> <span class="pre">hPutStrLn</span> <span class="pre">stdout</span> <span class="pre">(show</span> <span class="pre">t)</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>句柄访问位置<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
 <p>当我们访问文件句柄时，会存在一个访问位置，从此位置可以进行读取或者写入操作。通过<code class="docutils literal notranslate"><span class="pre">hTell</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Integer</span></code>函数可以获取当前句柄的绝对位置，即从初始位置到当前位置间隔的字节数目。特别地，<code class="docutils literal notranslate"><span class="pre">hIsEOF</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Bool</span></code>函数用于判断是否到达了文件末尾。</p>
 <p>我们还可以通过<code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数改变句柄访问位置，在介绍<code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数之前，我们首先了解句柄访问位置的移动参照。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">SeekMode</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">AbsoluteSeek</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">RelativeSeek</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">SeekFromEnd</span>
@@ -298,22 +326,288 @@ hello<span class="w"> </span>haskell
 </div>
 <p>其中<code class="docutils literal notranslate"><span class="pre">AbsoluteSeek</span></code>为绝对移动，即从初始位置到目标位置间隔的字节数；<code class="docutils literal notranslate"><span class="pre">RelativeSeek</span></code>为相对移动，即从当前位置移动的字节数，可以为负值（表示向前）；<code class="docutils literal notranslate"><span class="pre">SeekFromEnd</span></code>从文件末尾向前移动一定的字节数。</p>
 <p><code class="docutils literal notranslate"><span class="pre">hSeek</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">SeekMode</span> <span class="pre">-&gt;</span> <span class="pre">Integer</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>，我们只需要提供句柄，移动参照模式以及一个偏移量即可改变句柄访问地位置。</p>
-</section>
-</section>
-<section id="id6">
-<h2>系统环境<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<p>下面提供一个综合的例子：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+<span class="w">  </span>
+<span class="nf">fileDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">fileDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">openFile</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span><span class="w"> </span><span class="kt">ReadWriteMode</span><span class="w"> </span>
+<span class="w">        </span><span class="n">pos</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">hTell</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">print</span><span class="w"> </span><span class="n">pos</span>
+<span class="w">        </span><span class="n">hPutStr</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="s">&quot;hello world&quot;</span>
+<span class="w">        </span><span class="n">pos</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">hTell</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">print</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span>
+<span class="w">        </span><span class="n">hSeek</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="kt">AbsoluteSeek</span><span class="w"> </span><span class="mi">6</span>
+<span class="w">        </span><span class="n">c</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">hLookAhead</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">print</span><span class="w"> </span><span class="n">c</span>
+<span class="w">        </span><span class="n">pos</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">hTell</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">print</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span>
+<span class="w">        </span><span class="n">hPutStr</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="s">&quot;new world&quot;</span>
+<span class="w">        </span><span class="n">hClose</span><span class="w"> </span><span class="n">file</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">readFile</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span>
+<span class="w">        </span><span class="n">print</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>fileDemo
+<span class="m">0</span>
+<span class="m">11</span>
+<span class="s1">&#39;w&#39;</span>
+<span class="m">6</span>
+</pre></div>
+</div>
+<p>首先，程序以读写模式打开<code class="docutils literal notranslate"><span class="pre">test.txt</span></code>文件（如果没有直接创建），此时访问位置为0，从此处进行写入<code class="docutils literal notranslate"><span class="pre">&quot;hello</span> <span class="pre">world&quot;</span></code>，一共写入11个字符，因此访问位置变为11，接着移动到第六个字符的位置（访问得到此处字符为<code class="docutils literal notranslate"><span class="pre">'w'</span></code>，并保持访问位置不变），从此处写入<code class="docutils literal notranslate"><span class="pre">&quot;new</span> <span class="pre">world&quot;</span></code>之后关闭文件。重新读取文件，得到内容为覆盖后的内容<code class="docutils literal notranslate"><span class="pre">&quot;hello</span> <span class="pre">new</span> <span class="pre">world&quot;</span></code>。</p>
 </section>
 <section id="id7">
-<h2>文件操作<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<h3>缓冲区模式<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<p>一般地，从数据流中进行读取或向其中写入数据要比处理这些内容的时间长，因此系统在内存中设置 <em><strong>缓冲区(buffer)</strong></em> ，用来临时处理读写的内容，只有当缓冲区装满后才会进行刷新（即将内容真正读写到数据流中）。</p>
+<p>在Haskell中定义了三种不同的缓冲区模式：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">BufferMode</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">NoBuffer</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">LineBuffering</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">BlockBuffering</span><span class="w"> </span><span class="p">(</span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>可以看到缓冲区分为三类，<code class="docutils literal notranslate"><span class="pre">NoBuffer</span></code>表示无缓冲模式，此时字符将被逐个处理；<code class="docutils literal notranslate"><span class="pre">LineBuffering</span></code>表示行缓冲模式，字符串以行单位被处理；<code class="docutils literal notranslate"><span class="pre">BlockBuffering</span></code>表示块缓冲模式，字符串被存储在指定字节长度的缓冲区中被操作，这是Haskell默认的缓冲模式（参数设置为Nothing）。我们可以通过<code class="docutils literal notranslate"><span class="pre">hGetBuffering</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">BufferMode</span></code>查看句柄的缓冲区模式。</p>
+<p>另外，我们还可以使用<code class="docutils literal notranslate"><span class="pre">hSetBuffering</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">BufferMode</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>可以改变缓冲区的模式。下面的两个示例，通过更改缓冲区模式，在缓冲区未装满的情况下，使用<code class="docutils literal notranslate"><span class="pre">hFlush</span> <span class="pre">::</span> <span class="pre">Handle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>函数进行手动刷新，对比刷新前后的写入情况。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="nf">setLineBufferingDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span><span class="w"> </span>
+<span class="nf">setLineBufferingDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">openFile</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span><span class="w"> </span><span class="kt">WriteMode</span><span class="w"> </span>
+<span class="w">        </span><span class="n">hSetBuffering</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="kt">LineBuffering</span><span class="w"> </span>
+<span class="w">        </span><span class="n">hPutStr</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="s">&quot;abc&quot;</span>
+<span class="w">        </span><span class="n">getLine</span><span class="w"> </span><span class="c1">-- 暂停查看test.txt 内容</span>
+<span class="w">        </span><span class="n">hFlush</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">getLine</span><span class="w"> </span><span class="c1">-- 查看刷新后的test.txt 内容</span>
+<span class="w">        </span><span class="n">hClose</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+
+<span class="nf">setBlockBufferingDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span><span class="w"> </span>
+<span class="nf">setBlockBufferingDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">openFile</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span><span class="w"> </span><span class="kt">WriteMode</span><span class="w"> </span>
+<span class="w">        </span><span class="n">hSetBuffering</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="p">(</span><span class="kt">BlockBuffering</span><span class="w"> </span><span class="p">(</span><span class="kt">Just</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span>
+<span class="w">        </span><span class="n">hPutStr</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="s">&quot;abc&quot;</span>
+<span class="w">        </span><span class="n">getLine</span><span class="w"> </span><span class="c1">-- 暂停查看test.txt 内容</span>
+<span class="w">        </span><span class="n">hFlush</span><span class="w"> </span><span class="n">file</span><span class="w"> </span>
+<span class="w">        </span><span class="n">getLine</span><span class="w"> </span><span class="c1">-- 查看刷新后的test.txt 内容</span>
+<span class="w">        </span><span class="n">hClose</span><span class="w"> </span><span class="n">file</span>
+</pre></div>
+</div>
+<p>以上两个示例分别将缓冲区模式设为行缓冲模式和10字符块缓冲模式，<code class="docutils literal notranslate"><span class="pre">&quot;abc&quot;</span></code>不能够填满缓冲区，此时暂停查看<code class="docutils literal notranslate"><span class="pre">test.txt</span></code>文件会发现内容为空；当我们使用<code class="docutils literal notranslate"><span class="pre">hFlush</span></code>函数手动刷新后，此时查看<code class="docutils literal notranslate"><span class="pre">test.txt</span></code>文件会发现内容已经出现在文件中。</p>
+<blockquote>
+<div><p>提示：实际上，当用户使用<code class="docutils literal notranslate"><span class="pre">hClose</span></code>函数时，<code class="docutils literal notranslate"><span class="pre">hFlush</span></code>函数将被自动调用，因此，即使我们不使用<code class="docutils literal notranslate"><span class="pre">hFlush</span></code>函数进行刷新，当我们关闭句柄后，内容仍然出现在了文件中</p>
+</div></blockquote>
+</section>
 </section>
 <section id="id8">
-<h2>系统进程<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
-</section>
+<h2>系统环境<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">System.Environment</span></code>库中包含了系统环境相关的函数。这里简要介绍如何获取环境变量以及调用程序时传入的命令行参数。</p>
 <section id="id9">
-<h2>系统时间<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h2>
+<h3>环境变量<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">getEnv</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">String</span></code>，该函数接受一个字符串，并将这个字符串所对应的环境包裹在IO monad中返回。例如在本机的环境中，查看<code class="docutils literal notranslate"><span class="pre">PATH</span></code>变量对应的环境。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>import<span class="w"> </span>System.Environment
+Prelude&gt;<span class="w"> </span>getEnv<span class="w"> </span><span class="s2">&quot;PATH&quot;</span><span class="w"> </span>&gt;&gt;<span class="o">=</span><span class="w"> </span>print
+<span class="s2">&quot;/home/user/.vscode-server/cli/servers/Stable-b58957e67ee1e712cebf466b995adf4c5307b2bd/server/bin/remote-cli:/home/user/.opam/CP.2023.11.0~8.18~2023.11/bin:/home/user/.local/bin:/home/user/.cabal/bin:/home/user/.ghcup/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="id10">
-<h2>不安全的IO<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<h3>命令行参数<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">getArgs</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">IO</span> <span class="pre">[String]</span></code>，用于获取来自系统命令行中的参数。这里为了方便直接使用GHCi设置命令行参数，使用<code class="docutils literal notranslate"><span class="pre">getArgs</span></code>获取参数并计算参数的数目：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:set<span class="w"> </span>args<span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="w"> </span><span class="s2">&quot;3&quot;</span>
+Prelude&gt;<span class="w"> </span>:<span class="o">{</span>
+Prelude<span class="p">|</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>
+Prelude<span class="p">|</span><span class="w">   </span>args<span class="w"> </span>&lt;-<span class="w"> </span>getArgs
+Prelude<span class="p">|</span><span class="w">   </span>print<span class="w"> </span>$<span class="w"> </span>length<span class="w"> </span>args
+Prelude<span class="p">|</span>:<span class="o">}</span>
+Prelude&gt;<span class="w"> </span>main<span class="w"> </span>
+<span class="m">3</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id11">
+<h2>文件及目录操作<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h2>
+<p>对于文件及目录进行操作是重要的IO操作之一，这些操作位于<code class="docutils literal notranslate"><span class="pre">System.Directory</span></code>中。</p>
+<p>首先，<code class="docutils literal notranslate"><span class="pre">createDirectory</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>可以用于创建目录，与之相对的<code class="docutils literal notranslate"><span class="pre">removeDirectory</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>用于移除目录。然而<code class="docutils literal notranslate"><span class="pre">removeDirectory</span></code>的移除功能比较首先，其要求目录必须为空，不能有任何文件或子目录，当我们需要不加考虑删除目录时，应当使用<code class="docutils literal notranslate"><span class="pre">removeDirectoryRecursive</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>。</p>
+<p>我们还可以对目录进行重命名或者移动。使用<code class="docutils literal notranslate"><span class="pre">renameDirectory</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>可以改变目录的名称；而使用<code class="docutils literal notranslate"><span class="pre">setCurrentDirectory</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>可以改变当前目录的路径。</p>
+<p>除此之外，我们还需要对目录中的文件（夹）做一些操作。例如通过<code class="docutils literal notranslate"><span class="pre">getDirectoryContents</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">[FilePath]</span></code>获取特定目录下的内容；<code class="docutils literal notranslate"><span class="pre">findFile</span> <span class="pre">::</span> <span class="pre">[FilePath]</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">(Maybe</span> <span class="pre">FilePath)</span></code> 在指定路径下查找文件（不进行递归查找）；<code class="docutils literal notranslate"><span class="pre">renameFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>对文件进行重命名；<code class="docutils literal notranslate"><span class="pre">renameFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>复制文件到另一个目录；<code class="docutils literal notranslate"><span class="pre">removeFile</span> <span class="pre">::</span> <span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>对文件进行移除。</p>
+<p>下面给出一个示例：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="nf">directoryDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">directoryDemo</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">        </span><span class="n">createDirectory</span><span class="w"> </span><span class="s">&quot;demo&quot;</span>
+<span class="w">        </span><span class="n">writeFile</span><span class="w"> </span><span class="s">&quot;demo/test.txt&quot;</span><span class="w"> </span><span class="s">&quot;content&quot;</span>
+<span class="w">        </span><span class="n">renameFile</span><span class="w"> </span><span class="s">&quot;demo/test.txt&quot;</span><span class="w"> </span><span class="s">&quot;demo/new.txt&quot;</span>
+<span class="w">        </span><span class="n">renameDirectory</span><span class="w"> </span><span class="s">&quot;demo&quot;</span><span class="w"> </span><span class="s">&quot;newdemo&quot;</span>
+<span class="w">        </span><span class="n">getLine</span><span class="w"> </span><span class="c1">-- 暂停查看目录</span>
+<span class="w">        </span><span class="n">removeDirectoryRecursive</span><span class="w"> </span><span class="s">&quot;newdemo&quot;</span>
+</pre></div>
+</div>
+<p>首先，函数创建了名为<code class="docutils literal notranslate"><span class="pre">demo</span></code>的文件夹，并向其中写入名为<code class="docutils literal notranslate"><span class="pre">test.txt</span></code>的文件，文件内容为<code class="docutils literal notranslate"><span class="pre">&quot;content&quot;</span></code>，接着重命名文件名为<code class="docutils literal notranslate"><span class="pre">new.txt</span></code>，重命名目录为<code class="docutils literal notranslate"><span class="pre">&quot;newdemo&quot;</span></code>；<code class="docutils literal notranslate"><span class="pre">getLine</span></code>函数中断程序执行，读者可以此时查看文件目录的状态，最后<code class="docutils literal notranslate"><span class="pre">removeDirectoryRecursive</span></code>函数将目录以及内部的全部内容删除。</p>
+<blockquote>
+<div><p>有关更多的操作可以参考<a class="reference external" href="https://hackage.haskell.org/package/directory-1.3.8.4/docs/System-Directory.html">System.Directory</a></p>
+</div></blockquote>
+</section>
+<section id="id12">
+<h2>系统进程<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h2>
+<p>下面介绍几个常用的系统进程相关的函数以及数据结构，读者可以自行查阅<code class="docutils literal notranslate"><span class="pre">System.Process</span></code>获取更多细节。</p>
+<p>一个用于执行命令行命令的简单函数是<code class="docutils literal notranslate"><span class="pre">callCommand</span></code>，该函数的类型为<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>，当我们使用该函数执行命令时，命令的回显将直接输出到终端上。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>import<span class="w"> </span>System.Process
+Preldue&gt;<span class="w"> </span>callCommand<span class="w"> </span><span class="s2">&quot;lsb_release -a&quot;</span>
+No<span class="w"> </span>LSB<span class="w"> </span>modules<span class="w"> </span>are<span class="w"> </span>available.
+Distributor<span class="w"> </span>ID:<span class="w"> </span>Ubuntu
+Description:<span class="w">    </span>Ubuntu<span class="w"> </span><span class="m">22</span>.04.4<span class="w"> </span>LTS
+Release:<span class="w">        </span><span class="m">22</span>.04
+Codename:<span class="w">       </span>jammy
+</pre></div>
+</div>
+<p>有时我们需要将命令与参数分开进行分析，此时可以使用<code class="docutils literal notranslate"><span class="pre">callProess</span></code>函数，该函数的类型为<code class="docutils literal notranslate"><span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">[String]</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>callProcess<span class="w"> </span><span class="s2">&quot;lsb_release&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;-a&quot;</span><span class="o">]</span>
+No<span class="w"> </span>LSB<span class="w"> </span>modules<span class="w"> </span>are<span class="w"> </span>available.
+Distributor<span class="w"> </span>ID:<span class="w"> </span>Ubuntu
+Description:<span class="w">    </span>Ubuntu<span class="w"> </span><span class="m">22</span>.04.4<span class="w"> </span>LTS
+Release:<span class="w">        </span><span class="m">22</span>.04
+Codename:<span class="w">       </span>jammy
+</pre></div>
+</div>
+<p>然而有某些情况下，我们希望回显存在字符串中而不是直接输出，因此可以使用<code class="docutils literal notranslate"><span class="pre">readProcess</span></code>，该函数的类型为<code class="docutils literal notranslate"><span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">[String]</span> <span class="pre">-&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">String</span></code>。前两个参数与<code class="docutils literal notranslate"><span class="pre">callProcess</span></code>中参数含义对应一致，第三个参数用来表示标准输入，即执行命令后为可能存在的标准输入提供内容。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>readProcess<span class="w"> </span><span class="s2">&quot;lsb_release&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;-a&quot;</span><span class="o">]</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span><span class="w"> </span>&gt;&gt;<span class="o">=</span><span class="w"> </span>putStrLn
+No<span class="w"> </span>LSB<span class="w"> </span>modules<span class="w"> </span>are<span class="w"> </span>available.
+Distributor<span class="w"> </span>ID:<span class="w"> </span>Ubuntu
+Description:<span class="w">    </span>Ubuntu<span class="w"> </span><span class="m">22</span>.04.4<span class="w"> </span>LTS
+Release:<span class="w">        </span><span class="m">22</span>.04
+Codename:<span class="w">       </span>jammy
+</pre></div>
+</div>
+<p>下面介绍<code class="docutils literal notranslate"><span class="pre">CreateProcess</span></code>类型，该类型是调用操作系统命令基础的类型，该类型及相关定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">CmdSpec</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ShellCommand</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">RawCommand</span><span class="w"> </span><span class="kt">FilePath</span><span class="w"> </span><span class="p">[</span><span class="kt">String</span><span class="p">]</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">StdStream</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Inherit</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">UseHandle</span><span class="w"> </span><span class="kt">Handle</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">CreatePipe</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">CreateProcess</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cmdspec</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">CmdSpec</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cwd</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">FilePath</span><span class="p">,</span>
+<span class="w">    </span><span class="n">env</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="p">[(</span><span class="kt">String</span><span class="p">,</span><span class="kt">String</span><span class="p">)],</span>
+<span class="w">    </span><span class="n">std_in</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">StdStream</span><span class="p">,</span>
+<span class="w">    </span><span class="n">std_out</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">StdStream</span><span class="p">,</span>
+<span class="w">    </span><span class="n">std_err</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">StdStream</span><span class="p">,</span>
+<span class="w">    </span><span class="n">close_fds</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">create_group</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">delegate_ctlc</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">detach_console</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">create_new_console</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">new_session</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="p">,</span>
+<span class="w">    </span><span class="n">child_group</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">GroupID</span><span class="p">,</span>
+<span class="w">    </span><span class="n">use_process_jobs</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="p">,</span><span class="kt">Eq</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>我们比较关心前六个参数，<code class="docutils literal notranslate"><span class="pre">cmdspec</span></code>表示命令，它要么是一条命令，此时参数与命令同为一个字符串，要么为原始命令，参数使用列表进行容纳。<code class="docutils literal notranslate"><span class="pre">cwd</span></code>表示运行命令所在的目录；<code class="docutils literal notranslate"><span class="pre">env</span></code>为执行命令添加了额外的环境变量；<code class="docutils literal notranslate"><span class="pre">std_in</span></code>、<code class="docutils literal notranslate"><span class="pre">std_out</span></code>和<code class="docutils literal notranslate"><span class="pre">std_err</span></code>表示处理标准输入输出和错误的方法，它们可以是从父继承过来、使用给定的句柄或者返回新的句柄。</p>
+<p>一般情况下，我们只需要使用库中提供的函数即可，而无需手动配置这些参数。</p>
+<p><code class="docutils literal notranslate"><span class="pre">shell</span></code>函数的类型为<code class="docutils literal notranslate"><span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">CreateProcess</span></code>，可以用于生成带有<code class="docutils literal notranslate"><span class="pre">ShellCommand</span></code>模式的<code class="docutils literal notranslate"><span class="pre">CreateProcess</span></code>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>shell<span class="w"> </span><span class="s2">&quot;lsb_release -a&quot;</span>
+CreateProcess<span class="w"> </span><span class="o">{</span><span class="nv">cmdspec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ShellCommand<span class="w"> </span><span class="s2">&quot;lsb_release -a&quot;</span>,<span class="w"> </span><span class="nv">cwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">std_in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">std_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">std_err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">close_fds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">create_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">delegate_ctlc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">detach_console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">create_new_console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">new_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">child_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">child_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">use_process_jobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False<span class="o">}</span>
+</pre></div>
+</div>
+<p>另一个类似的函数<code class="docutils literal notranslate"><span class="pre">proc</span></code>类型为<code class="docutils literal notranslate"><span class="pre">FilePath</span> <span class="pre">-&gt;</span> <span class="pre">[String]</span> <span class="pre">-&gt;</span> <span class="pre">CreateProcess</span></code>，用来生成带有<code class="docutils literal notranslate"><span class="pre">RawCommand</span></code>模式的<code class="docutils literal notranslate"><span class="pre">CreateProcess</span></code>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>proc<span class="w"> </span><span class="s2">&quot;lsb_release&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;-a&quot;</span><span class="o">]</span>
+CreateProcess<span class="w"> </span><span class="o">{</span><span class="nv">cmdspec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>RawCommand<span class="w"> </span><span class="s2">&quot;lsb_release&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;-a&quot;</span><span class="o">]</span>,<span class="w"> </span><span class="nv">cwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">std_in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">std_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">std_err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Inherit,<span class="w"> </span><span class="nv">close_fds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">create_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">delegate_ctlc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">detach_console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">create_new_console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">new_session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False,<span class="w"> </span><span class="nv">child_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">child_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Nothing,<span class="w"> </span><span class="nv">use_process_jobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False<span class="o">}</span>
+</pre></div>
+</div>
+<p>一旦我们创建了<code class="docutils literal notranslate"><span class="pre">CreateProcess</span></code>类型的值，就可以使用<code class="docutils literal notranslate"><span class="pre">createProcess</span></code>函数执行。<code class="docutils literal notranslate"><span class="pre">createProcess</span></code>的类型为<code class="docutils literal notranslate"><span class="pre">CreateProcess</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">(Maybe</span> <span class="pre">Handle,</span> <span class="pre">Maybe</span> <span class="pre">Handle,</span> <span class="pre">Maybe</span> <span class="pre">Handle,ProcessHandle)</span></code>，返回的IO monad中包含了三个句柄，分别为输入，标准输出和错误输出，第四个<code class="docutils literal notranslate"><span class="pre">ProcessHandle</span></code>表示进程句柄，可用于后续程序等待其终止。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>createProcess<span class="w"> </span>$<span class="w"> </span>proc<span class="w"> </span><span class="s2">&quot;lsb_release&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;-a&quot;</span><span class="o">]</span>
+</pre></div>
+</div>
+<p>当然，根据需要我们也可以手动创建<code class="docutils literal notranslate"><span class="pre">CreateProcess</span></code>，例如指定输入输出的句柄，使其重定向到合适的数据流（如文件或者网络）。这里不再过多赘述，感兴趣的读者可以自行尝试。</p>
+<p>有时，一个函数执行会消耗一定的时间，一般情况下我们可以在这段时间里处理其他的计算，然而，某些特殊的情况可能要求我们等待进程结束，此时可以使用<code class="docutils literal notranslate"><span class="pre">waitForProcess</span> <span class="pre">::</span> <span class="pre">ProcessHandle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>函数。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>createProcess<span class="w"> </span><span class="o">(</span>proc<span class="w"> </span><span class="s2">&quot;sleep&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;3&quot;</span><span class="o">])</span><span class="w"> </span>&gt;&gt;<span class="o">=</span><span class="w"> </span><span class="se">\(</span>_,_,_,t<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>waitForProcess<span class="w"> </span>t<span class="w"> </span>&gt;&gt;<span class="w"> </span>print<span class="w"> </span><span class="s2">&quot;wait for the process to be done&quot;</span>
+<span class="s2">&quot;wait for the process to be done&quot;</span>
+Prelude&gt;<span class="w"> </span>createProcess<span class="w"> </span><span class="o">(</span>proc<span class="w"> </span><span class="s2">&quot;sleep&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;3&quot;</span><span class="o">])</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>print<span class="w"> </span><span class="s2">&quot;without waiting for the process to be done&quot;</span>
+<span class="s2">&quot;without waiting for the process to be done&quot;</span>
+</pre></div>
+</div>
+<p>我们还可以使用<code class="docutils literal notranslate"><span class="pre">getProcessExitCode</span> <span class="pre">::</span> <span class="pre">ProcessHandle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">(Maybe</span> <span class="pre">ExitCode)</span></code>获取进程执行的退出码。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>createProcess<span class="w"> </span><span class="o">(</span>proc<span class="w"> </span><span class="s2">&quot;sleep&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;3&quot;</span><span class="o">])</span><span class="w"> </span>&gt;&gt;<span class="o">=</span><span class="w"> </span><span class="se">\(</span>_,_,_,t<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>waitForProcess<span class="w"> </span>t<span class="w"> </span>&gt;&gt;<span class="w"> </span>getProcessExitCode<span class="w"> </span>t
+Just<span class="w"> </span>ExitSuccess
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示: <code class="docutils literal notranslate"><span class="pre">getProcessExitCode</span></code>需要与<code class="docutils literal notranslate"><span class="pre">waitForProcess</span></code>联合使用，否则返回的永远都是<code class="docutils literal notranslate"><span class="pre">Nothing</span></code></p>
+</div></blockquote>
+<p>有时我们还希望直接结束某些耗时很长的进程：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>createProcess<span class="w"> </span><span class="o">(</span>proc<span class="w"> </span><span class="s2">&quot;sleep&quot;</span><span class="w"> </span><span class="o">[</span><span class="s2">&quot;100&quot;</span><span class="o">])</span><span class="w"> </span>&gt;&gt;<span class="o">=</span><span class="w"> </span><span class="se">\(</span>_,_,_,t<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>terminateProcess<span class="w"> </span>t<span class="w"> </span>&gt;&gt;<span class="w"> </span>waitForProcess<span class="w"> </span>t<span class="w"> </span>&gt;&gt;<span class="w"> </span>getProcessExitCode<span class="w"> </span>t
+Just<span class="w"> </span><span class="o">(</span>ExitFailure<span class="w"> </span><span class="o">(</span>-15<span class="o">))</span>
+</pre></div>
+</div>
+<p>使用<code class="docutils literal notranslate"><span class="pre">terminateProcess</span> <span class="pre">::</span> <span class="pre">ProcessHandle</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">()</span></code>可以终止程序，上述示例中，可以看到进程被强制终止后，获得的退出码是异常退出。</p>
+</section>
+<section id="id13">
+<h2>不安全的IO<a class="headerlink" href="#id13" title="此标题的永久链接"></a></h2>
+<p>虽然我们希望将纯代码与不纯的代码进行隔离，但实际上Haskell仍然提供了一些后门操作<code class="docutils literal notranslate"><span class="pre">System.IO.Unsafe</span></code>。</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>函数</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unsafePerformIO</td>
+<td>IO a -&gt; a</td>
+</tr>
+<tr>
+<td>unsafeDupablePerformIO</td>
+<td>IO a -&gt; a</td>
+</tr>
+<tr>
+<td>unsafeInterleaveIO</td>
+<td>IO a -&gt; IO a</td>
+</tr>
+<tr>
+<td>unsafeFixIO</td>
+<td>(a -&gt; IO a) -&gt; IO a</td>
+</tr>
+</tbody>
+</table><p>读者应当注意，在使用这一系列操作时，副作用发生的相对顺序是不确定的，因此需要格外小心。</p>
+<p>例如，我们考虑对于可变数据的操作，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;3.hs</span>
+
+<span class="kr">import</span><span class="w"> </span><span class="nn">System.IO.Unsafe</span>
+
+<span class="nf">val</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IORef</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">val</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">unsafePerformIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">newIORef</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span>
+
+<span class="nf">val&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IORef</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">val&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">unsafePerformIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">newIORef</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="nf">unsafeDemo1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">unsafeDemo1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">unsafeInterleaveIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">val</span><span class="w"> </span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">unsafeInterleaveIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">writeIORef</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">val</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">y</span><span class="w"> </span>
+
+<span class="nf">unsafeDemo2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">unsafeDemo2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">unsafeInterleaveIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">val&#39;</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">unsafeInterleaveIO</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">writeIORef</span><span class="w"> </span><span class="n">val&#39;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">readIORef</span><span class="w"> </span><span class="n">val&#39;</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">y</span><span class="w"> </span>
+<span class="w">    </span><span class="n">print</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>在GHCi中执行这两个函数：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>unsafeDemo1
+<span class="m">0</span>
+<span class="m">1</span>
+Prelude&gt;<span class="w"> </span>unsafeDemo2
+<span class="m">1</span>
+<span class="m">1</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">unsafeDemo1</span></code>函数先输出<code class="docutils literal notranslate"><span class="pre">x</span></code>，此时<code class="docutils literal notranslate"><span class="pre">val</span></code>中变量为<code class="docutils literal notranslate"><span class="pre">0</span></code>，因此读取的值也为0，接着输出更改后的<code class="docutils literal notranslate"><span class="pre">y</span></code>；<code class="docutils literal notranslate"><span class="pre">unsafeDemo2</span></code>函数先输出<code class="docutils literal notranslate"><span class="pre">y</span></code>，根据惰性求值，此时执行了对<code class="docutils literal notranslate"><span class="pre">val'</span></code>的修改，因此在后面输出<code class="docutils literal notranslate"><span class="pre">x</span></code>时，读取到的<code class="docutils literal notranslate"><span class="pre">val'</span></code>中的值为1。</p>
+<p>实际编码中应当尽可能避免这些操作，有关更多的使用细节，读者可以自行参考<a class="reference external" href="https://hackage.haskell.org/package/base-4.19.1.0/docs/System-IO-Unsafe.html">System.IO.Unsafe</a>。</p>
 <hr class="docutils" />
 <p id="ref1">[1] IO inside. (2024, April 22). HaskellWiki, . Retrieved 08:59, May 2, 2024 from https://wiki.haskell.org/index.php?title=IO_inside&oldid=66607.</p></section>
 </section>

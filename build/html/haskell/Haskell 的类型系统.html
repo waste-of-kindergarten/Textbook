@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Haskell 的类型系统 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="资源" href="%E8%B5%84%E6%BA%90.html" />
+    <link rel="prev" title="IO 专题" href="%E4%B8%93%E9%A2%98/IO%20%E4%B8%93%E9%A2%98.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/IO%20%E4%B8%93%E9%A2%98.html">IO 专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Haskell 的类型系统</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Haskell 类型系统层次</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">值</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">种类</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">类型推断</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">类型的秩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">种类多态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">类型族</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="%E8%B5%84%E6%BA%90.html">资源</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">Haskell 的类型系统</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/haskell/Haskell 的类型系统.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="haskell">
+<h1>Haskell 的类型系统<a class="headerlink" href="#haskell" title="此标题的永久链接"></a></h1>
+<section id="id1">
+<h2>Haskell 类型系统层次<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<p>Haskell 的类型系统可以认为分为了三层 – <em><strong>值(Value)、类型(Type)、种类(Kind)</strong></em>。</p>
+<section id="id2">
+<h3>值<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<p>Haskell 中的值指的是可以参与计算或者作为计算结果的元素。由于在Haskell中函数是一等公民，因此其可以作为值一样进行传递或进行计算，与一般编程语言中讨论的值无本质区别。或者，从另一个角度来说，传统意义讨论的值在Haskell中也可以认为是一种特殊的函数。另外，运算符作为一种特殊的函数（带有缀、结合性、优先级），也被认为是值。</p>
+</section>
+<section id="id3">
+<h3>类型<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>Haskell 中每个值（或者可计算为值）都具有类型，这些以类型签名的形式将值与其绑定。Haskell允许类型签名中含有变量和约束，例如<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">::</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>的类型中含有变量<code class="docutils literal notranslate"><span class="pre">a</span></code>，<code class="docutils literal notranslate"><span class="pre">Num</span> <span class="pre">a</span> <span class="pre">=&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>含有类型类约束<code class="docutils literal notranslate"><span class="pre">Num</span> <span class="pre">a</span></code>。</p>
+<p>当值进行计算时，其中的类型也会参与类型推断，并通过类型检查对比推断结果与用户给出的类型是否一致，如果一致，则结果即为类型推断的结果；否则系统不允许这种计算，计算失败。</p>
+</section>
+<section id="id4">
+<h3>种类<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>种类可以认为是类型的类型，具体来讲，种类可以为类型构造器或者高阶类型操作符分配类型<a class="reference external" href="#ref1">[1]</a>。</p>
+<blockquote>
+<div><p>提示：虽然种类可以认为是类型的类型，但仍然应当小心其运作方式与类型的差异</p>
+</div></blockquote>
+<p>种类使用<code class="docutils literal notranslate"><span class="pre">*</span></code>标记，例如对于我们常见的类型（构造器），可以查看其种类：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>Int
+Int<span class="w"> </span>::<span class="w"> </span>*<span class="w"> </span>
+Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>String
+String<span class="w"> </span>::<span class="w"> </span>*
+Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>Maybe<span class="w"> </span>
+Maybe<span class="w"> </span>:<span class="w"> </span>*<span class="w"> </span>-&gt;<span class="w"> </span>*
+</pre></div>
+</div>
+<p>对于<code class="docutils literal notranslate"><span class="pre">Int</span></code>和<code class="docutils literal notranslate"><span class="pre">String</span></code>来说，其类型构造器不含任何参数，因此种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>; 而<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>则需要一个类型作为参数，因此种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>。</p>
+<p>值得注意的是，当且仅当种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>的类型，才具有值，例如上述的<code class="docutils literal notranslate"><span class="pre">Int</span></code>和<code class="docutils literal notranslate"><span class="pre">String</span></code>类型都可以声明具有其类型的值，相对地，我们无法给出类型为<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>的值，只能给出诸如<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">Int</span></code>或者<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">String</span></code>的值。</p>
+<p>有时，处于某种目的，我们会希望在类型签名中嵌入值，此时可以将数据进行“提升”，以便值也能够作为类型参数加入到类型构造器中，一个经典的例子就是可以显示长度的列表。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="cm">{-# LANGUAGE DataKinds #-}</span>
+<span class="cm">{-# LANGUAGE GADTs #-}</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Zero</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Succ</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Empty</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kt">Zero</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Cons</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="kt">Succ</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w">   </span>
+</pre></div>
+</div>
+<p>这里使用了扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DataKinds</span> <span class="pre">#-}</span></code>对<code class="docutils literal notranslate"><span class="pre">Nat</span></code>进行提升，使得其可以作为类型传入<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">n</span></code>中<code class="docutils literal notranslate"><span class="pre">n</span></code>的位置，从而表示长度。读者可能会比较困惑<code class="docutils literal notranslate"><span class="pre">ListN</span></code>数据类型的声明方式的独特性，这里为了说明示例，使用了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">GADTs</span> <span class="pre">#-}</span></code><em><strong>广义代数数据类型(Generalised Algebraic Data Types)</strong></em> 扩展，其作用是针对不同的值构造子可以分配不同的类型，这在代数数据类型的声明中是不可能的。有关更多关于广义代数数据类型的使用方法，读者可以参考<a class="reference external" href="#">专题内容</a>或者移步用户手册进行了解。</p>
+<p>除了类型构造器外，类型类也是拥有种类的，例如：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>Show
+*<span class="w"> </span>-&gt;<span class="w"> </span>Constraint
+Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>Functor
+Functor<span class="w"> </span>::<span class="w"> </span><span class="o">(</span>*<span class="w"> </span>-&gt;<span class="w"> </span>*<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>Constraint
+</pre></div>
+</div>
+<p>这里出现了一种特殊的种类<code class="docutils literal notranslate"><span class="pre">Constraint</span></code>，即受限种类。</p>
+</section>
+</section>
+<section id="id5">
+<h2>类型推断<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h2>
+<p>在Haskell中，类型推断围绕一个基本的演绎规则，即在函数应用时对函数以及参数做出类型上的限定。</p>
+<p>给定函数<span class="math notranslate nohighlight">\(f :: a \rightarrow b\)</span>以及值<code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">::</span> <span class="pre">a</span></code>，则必有<code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span> <span class="pre">::</span> <span class="pre">b</span></code>。</p>
+<div class="math notranslate nohighlight">
+\[\frac{f :: a \rightarrow b \ \ \ \ \ x :: a}{f x :: b}\]</div>
+<p>在推断的过程中，可能需要进行相同类型的替换，这个过程称为化一。</p>
+<p>在实际的Haskell类型推断过程中，需要注意一些复杂的情形：</p>
+<ul class="simple">
+<li><p>类型类限定必须随着推断进行，不能随意丢弃</p></li>
+<li><p>多态类型或受约束的类型替换为诸如<code class="docutils literal notranslate"><span class="pre">Int</span></code>的实体类型后，无法逆转</p></li>
+<li><p>多态类型推演为函数类型的过程也不可逆</p></li>
+</ul>
+</section>
+<section id="id6">
+<h2>类型的秩<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<p>计算一个类型的秩定义如下：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{cases}
+rank(t) &amp; = 0 \\
+rank(\forall t . T) &amp; = max(1,rank(T)), \ t是T中的变量 \\
+rank(T \rightarrow U) &amp; = max(rank(T)+1,rank(U))
+\end{cases}\end{split}\]</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">t</span></code>表示任意一个不含箭头以及自由变量的类型，<code class="docutils literal notranslate"><span class="pre">forall</span></code>表示一个自由变量，这个变量在<code class="docutils literal notranslate"><span class="pre">T</span></code>中以多态类型的形式存在，最后<code class="docutils literal notranslate"><span class="pre">T</span></code>和<code class="docutils literal notranslate"><span class="pre">U</span></code>表示任意的类型形式。</p>
+<p>此前，我们讨论的均为0阶或1阶的，例如<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">::</span> <span class="pre">Int</span></code>、<code class="docutils literal notranslate"><span class="pre">(&amp;&amp;)</span> <span class="pre">::</span> <span class="pre">Int</span> <span class="pre">-&gt;</span> <span class="pre">Int</span> <span class="pre">-&gt;</span> <span class="pre">Int</span></code>均为0阶，<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">::</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>和<code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">::</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>均为1阶。</p>
+<p>下面给出高阶函数的例子：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+<span class="cm">{-# LANGUAGE Rank2Types #-}</span>
+
+<span class="nf">rank2demo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="n">forall</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span>
+<span class="nf">rank2demo</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rank2demo</span></code>是一个二阶函数，在启用二阶扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">Rank2Types</span> <span class="pre">#-}</span></code>后，该函数类型中可以声明局部的 <em><strong>全称量词(universal quantification)</strong></em> ，即<code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">::</span> <span class="pre">forall</span> <span class="pre">a</span> <span class="pre">.</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>。这使得在应用<code class="docutils literal notranslate"><span class="pre">f</span></code>到某个值上时，<code class="docutils literal notranslate"><span class="pre">f</span></code>仍然是多态的。</p>
+<p>对于超过二阶的函数声明，可以开启<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">RankNTypes</span> <span class="pre">#-}</span></code>扩展。</p>
+<blockquote>
+<div><p>补充：一般地，将一阶函数的<code class="docutils literal notranslate"><span class="pre">forall</span></code>省略不写，实际上两者效果是等效的</p>
+</div></blockquote>
+</section>
+<section id="id7">
+<h2>种类多态<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
+<p>种类也可以具有多态的特性，<em><strong>种类多态(kind polymorphism)</strong></em> 允许种类变量的存在，该变量可以取任意的种类。</p>
+<p>使用种类多态需要开启扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">PolyKinds</span> <span class="pre">#-}</span></code>，下面给出一个示例：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="cm">{-# LANGUAGE PolyKinds #-}</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">PolyKindDemo</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">forall</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span>
+
+<span class="cm">{-</span>
+<span class="cm">等效 </span>
+<span class="cm">data PolyKindDemo&#39; (t :: k) :: *</span>
+<span class="cm">-}</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">D1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">PolyKindDemo</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">D2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">PolyKindDemo</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>该示例定义一个多态种类<code class="docutils literal notranslate"><span class="pre">PolyKindDemo</span></code>，其接受任意一个种类，并最终生成一个种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>的类型，<code class="docutils literal notranslate"><span class="pre">D1</span></code>和<code class="docutils literal notranslate"><span class="pre">D2</span></code>是实例化<code class="docutils literal notranslate"><span class="pre">k</span></code>后得到的两种类型。</p>
+<blockquote>
+<div><p>补充 ： 理论上，种类多态支持任意高秩，这一点与类型多态有所不同。</p>
+</div></blockquote>
+</section>
+<section id="id8">
+<h2>类型族<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<p>类型族的概念来源于类型论，类型论中索引类型族是类型级别的部分函数，将函数应用于参数（类型索引）将生成一个类型<a class="reference external" href="#ref2">[2]</a>。</p>
+<p>在类型类一章中，我们着重讨论了<em><strong>关联类型(associate types)</strong></em> ，其作为 <em><strong>类型族(type family)</strong></em> 的风格之一，可以起到替代函数依赖的作用。</p>
+<p>考虑一个处理集合和其中元素关系的类型类示例，使用函数依赖书写如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="cm">{-# LANGUAGE FunctionalDependencies, MultiParamTypeClasses #-}</span>
+<span class="cm">{-# LANGUAGE FlexibleInstances #-}</span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Collects1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">empty1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span>
+<span class="w">    </span><span class="n">insert1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">member1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">    </span><span class="n">toList1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Collects1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">empty1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="n">insert1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span><span class="kt">:</span><span class="n">l</span>
+<span class="w">    </span><span class="n">member1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">    </span><span class="n">member1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">member1</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList1</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">l</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">empty1</span></code>代表空集，<code class="docutils literal notranslate"><span class="pre">insert1</span></code>用来插入元素到集合中，<code class="docutils literal notranslate"><span class="pre">member1</span></code>判断元素是否在集合内，<code class="docutils literal notranslate"><span class="pre">toList1</span></code>用来将集合转化为列表。</p>
+<p>使用关联类型风格的类型族，可以得到等价的简化代码：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="cm">{-# LANGUAGE TypeFamilies #-}</span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Collects2</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">type</span><span class="w"> </span><span class="kt">Elem2</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="n">empty2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">insert2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Elem2</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">member2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Elem2</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Elem2</span><span class="w"> </span><span class="n">ce</span><span class="p">]</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Collects2</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">type</span><span class="w"> </span><span class="kt">Elem2</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span><span class="w"> </span>
+<span class="w">    </span><span class="n">empty2</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="n">insert2</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span><span class="kt">:</span><span class="n">l</span>
+<span class="w">    </span><span class="n">member2</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">    </span><span class="n">member2</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">member2</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList2</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">l</span>
+</pre></div>
+</div>
+<p>以上示例<a class="reference external" href="#ref2">[2]</a>中省去了类型类的一个参数，转而使用关联类型<code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">Elem</span> <span class="pre">ce</span> <span class="pre">::</span> <span class="pre">*</span></code>用来确定容器内的元素的类型，这实质上是一个类型级别的函数。</p>
+<p>另一种等价的风格将类型族定义在了顶层，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kr">family</span><span class="w"> </span><span class="kt">Elem3</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">*</span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="kt">Elem3</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Collects3</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">empty3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">insert3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Elem3</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">member3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Elem3</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Elem3</span><span class="w"> </span><span class="n">ce</span><span class="p">]</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Collects3</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">empty3</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="n">insert3</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span><span class="kt">:</span><span class="n">l</span>
+<span class="w">    </span><span class="n">member3</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">    </span><span class="n">member3</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">member3</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList3</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">l</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>补充： 置于顶层的类型族写法也可以保留类型类双参数的写法，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="p">(</span><span class="kt">Elem3</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Collects3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">empty3&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">insert3&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span>
+<span class="w">    </span><span class="n">member3&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList3&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">ce</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Eq</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Collects3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">empty3&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">[]</span>
+<span class="w">    </span><span class="n">insert3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">e</span><span class="kt">:</span><span class="n">l</span>
+<span class="w">    </span><span class="n">member3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">False</span>
+<span class="w">    </span><span class="n">member3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">True</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">member3&#39;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span>
+<span class="w">    </span><span class="n">toList3&#39;</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">l</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">~</span></code>是一个类型函数，称为 <em><strong>相等约束(Equality constraints)</strong></em> ，它要求<code class="docutils literal notranslate"><span class="pre">Elem3</span> <span class="pre">ce</span></code>的计算结果和<code class="docutils literal notranslate"><span class="pre">e</span></code>必须是相同的。这种写法与前面函数依赖的写法是完全等效的。</p>
+</div></blockquote>
+<p id="ref1">[1] Kind. (2017, September 28). HaskellWiki, . Retrieved 08:41, July 13, 2024 from https://wiki.haskell.org/index.php?title=Kind&oldid=62154.
+</p>
+<p id="ref2">[2] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 13:55, July 13, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.
+</p></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E4%B8%93%E9%A2%98/IO%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="IO 专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

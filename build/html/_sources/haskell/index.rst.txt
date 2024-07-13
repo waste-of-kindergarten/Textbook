@@ -18,4 +18,5 @@ Haskell TextBook
    专题/函子专题
    专题/Monad专题
    专题/IO 专题
+   Haskell 的类型系统
    资源
