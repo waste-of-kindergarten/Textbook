@@ -49,7 +49,9 @@ data ListN a n where
     Cons :: a -> ListN a n -> ListN a (Succ n)   
 ```
 
-这里使用了扩展`{-# LANGUAGE DataKinds #-}`对`Nat`进行提升，使得其可以作为类型传入`ListN a n`中`n`的位置，从而表示长度。读者可能会比较困惑`ListN`数据类型的声明方式的独特性，这里为了说明示例，使用了`{-# LANGUAGE GADTs #-}`***广义代数数据类型(Generalised Algebraic Data Types)*** 扩展，其作用是针对不同的值构造子可以分配不同的类型，这在代数数据类型的声明中是不可能的。有关更多关于广义代数数据类型的使用方法，读者可以参考[专题内容](#)或者移步用户手册进行了解。
+读者可能对这段代码有些陌生，让我们逐步分析讨论。首先我们定义了`Nat`作为自然数，分别由零`Zero`和任何自然数的后继`Succ Nat`组成；接着定义了`ListN a n`作为带长度的列表，其中`a`为列表元素的类型，`n`则用来显示长度，该数据类型构造方式有两种：`Empty`作为空列表，类型为`ListN a Zero`表示元素类型为`a`但长度为零的列表；`Cons`将一个类型为`a`的元素附加在长度为`n`类型为`a`的列表上`ListN a n`，从而得到长度为`Succ n`的列表。
+
+在这里使用了扩展`{-# LANGUAGE DataKinds #-}`对`Nat`进行提升，使得其可以作为类型传入`ListN a n`中`n`的位置，从而表示长度。读者可能会比较困惑`ListN`数据类型的声明方式的独特性，这里为了说明示例，使用了`{-# LANGUAGE GADTs #-}`***广义代数数据类型(Generalised Algebraic Data Types)*** 扩展，其作用是针对不同的值构造子可以分配不同的类型（这里得到的效果是列表的类型中包含了长度信息`n`），这在代数数据类型的声明中是不可能的。有关更多关于广义代数数据类型的使用方法，读者可以参考[专题内容](#)或者移步用户手册进行了解。
 
 除了类型构造器外，类型类也是拥有种类的，例如：
 
@@ -242,7 +244,71 @@ instance Eq e => Collects3 [e] where
 > ```
 > 其中`~`是一个类型函数，称为 ***相等约束(Equality constraints)*** ，它要求`Elem3 ce`的计算结果和`e`必须是相同的。这种写法与前面函数依赖的写法是完全等效的。
 
+### 类型上的运算符
 
+前面提到使用类型族可以定义类型级别的函数，类似地我们也可以定义类型级别的运算符。
+
+在前面`ListN`的例子中，已经定义了列表的构造方法，我们希望`ListN`能够和`[]`类型一样可以进行一些基础的列表操作。
+
+以列表拼接为例，一方面我们需要将列表的元素拼接起来，另一方面需要更新列表的长度，新列表的长度即为两个列表长度之和，但这个“和”运算必须是类型级别的，因此需要通过类型族来完成。
+
+```hs
+-- code5.hs
+
+{-# LANGUAGE TypeOperators #-}
+type family (a :: Nat) + (b :: Nat) :: Nat 
+type instance Zero + m = m 
+type instance (Succ n) + m = Succ (n + m)
+```
+
+这里我们定义了一个类型级别的自然数加法运算符，为了允许进行类型运算符的定义，我们需要开启扩展`{-# LANGUAGE TypeOperators #-}`。
+
+下面就可以定义列表拼接运算：
+
+```hs
+-- code5.hs
+
+(++:) :: ListN a n -> ListN a m -> ListN a (n + m)
+Empty ++: l = l 
+Cons t l1 ++: l = Cons t (l1 ++: l)
+```
+
+为了验证拼接运算，我们还需要实现`Show`类型类实例，注意在GADTs中，我们无法直接进行派生，因此需要手动书写实例。
+
+```hs
+-- code5.hs
+
+instance (Show a) => Show (ListN a n) where 
+    show Empty = ""
+    show (Cons t l) = show t ++ " " ++ show l 
+```
+
+```bash
+Prelude> :load code5.hs
+[1 of 1] Compiling Main             ( code5.hs, interpreted )
+Ok, one module loaded.
+Prelude> x = Cons 1 (Cons 2 Empty)
+Prelude> :type x 
+x :: Num a => ListN a ('Succ ('Succ 'Zero))
+Prelude> y = Cons 3 (Cons 4 Empty)
+Prelude> :type y
+y :: Num a => ListN a ('Succ ('Succ 'Zero))
+Prelude> z = x ++: y
+Prelude> :type z
+z :: Num a => ListN a ('Succ ('Succ ('Succ ('Succ 'Zero))))
+Prelude> z
+1 2 3 4
+```
+
+至此我们定义并验证了`ListN`上的列表拼接函数，感兴趣的读者可以尝试实现更多的列表操作。
+
+> 补充： ***封闭类型族和开放类型族***
+> 以上使用的类型族写法是 ***开放类型族(open type family)***，这种写法允许用户在任何地方添加新的类型族实例（即type instance），但用户需要谨慎处理好模式匹配时的潜在冲突； 另一种与之相对的写法是 ***封闭类型族(closed type family)***，该写法一次性声明全部的实例，不允许在其他地方添加该类型族的实例，上述开放类型族改写为封闭类型族如下：
+> ```hs
+> type family (a :: Nat) + (b :: Nat) :: Nat where 
+>   Zero + m = m 
+>   (Succ n) + m = Succ (n + m)
+> ```
 
 <p id="ref1">[1] Kind. (2017, September 28). HaskellWiki, . Retrieved 08:41, July 13, 2024 from https://wiki.haskell.org/index.php?title=Kind&oldid=62154.
 </p>
