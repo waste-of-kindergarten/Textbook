@@ -35,7 +35,7 @@ Maybe : * -> *
 
 值得注意的是，当且仅当种类为`*`的类型，才具有值，例如上述的`Int`和`String`类型都可以声明具有其类型的值，相对地，我们无法给出类型为`Maybe`的值，只能给出诸如`Maybe Int`或者`Maybe String`的值。
 
-有时，处于某种目的，我们会希望在类型签名中嵌入值，此时可以将数据进行“提升”，以便值也能够作为类型参数加入到类型构造器中，一个经典的例子就是可以显示长度的列表。
+有时，处于某种目的，我们会希望在类型签名中嵌入值，此时可以将数据进行“提升”，以便值也能够作为类型参数加入到类型构造器中（此时类型提升为了种类），一个经典的例子就是可以显示长度的列表。
 
 ```hs
 -- code5.hs
@@ -283,6 +283,8 @@ instance (Show a) => Show (ListN a n) where
     show (Cons t l) = show t ++ " " ++ show l 
 ```
 
+> 提示： 实际上，我们也可以使用孤立派生扩展来完成，具体可以参见GADTs 专题
+
 ```bash
 Prelude> :load code5.hs
 [1 of 1] Compiling Main             ( code5.hs, interpreted )
@@ -310,11 +312,20 @@ Prelude> z
 >   (Succ n) + m = Succ (n + m)
 > ```
 
+## 可类型化
+
+可类型化`Typeable`是一个类型类，其将类型的表示与类型联系起来，从某种程度上具象化了类型。具体来说，类型表示之间可以被比较，从而我们可以对类型进行安全的转换操作[[3]](#ref3)。
+
+可类型化的内容放在了[专题](/haskell/专题/Typeable%20专题)中以供感兴趣的读者进行阅读。
+
+-----------------------------------------------------
+
 <p id="ref1">[1] Kind. (2017, September 28). HaskellWiki, . Retrieved 08:41, July 13, 2024 from https://wiki.haskell.org/index.php?title=Kind&oldid=62154.
 </p>
 <p id="ref2">[2] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 13:55, July 13, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.
 </p>
-
+<p id="ref3">[3] Data.Typeable. (no date). Hackage,. Retrieved 16:49, July 13, 2024 from https://hackage.haskell.org/package/base-4.20.0.1/docs/Data-Typeable.html.
+</p>
 
 
 

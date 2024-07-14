@@ -5,6 +5,9 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FunctionalDependencies, MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE StandaloneDeriving #-}
+import Data.Typeable
 data Nat = Zero | Succ Nat 
 
 data ListN a n where 
@@ -84,3 +87,21 @@ instance Eq e => Collects3' e [e] where
         | e == x = True 
         | otherwise = member3' e xs 
     toList3' l = l
+
+type family (a :: Nat) + (b :: Nat) :: Nat 
+type instance Zero + m = m 
+type instance (Succ n) + m = Succ (n + m)
+
+(++:) :: ListN a n -> ListN a m -> ListN a (n + m)
+Empty ++: l = l 
+Cons t l1 ++: l = Cons t (l1 ++: l)
+
+instance (Show a) => Show (ListN a n) where 
+    show Empty = ""
+    show (Cons t l) = show t ++ " " ++ show l
+
+(===) :: (Eq a,Eq b,Typeable a,Typeable b) => a -> b -> Bool 
+a === b = 
+    case cast a of 
+    Just c -> c == b 
+    _ -> False 

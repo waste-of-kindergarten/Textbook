@@ -28,7 +28,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="资源" href="%E8%B5%84%E6%BA%90.html" />
+    <link rel="next" title="Typeable 专题" href="%E4%B8%93%E9%A2%98/Typeable%20%E4%B8%93%E9%A2%98.html" />
     <link rel="prev" title="IO 专题" href="%E4%B8%93%E9%A2%98/IO%20%E4%B8%93%E9%A2%98.html" /> 
 </head>
 
@@ -72,9 +72,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#id5">类型推断</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">类型的秩</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id7">种类多态</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">类型族</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">类型族</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">类型上的运算符</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">可类型化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/Typeable%20%E4%B8%93%E9%A2%98.html">Typeable 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E4%B8%93%E9%A2%98/GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="%E8%B5%84%E6%BA%90.html">资源</a></li>
 </ul>
 </li>
@@ -136,7 +142,7 @@ Maybe<span class="w"> </span>:<span class="w"> </span>*<span class="w"> </span>-
 </div>
 <p>对于<code class="docutils literal notranslate"><span class="pre">Int</span></code>和<code class="docutils literal notranslate"><span class="pre">String</span></code>来说，其类型构造器不含任何参数，因此种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>; 而<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>则需要一个类型作为参数，因此种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>。</p>
 <p>值得注意的是，当且仅当种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>的类型，才具有值，例如上述的<code class="docutils literal notranslate"><span class="pre">Int</span></code>和<code class="docutils literal notranslate"><span class="pre">String</span></code>类型都可以声明具有其类型的值，相对地，我们无法给出类型为<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>的值，只能给出诸如<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">Int</span></code>或者<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">String</span></code>的值。</p>
-<p>有时，处于某种目的，我们会希望在类型签名中嵌入值，此时可以将数据进行“提升”，以便值也能够作为类型参数加入到类型构造器中，一个经典的例子就是可以显示长度的列表。</p>
+<p>有时，处于某种目的，我们会希望在类型签名中嵌入值，此时可以将数据进行“提升”，以便值也能够作为类型参数加入到类型构造器中（此时类型提升为了种类），一个经典的例子就是可以显示长度的列表。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
 
 <span class="cm">{-# LANGUAGE DataKinds #-}</span>
@@ -148,7 +154,8 @@ Maybe<span class="w"> </span>:<span class="w"> </span>*<span class="w"> </span>-
 <span class="w">    </span><span class="kt">Cons</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="kt">Succ</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w">   </span>
 </pre></div>
 </div>
-<p>这里使用了扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DataKinds</span> <span class="pre">#-}</span></code>对<code class="docutils literal notranslate"><span class="pre">Nat</span></code>进行提升，使得其可以作为类型传入<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">n</span></code>中<code class="docutils literal notranslate"><span class="pre">n</span></code>的位置，从而表示长度。读者可能会比较困惑<code class="docutils literal notranslate"><span class="pre">ListN</span></code>数据类型的声明方式的独特性，这里为了说明示例，使用了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">GADTs</span> <span class="pre">#-}</span></code><em><strong>广义代数数据类型(Generalised Algebraic Data Types)</strong></em> 扩展，其作用是针对不同的值构造子可以分配不同的类型，这在代数数据类型的声明中是不可能的。有关更多关于广义代数数据类型的使用方法，读者可以参考<a class="reference external" href="#">专题内容</a>或者移步用户手册进行了解。</p>
+<p>读者可能对这段代码有些陌生，让我们逐步分析讨论。首先我们定义了<code class="docutils literal notranslate"><span class="pre">Nat</span></code>作为自然数，分别由零<code class="docutils literal notranslate"><span class="pre">Zero</span></code>和任何自然数的后继<code class="docutils literal notranslate"><span class="pre">Succ</span> <span class="pre">Nat</span></code>组成；接着定义了<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">n</span></code>作为带长度的列表，其中<code class="docutils literal notranslate"><span class="pre">a</span></code>为列表元素的类型，<code class="docutils literal notranslate"><span class="pre">n</span></code>则用来显示长度，该数据类型构造方式有两种：<code class="docutils literal notranslate"><span class="pre">Empty</span></code>作为空列表，类型为<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">Zero</span></code>表示元素类型为<code class="docutils literal notranslate"><span class="pre">a</span></code>但长度为零的列表；<code class="docutils literal notranslate"><span class="pre">Cons</span></code>将一个类型为<code class="docutils literal notranslate"><span class="pre">a</span></code>的元素附加在长度为<code class="docutils literal notranslate"><span class="pre">n</span></code>类型为<code class="docutils literal notranslate"><span class="pre">a</span></code>的列表上<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">n</span></code>，从而得到长度为<code class="docutils literal notranslate"><span class="pre">Succ</span> <span class="pre">n</span></code>的列表。</p>
+<p>在这里使用了扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DataKinds</span> <span class="pre">#-}</span></code>对<code class="docutils literal notranslate"><span class="pre">Nat</span></code>进行提升，使得其可以作为类型传入<code class="docutils literal notranslate"><span class="pre">ListN</span> <span class="pre">a</span> <span class="pre">n</span></code>中<code class="docutils literal notranslate"><span class="pre">n</span></code>的位置，从而表示长度。读者可能会比较困惑<code class="docutils literal notranslate"><span class="pre">ListN</span></code>数据类型的声明方式的独特性，这里为了说明示例，使用了<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">GADTs</span> <span class="pre">#-}</span></code><em><strong>广义代数数据类型(Generalised Algebraic Data Types)</strong></em> 扩展，其作用是针对不同的值构造子可以分配不同的类型（这里得到的效果是列表的类型中包含了长度信息<code class="docutils literal notranslate"><span class="pre">n</span></code>），这在代数数据类型的声明中是不可能的。有关更多关于广义代数数据类型的使用方法，读者可以参考<a class="reference external" href="#">专题内容</a>或者移步用户手册进行了解。</p>
 <p>除了类型构造器外，类型类也是拥有种类的，例如：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:k<span class="w"> </span>Show
 *<span class="w"> </span>-&gt;<span class="w"> </span>Constraint
@@ -314,9 +321,77 @@ rank(T \rightarrow U) &amp; = max(rank(T)+1,rank(U))
 </div>
 <p>其中<code class="docutils literal notranslate"><span class="pre">~</span></code>是一个类型函数，称为 <em><strong>相等约束(Equality constraints)</strong></em> ，它要求<code class="docutils literal notranslate"><span class="pre">Elem3</span> <span class="pre">ce</span></code>的计算结果和<code class="docutils literal notranslate"><span class="pre">e</span></code>必须是相同的。这种写法与前面函数依赖的写法是完全等效的。</p>
 </div></blockquote>
+<section id="id9">
+<h3>类型上的运算符<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p>前面提到使用类型族可以定义类型级别的函数，类似地我们也可以定义类型级别的运算符。</p>
+<p>在前面<code class="docutils literal notranslate"><span class="pre">ListN</span></code>的例子中，已经定义了列表的构造方法，我们希望<code class="docutils literal notranslate"><span class="pre">ListN</span></code>能够和<code class="docutils literal notranslate"><span class="pre">[]</span></code>类型一样可以进行一些基础的列表操作。</p>
+<p>以列表拼接为例，一方面我们需要将列表的元素拼接起来，另一方面需要更新列表的长度，新列表的长度即为两个列表长度之和，但这个“和”运算必须是类型级别的，因此需要通过类型族来完成。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="cm">{-# LANGUAGE TypeOperators #-}</span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">family</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="kt">Zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span>
+<span class="kr">type</span><span class="w"> </span><span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">Succ</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Succ</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里我们定义了一个类型级别的自然数加法运算符，为了允许进行类型运算符的定义，我们需要开启扩展<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">TypeOperators</span> <span class="pre">#-}</span></code>。</p>
+<p>下面就可以定义列表拼接运算：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="p">(</span><span class="o">++:</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
+<span class="kt">Empty</span><span class="w"> </span><span class="o">++:</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">l</span><span class="w"> </span>
+<span class="kt">Cons</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">l1</span><span class="w"> </span><span class="o">++:</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Cons</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="p">(</span><span class="n">l1</span><span class="w"> </span><span class="o">++:</span><span class="w"> </span><span class="n">l</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>为了验证拼接运算，我们还需要实现<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类实例，注意在GADTs中，我们无法直接进行派生，因此需要手动书写实例。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code5.hs</span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">Show</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Show</span><span class="w"> </span><span class="p">(</span><span class="kt">ListN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show</span><span class="w"> </span><span class="kt">Empty</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="n">show</span><span class="w"> </span><span class="p">(</span><span class="kt">Cons</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">l</span><span class="w"> </span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示： 实际上，我们也可以使用孤立派生扩展来完成，具体可以参见GADTs 专题</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; :load code5.hs
+[1 of 1] Compiling Main             ( code5.hs, interpreted )
+Ok, one module loaded.
+Prelude&gt; x = Cons 1 (Cons 2 Empty)
+Prelude&gt; :type x 
+x :: Num a =&gt; ListN a (&#39;Succ (&#39;Succ &#39;Zero))
+Prelude&gt; y = Cons 3 (Cons 4 Empty)
+Prelude&gt; :type y
+y :: Num a =&gt; ListN a (&#39;Succ (&#39;Succ &#39;Zero))
+Prelude&gt; z = x ++: y
+Prelude&gt; :type z
+z :: Num a =&gt; ListN a (&#39;Succ (&#39;Succ (&#39;Succ (&#39;Succ &#39;Zero))))
+Prelude&gt; z
+1 2 3 4
+</pre></div>
+</div>
+<p>至此我们定义并验证了<code class="docutils literal notranslate"><span class="pre">ListN</span></code>上的列表拼接函数，感兴趣的读者可以尝试实现更多的列表操作。</p>
+<blockquote>
+<div><p>补充： <em><strong>封闭类型族和开放类型族</strong></em>
+以上使用的类型族写法是 <em><strong>开放类型族(open type family)</strong></em>，这种写法允许用户在任何地方添加新的类型族实例（即type instance），但用户需要谨慎处理好模式匹配时的潜在冲突； 另一种与之相对的写法是 <em><strong>封闭类型族(closed type family)</strong></em>，该写法一次性声明全部的实例，不允许在其他地方添加该类型族的实例，上述开放类型族改写为封闭类型族如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">type</span><span class="w"> </span><span class="kr">family</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span>
+<span class="w">  </span><span class="p">(</span><span class="kt">Succ</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Succ</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="id10">
+<h2>可类型化<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<p>可类型化<code class="docutils literal notranslate"><span class="pre">Typeable</span></code>是一个类型类，其将类型的表示与类型联系起来，从某种程度上具象化了类型。具体来说，类型表示之间可以被比较，从而我们可以对类型进行安全的转换操作<a class="reference external" href="#ref3">[3]</a>。</p>
+<p>可类型化的内容放在了<a class="reference internal" href="%E4%B8%93%E9%A2%98/Typeable%20%E4%B8%93%E9%A2%98.html"><span class="doc">专题</span></a>中以供感兴趣的读者进行阅读。</p>
+<hr class="docutils" />
 <p id="ref1">[1] Kind. (2017, September 28). HaskellWiki, . Retrieved 08:41, July 13, 2024 from https://wiki.haskell.org/index.php?title=Kind&oldid=62154.
 </p>
 <p id="ref2">[2] GHC/Type families. (2023, February 4). HaskellWiki, . Retrieved 13:55, July 13, 2024 from https://wiki.haskell.org/index.php?title=GHC/Type_families&oldid=65516.
+</p>
+<p id="ref3">[3] Data.Typeable. (no date). Hackage,. Retrieved 16:49, July 13, 2024 from https://hackage.haskell.org/package/base-4.20.0.1/docs/Data-Typeable.html.
 </p></section>
 </section>
 
@@ -325,7 +400,7 @@ rank(T \rightarrow U) &amp; = max(rank(T)+1,rank(U))
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="%E4%B8%93%E9%A2%98/IO%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="IO 专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
-        <a href="%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="%E4%B8%93%E9%A2%98/Typeable%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-right" title="Typeable 专题" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

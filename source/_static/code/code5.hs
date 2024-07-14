@@ -7,6 +7,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE StandaloneDeriving #-}
+import Data.Typeable
 data Nat = Zero | Succ Nat 
 
 data ListN a n where 
@@ -98,3 +99,9 @@ Cons t l1 ++: l = Cons t (l1 ++: l)
 instance (Show a) => Show (ListN a n) where 
     show Empty = ""
     show (Cons t l) = show t ++ " " ++ show l
+
+(===) :: (Eq a,Eq b,Typeable a,Typeable b) => a -> b -> Bool 
+a === b = 
+    case cast a of 
+    Just c -> c == b 
+    _ -> False 
