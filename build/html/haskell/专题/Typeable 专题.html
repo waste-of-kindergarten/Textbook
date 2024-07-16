@@ -62,7 +62,18 @@
 <li class="toctree-l2"><a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="IO%20%E4%B8%93%E9%A2%98.html">IO 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F.html">Haskell 的类型系统</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Typeable 专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Typeable 专题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#typerep"><code class="docutils literal notranslate"><span class="pre">TypeRep</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#proxy"><code class="docutils literal notranslate"><span class="pre">Proxy</span></code> 代理类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">可类型化的使用与派生</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">类型解析</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">类型观察</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">安全类型转换</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">派生</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
 </ul>
@@ -96,6 +107,171 @@
              
   <section id="typeable">
 <h1>Typeable 专题<a class="headerlink" href="#typeable" title="此标题的永久链接"></a></h1>
+<p><em><strong>可类型化(Typeable)</strong></em> 作为一个类型类（位于<code class="docutils literal notranslate"><span class="pre">Data.Typeable</span></code>），将类型的表示与类型联系起来，使得类型得以具体化，这样我们就可以对类型进行安全的转换操作<a class="reference external" href="#ref1">[1]</a>。由于可类型化的实现在不同版本中具有一定的差异，本章仅仅对<code class="docutils literal notranslate"><span class="pre">Typeable</span></code>类型类的实现和使用进行简单的讲解，有关更多内容读者可以查看相关文档。</p>
+<section id="typerep">
+<h2><code class="docutils literal notranslate"><span class="pre">TypeRep</span></code><a class="headerlink" href="#typerep" title="此标题的永久链接"></a></h2>
+<p>一个比较重要的类型是<code class="docutils literal notranslate"><span class="pre">TypeRep</span></code>，该类型使用GADTs声明，如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">TrType</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span><span class="kt">Type</span>
+<span class="w">    </span><span class="kt">TrTyCon</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">trTyConFingerprint</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="kt">Fingerprint</span><span class="p">,</span>
+<span class="w">        </span><span class="n">trTyCon</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="kt">TyCon</span><span class="p">,</span>
+<span class="w">        </span><span class="n">trKindVars</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="kt">SomeTypeRep</span><span class="p">],</span>
+<span class="w">        </span><span class="n">trTyConKind</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="kt">TrApp</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">forall</span><span class="w"> </span><span class="n">k1</span><span class="w"> </span><span class="n">k2</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="kt">:</span><span class="w"> </span><span class="n">k1</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">k2</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">trAppFingerprint</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="kt">Fingerprint</span><span class="p">,</span>
+<span class="w">            </span><span class="n">trAppFun</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k1</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">k2</span><span class="p">)),</span>
+<span class="w">            </span><span class="n">trAppArg</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k1</span><span class="p">)),</span>
+<span class="w">            </span><span class="n">trAppKind</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">k2</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">    </span><span class="kt">TrFun</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">forall</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Multiplicity</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">r1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">RuntimeRep</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">r2</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">RuntimeRep</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">TYPE</span><span class="w"> </span><span class="n">r1</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">TYPE</span><span class="w"> </span><span class="n">r2</span><span class="p">)</span><span class="o">.</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">trFunFingerprint</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="kt">Fingerprint</span><span class="p">,</span>
+<span class="w">            </span><span class="n">trFunMul</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">a</span><span class="p">),</span>
+<span class="w">            </span><span class="n">trFunArg</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">a</span><span class="p">),</span>
+<span class="w">            </span><span class="n">trFunRes</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="kt">TypeRep</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span><span class="p">(</span><span class="kt">FUN</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>一共有四个构造子<code class="docutils literal notranslate"><span class="pre">TrType</span></code>、<code class="docutils literal notranslate"><span class="pre">TrTyCon</span></code>、<code class="docutils literal notranslate"><span class="pre">TrApp</span></code>、<code class="docutils literal notranslate"><span class="pre">TrFun</span></code>，其中后三个构造子中首个域均为类型的指纹，根据类型所有库名、模块名、构造器名称以及类型参数生成哈希值，可用于快速比较类型。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TrType</span></code>用来表示基本类型的<code class="docutils literal notranslate"><span class="pre">TypeRep</span></code>；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TrTyCon</span></code>用来表示类型构造器，<code class="docutils literal notranslate"><span class="pre">trTyCon</span></code>表示构造器本身，<code class="docutils literal notranslate"><span class="pre">trKindVars</span></code>表示在应用构造器时的种类参数，<code class="docutils literal notranslate"><span class="pre">trTyConKind</span></code>表示类型构造器的种类信息。例如对于<code class="docutils literal notranslate"><span class="pre">Just</span> <span class="pre">::</span> <span class="pre">Bool</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">Bool</span></code>来说，<code class="docutils literal notranslate"><span class="pre">trTyCon</span></code>将会是<code class="docutils literal notranslate"><span class="pre">Just</span></code>，而<code class="docutils literal notranslate"><span class="pre">trKindVars</span></code>会是<code class="docutils literal notranslate"><span class="pre">[Bool]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TrApp</span></code>用来表示类型构造器对类型参数的应用，<code class="docutils literal notranslate"><span class="pre">trAppFun</span></code>用来表示应用的函数，<code class="docutils literal notranslate"><span class="pre">trAppArg</span></code>表示参数，<code class="docutils literal notranslate"><span class="pre">trAppKind</span></code>表示应用结果的宗磊信息。例如对于<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">Int</span></code>来说，<code class="docutils literal notranslate"><span class="pre">trAppFun</span></code>为<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>，<code class="docutils literal notranslate"><span class="pre">trAppArg</span></code>为<code class="docutils literal notranslate"><span class="pre">Int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TrFun</span></code>表示函数类型，<code class="docutils literal notranslate"><span class="pre">trFunArg</span></code>和<code class="docutils literal notranslate"><span class="pre">trFunRes</span></code>分别表示函数箭头的参数与结果，例如对于函数<code class="docutils literal notranslate"><span class="pre">Int</span> <span class="pre">-&gt;</span> <span class="pre">Bool</span></code>，有<code class="docutils literal notranslate"><span class="pre">trFunArg</span></code>为<code class="docutils literal notranslate"><span class="pre">Int</span></code>而<code class="docutils literal notranslate"><span class="pre">trFunRes</span></code>为<code class="docutils literal notranslate"><span class="pre">Bool</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">TypeRep</span></code>是可类型化中重要的数据类型，其将类型的值具体化表示出来，以便能够进行安全地对比和转换。</p>
+</section>
+<section id="proxy">
+<h2><code class="docutils literal notranslate"><span class="pre">Proxy</span></code> 代理类型<a class="headerlink" href="#proxy" title="此标题的永久链接"></a></h2>
+<p>在前面的章节中，我们了解到，只有种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>的类型才会有值的存在，我们无法给出其他种类的类型下的值，例如<code class="docutils literal notranslate"><span class="pre">Maybe</span> <span class="pre">::</span> <span class="pre">*</span> <span class="pre">-&gt;</span> <span class="pre">*</span></code>就没有值与之对应。针对这类问题，我们可以采用代理类型进行代理，具体定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">Proxy</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Proxy</span>
+</pre></div>
+</div>
+<p>代理类型使用了种类多态，使得其类型构造器可以接受任意种类的类型，并提供了一个值构造器<code class="docutils literal notranslate"><span class="pre">Proxy</span></code>作为其类型的值，这样我们就可以为不具有值的类型代理一个值。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Proxy<span class="w"> </span>::<span class="w"> </span>Proxy<span class="w"> </span>Maybe<span class="w"> </span>
+Prelude&gt;<span class="w"> </span>x<span class="w"> </span>
+Proxy
+Prelude&gt;<span class="w"> </span>:type<span class="w"> </span>x
+Proxy<span class="w"> </span>Maybe
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>可类型化的使用与派生<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h2>
+<section id="id2">
+<h3>类型解析<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
+<p>Haskell中许多常见的类型已经内置了可类型化实例，我们可以使用函数查看其类型（或种类）。</p>
+<p>对于任何可类型化类型的值来说，可以使用<code class="docutils literal notranslate"><span class="pre">typeOf</span></code>函数：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">typeOf</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Typeable</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">TypeRep</span><span class="w"> </span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>typeOf<span class="w"> </span>True
+Bool
+Prelude&gt;<span class="w"> </span>typeOf<span class="w"> </span>$<span class="w"> </span>Just<span class="w"> </span><span class="m">1</span>
+Maybe<span class="w"> </span>Integer
+Prelude&gt;<span class="w"> </span>typeOf<span class="w"> </span><span class="o">(</span>+<span class="o">)</span>
+Integer<span class="w"> </span>-&gt;<span class="w"> </span>Integer<span class="w"> </span>-&gt;<span class="w"> </span>Integer
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">typeOf</span></code>函数不能处理那些没有值的类型，此时我们可以使用<code class="docutils literal notranslate"><span class="pre">typeRep</span></code>并构造代理类型。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">typeRep</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">forall</span><span class="w"> </span><span class="p">{</span><span class="n">k</span><span class="p">}</span><span class="w"> </span><span class="n">proxy</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="w"> </span><span class="kt">Typeable</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">proxy</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">TypeRep</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>typeRep<span class="w"> </span><span class="o">(</span>Proxy<span class="w"> </span>::<span class="w"> </span>Proxy<span class="w"> </span>Maybe<span class="o">)</span>
+Maybe
+Prelude&gt;<span class="w"> </span>typeRep<span class="w"> </span><span class="o">(</span>Proxy<span class="w"> </span>::<span class="w"> </span>Proxy<span class="w"> </span>Bool<span class="o">)</span>
+Bool
+--<span class="w"> </span>当然也可以代理有值的类型
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>类型观察<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Data.Typeable</span></code>还提供了一些用于观察类型的函数，这些函数比较有趣。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">funResultTy</span> <span class="pre">::</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">TypeRep</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">funResultTy</span></code>将一个函数类型应用到一个值上，并应用结果包裹在<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>类型中。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="nv">plus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>typeOf<span class="w"> </span><span class="o">(</span>+<span class="o">)</span>
+Prelude&gt;<span class="w"> </span>plus<span class="w"> </span>
+Integer<span class="w"> </span>-&gt;<span class="w"> </span>Integer<span class="w"> </span>-&gt;<span class="w"> </span>Integer<span class="w"> </span>
+Prelude&gt;<span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>typeOf<span class="w"> </span><span class="m">2</span>
+Prelude&gt;<span class="w"> </span>x<span class="w"> </span>
+Integer<span class="w"> </span>
+Prelude&gt;<span class="w"> </span>funResultTy<span class="w"> </span>plus<span class="w"> </span>x
+Just<span class="w"> </span><span class="o">(</span>Integer<span class="w"> </span>-&gt;<span class="w"> </span>Integer<span class="o">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">splitTyConApp</span> <span class="pre">::</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">(TyCon,</span> <span class="pre">[TypeRep])</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">splitTyConApp</span></code>函数将一个类型构造器的应用分离。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>splitTyConApp<span class="w"> </span><span class="o">(</span>typeOf<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="m">1</span><span class="o">))</span>
+<span class="o">(</span>Maybe,<span class="o">[</span>Integer<span class="o">])</span>
+Prelude&gt;<span class="w"> </span>splitTyConApp<span class="w"> </span><span class="o">(</span>typeOf<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span>True<span class="w"> </span>::<span class="w"> </span>Either<span class="w"> </span>Bool<span class="w"> </span>Bool<span class="o">))</span>
+<span class="o">(</span>Either,<span class="o">[</span>Bool,Bool<span class="o">])</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">typeRepArgs</span> <span class="pre">::</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">[TypeRep]</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">typeRepArgs</span></code>函数观察类型表示的参数类型，也就是<code class="docutils literal notranslate"><span class="pre">splitTyConApp</span></code>结果元组的第二个元素。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>typeRepArgs<span class="w"> </span><span class="o">(</span>typeOf<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span>True<span class="w"> </span>::<span class="w"> </span>Either<span class="w"> </span>Bool<span class="w"> </span>Bool<span class="o">))</span>
+<span class="o">[</span>Bool,Bool<span class="o">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">typeRepTyCon</span> <span class="pre">::</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">TyCon</span></code></p></li>
+</ul>
+<p>观察类型表示的构造函数。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>typeRepTyCon<span class="w"> </span><span class="o">(</span>typeOf<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span>True<span class="w"> </span>::<span class="w"> </span>Either<span class="w"> </span>Bool<span class="w"> </span>Bool<span class="o">))</span>
+Either
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">typeRepFingerprint</span> <span class="pre">::</span> <span class="pre">TypeRep</span> <span class="pre">-&gt;</span> <span class="pre">Fingerprint</span></code></p></li>
+</ul>
+<p>观察类型的指纹。</p>
+</section>
+<section id="id4">
+<h3>安全类型转换<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>在此之前，我们拥有函数<code class="docutils literal notranslate"><span class="pre">==</span></code>用来比较两个值是否相等，但这要求我们传入的两个值是相同类型的。对于不同类型的值，我们可以借助可类型化中提供的安全转换函数进行操作。</p>
+<p><code class="docutils literal notranslate"><span class="pre">cast</span> <span class="pre">::</span> <span class="pre">(Typeable</span> <span class="pre">a,Typeable</span> <span class="pre">b)</span> <span class="pre">=&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Maybe</span> <span class="pre">b</span></code></p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;4.hs</span>
+
+<span class="p">(</span><span class="o">=?</span><span class="p">)</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">Typeable</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">Typeable</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="kt">Eq</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">Eq</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="nf">x</span><span class="w"> </span><span class="o">=?</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">case</span><span class="w"> </span><span class="n">cast</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="kr">of</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Just</span><span class="w"> </span><span class="n">x&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">x&#39;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Nothing</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">False</span>
+</pre></div>
+</div>
+<p>我们定义了<code class="docutils literal notranslate"><span class="pre">=?</span></code>函数用来比较两个任意类型的值是否相等，首先对<code class="docutils literal notranslate"><span class="pre">x</span></code>应用<code class="docutils literal notranslate"><span class="pre">cast</span></code>函数进行安全类型转化，这里Haskell将尝试将<code class="docutils literal notranslate"><span class="pre">x</span></code>的类型转换为<code class="docutils literal notranslate"><span class="pre">y</span></code>的类型以便满足同类型比较的要求，一旦转换成功，转换后的值<code class="docutils literal notranslate"><span class="pre">x'</span></code>被<code class="docutils literal notranslate"><span class="pre">Just</span></code>包裹并返回，接下来只需要比较<code class="docutils literal notranslate"><span class="pre">x'</span></code>和<code class="docutils literal notranslate"><span class="pre">y</span></code>即可；否则，两个值的类型不同，自然两个值就不相等。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; :load &quot;code&#39;4.hs&quot;
+[1 of 1] Compiling Main             ( code&#39;4.hs, interpreted )
+Ok, one module loaded.
+Prelude&gt; 1 =? 2
+False
+Prelude&gt; 1 =? 1
+True
+Prelude&gt; 1 =? True
+False
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>派生<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>一般地，我们不会自己声明类型的可类型化实例，而采用派生的方法。当前，Haskell已经能够自动为用户创建的类型进行自动派生，而无需用户做任何操作，读者可以自行进行验证。</p>
+<blockquote>
+<div><p>提示：关联的扩展为DeriveDataTypeable，对于较早版本无法自动派生的情况，可以考虑手动开启该扩展</p>
+</div></blockquote>
+<hr class="docutils" />
+<p id="ref1">[1] Data.Typeable. (no date). Hackage,. Retrieved 8:55, July 15, 2024 from https://hackage.haskell.org/package/base-4.20.0.1/docs/Data-Typeable.html.
+</p></section>
+</section>
 </section>
 
 
