@@ -565,7 +565,3 @@ Prelude> factorial (-1)
 *** Exception:  x < 0 not allowed
 ```
 
-> 补充： 
-
-
-

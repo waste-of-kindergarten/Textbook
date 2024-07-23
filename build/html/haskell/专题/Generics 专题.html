@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generics 专题 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="Haskell 工程专题" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html" />
+    <link rel="prev" title="GADTs 专题" href="GADTs%20%E4%B8%93%E9%A2%98.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IO%20%E4%B8%93%E9%A2%98.html">IO 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F.html">Haskell 的类型系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Typeable%20%E4%B8%93%E9%A2%98.html">Typeable 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Generics 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html">Haskell 工程专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">Generics 专题</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/haskell/专题/Generics 专题.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="generics">
+<h1>Generics 专题<a class="headerlink" href="#generics" title="此标题的永久链接"></a></h1>
+<p><em><strong>通用编程(Generic programming)</strong></em> 是一种抽象形式，允许定义操纵一大类数据类型的函数（即通用函数）<a class="reference external" href="#ref1">[1]</a>。通用函数的实现主要依靠将数据类型<code class="docutils literal notranslate"><span class="pre">T</span></code>的值转换为同构类型<code class="docutils literal notranslate"><span class="pre">Rep</span> <span class="pre">T</span></code>的对应值上<a class="reference external" href="#ref2">[2]</a>，其中<code class="docutils literal notranslate"><span class="pre">Rep</span></code>作为类型族由一组有限的类型构造器生成，通用函数只需完成对这组有限的构造器实现，即可对大量与之同构的数据类型实现操作。通常来说，我们无需手动定义Generic实例（即同构映射过程），而是通过派生将任务交给编译器。</p>
+<p>通用编程一般指的是 <em><strong>代数数据类型通用编程(algebric data type generic programming)</strong></em> 。代数数据类型通用编程充分利用了代数数据类型是由“零元”、“单位元”、“和类型”以及“积类型”构成这一特性，我们将这四种类型称为基本代数类型。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">V1</span><span class="w"> </span><span class="n">p</span><span class="w">  </span><span class="c1">-- 零元</span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="c1">-- 单位元</span>
+<span class="kr">data</span><span class="w"> </span><span class="p">(</span><span class="kt">:+:</span><span class="p">)</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">L1</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">R1</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 和</span>
+<span class="kr">data</span><span class="w"> </span><span class="p">(</span><span class="kt">:*:</span><span class="p">)</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="kt">:*:</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 积</span>
+</pre></div>
+</div>
+<p>在进行同构映射的同时，我们不希望原始数据类型的信息发生丢失，因此需要额外的类型用于标记。为了记录数据类型信息，需要记录类型构造器信息，还需要记录值构造器以及选择器信息（即记录语法中的域）；另外如果有类型参数还应该记录参数信息。</p>
+<p>首先我们先介绍 <em><strong>元信息(metadata)</strong></em> ，即数据类型信息、值构造器信息以及选择器信息。</p>
+<p>元信息标记类型定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">D</span><span class="w"> </span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">C</span><span class="w"> </span>
+<span class="kr">data</span><span class="w"> </span><span class="kt">S</span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="p">{</span><span class="n">unM1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">p</span><span class="p">}</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">D1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="kt">D</span><span class="w"> </span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">C1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="kt">C</span><span class="w"> </span>
+<span class="kr">type</span><span class="w"> </span><span class="kt">S1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="kt">S</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">D</span></code>、<code class="docutils literal notranslate"><span class="pre">C</span></code>、<code class="docutils literal notranslate"><span class="pre">S</span></code>分别表示数据类型标记，值构造器标记以及选择器标记；<code class="docutils literal notranslate"><span class="pre">M1</span></code>类型用来表示元信息；<code class="docutils literal notranslate"><span class="pre">D1</span></code>、<code class="docutils literal notranslate"><span class="pre">C1</span></code>、<code class="docutils literal notranslate"><span class="pre">S1</span></code>为标记后的元信息。</p>
+<p>除此之外，还有与元信息紧密相关的三个类型类：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Datatype</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">datatypeName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
+<span class="w">        </span><span class="c1">-- the name of the datatype</span>
+<span class="w">    </span><span class="n">moduleName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
+<span class="w">        </span><span class="c1">-- the fully-qualifeid name of the module where the type is declared</span>
+<span class="w">    </span><span class="n">packageName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
+<span class="w">        </span><span class="c1">-- the package name of the module where the type is declared</span>
+<span class="w">    </span><span class="n">isNewtype</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">        </span><span class="c1">-- marks if the datatype is actually a newtype</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL datatypeName, moduleName, packageName #-}</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Constructor</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">conName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
+<span class="w">        </span><span class="c1">-- the name of the constructor</span>
+<span class="w">    </span><span class="n">conFixity</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Fixity</span>
+<span class="w">        </span><span class="c1">-- the fixity of te constructor</span>
+<span class="w">    </span><span class="n">conIsRecord</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">        </span><span class="c1">-- marks if the constructor is a record</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL conName #-}</span>
+
+<span class="kr">class</span><span class="w"> </span><span class="kt">Selector</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">    </span><span class="n">selName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
+<span class="w">        </span><span class="c1">-- the name of the selector</span>
+<span class="w">    </span><span class="n">selSourceUnpackedness</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">SourceUnpackedness</span>
+<span class="w">        </span><span class="c1">-- the selector&#39;s unpackedness annotation (if any)</span>
+<span class="w">    </span><span class="n">selSourceStrictness</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">SourceStrictness</span>
+<span class="w">        </span><span class="c1">-- the selector&#39;s strictness annotation (if any)</span>
+<span class="w">    </span><span class="n">selDecidedStrictness</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">DecidedStrictness</span>
+<span class="w">        </span><span class="c1">-- the strictness that the compiler inferred for the selector</span>
+<span class="w">    </span><span class="cm">{-# MINIMAL selName, selSourceUnpackedness, selSourceStrictness, selDecidedStrictness #-}</span>
+</pre></div>
+</div>
+<p>除了元信息还有几个重要的类型标记：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">R</span><span class="w"> </span>
+
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">K1</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">K1</span><span class="w"> </span><span class="p">{</span><span class="n">unK1</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">c</span><span class="p">}</span><span class="w"> </span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">Rec0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">K1</span><span class="w"> </span><span class="kt">R</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">K1</span></code>表示种类为<code class="docutils literal notranslate"><span class="pre">*</span></code>的常量、参数以及递归；<code class="docutils literal notranslate"><span class="pre">R</span></code>则作为递归标记；<code class="docutils literal notranslate"><span class="pre">Rec0</span></code>表示递归的参数。</p>
+<p>接下来让我们创建一个数据类型并分析其在通用编程中的构造：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;6.hs</span>
+
+<span class="cm">{-# LANGUAGE DeriveGeneric #-}</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">GHC.Generics</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">)</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">Tree</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">Leaf</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="p">(</span><span class="kt">Tree</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">Tree</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>我们创建了一个二叉树数据类型，并启用<code class="docutils literal notranslate"><span class="pre">{-#</span> <span class="pre">LANGUAGE</span> <span class="pre">DeriveGeneric</span> <span class="pre">#-}</span></code>对二叉树进行通用派生。下面我们在GHCi中查看派生的实现是怎样的。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>:load<span class="w"> </span>code<span class="s1">&#39;6.hs</span>
+<span class="s1">[1 of 1] Compiling Main             ( code&#39;</span><span class="m">6</span>.hs,<span class="w"> </span>interpreted<span class="w"> </span><span class="o">)</span>
+Ok,<span class="w"> </span>one<span class="w"> </span>module<span class="w"> </span>loaded.
+Prelude&gt;<span class="w"> </span>import<span class="w"> </span>GHC.Generics
+Prelude&gt;<span class="w"> </span>:info<span class="w"> </span>Tree
+data<span class="w"> </span>Tree<span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Leaf<span class="w"> </span>a<span class="w"> </span><span class="p">|</span><span class="w"> </span>Node<span class="w"> </span><span class="o">(</span>Tree<span class="w"> </span>a<span class="o">)</span><span class="w"> </span><span class="o">(</span>Tree<span class="w"> </span>a<span class="o">)</span>
+<span class="w">        </span>--<span class="w"> </span>Defined<span class="w"> </span>at<span class="w"> </span>code<span class="s1">&#39;6.hs:4:1</span>
+<span class="s1">instance [safe] Generic (Tree a) -- Defined at code&#39;</span><span class="m">6</span>.hs:7:15
+<span class="nb">type</span><span class="w"> </span>instance<span class="w"> </span>Rep<span class="w"> </span><span class="o">(</span>Tree<span class="w"> </span>a<span class="o">)</span>
+<span class="w">  </span><span class="o">=</span><span class="w"> </span>D1
+<span class="w">      </span><span class="o">(</span><span class="s1">&#39;MetaData &quot;Tree&quot; &quot;Main&quot; &quot;main&quot; &#39;</span>False<span class="o">)</span>
+<span class="w">      </span><span class="o">(</span>C1
+<span class="w">         </span><span class="o">(</span><span class="s1">&#39;MetaCons &quot;Leaf&quot; &#39;</span>PrefixI<span class="w"> </span><span class="s1">&#39;False)</span>
+<span class="s1">         (S1</span>
+<span class="s1">            (&#39;</span>MetaSel
+<span class="w">               </span><span class="s1">&#39;Nothing &#39;</span>NoSourceUnpackedness<span class="w"> </span><span class="s1">&#39;NoSourceStrictness &#39;</span>DecidedLazy<span class="o">)</span>
+<span class="w">            </span><span class="o">(</span>Rec0<span class="w"> </span>a<span class="o">))</span>
+<span class="w">       </span>:+:<span class="w"> </span>C1
+<span class="w">             </span><span class="o">(</span><span class="s1">&#39;MetaCons &quot;Node&quot; &#39;</span>PrefixI<span class="w"> </span><span class="s1">&#39;False)</span>
+<span class="s1">             (S1</span>
+<span class="s1">                (&#39;</span>MetaSel
+<span class="w">                   </span><span class="s1">&#39;Nothing &#39;</span>NoSourceUnpackedness<span class="w"> </span><span class="s1">&#39;NoSourceStrictness &#39;</span>DecidedLazy<span class="o">)</span>
+<span class="w">                </span><span class="o">(</span>Rec0<span class="w"> </span><span class="o">(</span>Tree<span class="w"> </span>a<span class="o">))</span>
+<span class="w">              </span>:*:<span class="w"> </span>S1
+<span class="w">                    </span><span class="o">(</span><span class="s1">&#39;MetaSel</span>
+<span class="s1">                       &#39;</span>Nothing<span class="w"> </span><span class="s1">&#39;NoSourceUnpackedness &#39;</span>NoSourceStrictness<span class="w"> </span><span class="s1">&#39;DecidedLazy)</span>
+<span class="s1">                    (Rec0 (Tree a))))</span>
+<span class="s1">        -- Defined at code&#39;</span><span class="m">6</span>.hs:7:15
+</pre></div>
+</div>
+<hr class="docutils" />
+<p id="ref1">[1] Generics. (2021, February 13). HaskellWiki, . Retrieved 09:09, July 23, 2024 from https://wiki.haskell.org/index.php?title=Generics&oldid=63969.
+</p>
+<p id="ref2">[2] GHC.Generics. (no date). Hackage,.  Retrieved 09:09, July 23, 2024 from https://hackage.haskell.org/package/base-4.12.0.0/docs/GHC-Generics.html.
+</p></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="GADTs%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="GADTs 专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html" class="btn btn-neutral float-right" title="Haskell 工程专题" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
