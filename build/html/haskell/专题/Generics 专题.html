@@ -64,7 +64,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F.html">Haskell 的类型系统</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Typeable%20%E4%B8%93%E9%A2%98.html">Typeable 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Generics 专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Generics 专题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#show">实现通用的Show</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generic1">Generic1</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html">Haskell 工程专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
 </ul>
@@ -99,6 +103,14 @@
   <section id="generics">
 <h1>Generics 专题<a class="headerlink" href="#generics" title="此标题的永久链接"></a></h1>
 <p><em><strong>通用编程(Generic programming)</strong></em> 是一种抽象形式，允许定义操纵一大类数据类型的函数（即通用函数）<a class="reference external" href="#ref1">[1]</a>。通用函数的实现主要依靠将数据类型<code class="docutils literal notranslate"><span class="pre">T</span></code>的值转换为同构类型<code class="docutils literal notranslate"><span class="pre">Rep</span> <span class="pre">T</span></code>的对应值上<a class="reference external" href="#ref2">[2]</a>，其中<code class="docutils literal notranslate"><span class="pre">Rep</span></code>作为类型族由一组有限的类型构造器生成，通用函数只需完成对这组有限的构造器实现，即可对大量与之同构的数据类型实现操作。通常来说，我们无需手动定义Generic实例（即同构映射过程），而是通过派生将任务交给编译器。</p>
+<p>Generic类型类（位于<code class="docutils literal notranslate"><span class="pre">GHC.Generics</span></code>）定义如下，内部包含了<code class="docutils literal notranslate"><span class="pre">Rep</span></code>类型族，以及两个函数<code class="docutils literal notranslate"><span class="pre">from</span></code>和<code class="docutils literal notranslate"><span class="pre">to</span></code>用于从数据类型到同构类型下之间的映射。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Generic</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span>
+<span class="w">  </span><span class="kr">type</span><span class="w"> </span><span class="kr">family</span><span class="w"> </span><span class="kt">Rep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span>
+<span class="w">  </span><span class="n">from</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Rep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">x</span>
+<span class="w">  </span><span class="n">to</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Rep</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL from, to #-}</span>
+</pre></div>
+</div>
 <p>通用编程一般指的是 <em><strong>代数数据类型通用编程(algebric data type generic programming)</strong></em> 。代数数据类型通用编程充分利用了代数数据类型是由“零元”、“单位元”、“和类型”以及“积类型”构成这一特性，我们将这四种类型称为基本代数类型。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">V1</span><span class="w"> </span><span class="n">p</span><span class="w">  </span><span class="c1">-- 零元</span>
 <span class="kr">data</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="c1">-- 单位元</span>
@@ -120,8 +132,8 @@
 <span class="kr">type</span><span class="w"> </span><span class="kt">S1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">M1</span><span class="w"> </span><span class="kt">S</span><span class="w"> </span>
 </pre></div>
 </div>
-<p>其中<code class="docutils literal notranslate"><span class="pre">D</span></code>、<code class="docutils literal notranslate"><span class="pre">C</span></code>、<code class="docutils literal notranslate"><span class="pre">S</span></code>分别表示数据类型标记，值构造器标记以及选择器标记；<code class="docutils literal notranslate"><span class="pre">M1</span></code>类型用来表示元信息；<code class="docutils literal notranslate"><span class="pre">D1</span></code>、<code class="docutils literal notranslate"><span class="pre">C1</span></code>、<code class="docutils literal notranslate"><span class="pre">S1</span></code>为标记后的元信息。</p>
-<p>除此之外，还有与元信息紧密相关的三个类型类：</p>
+<p>其中<code class="docutils literal notranslate"><span class="pre">D</span></code>、<code class="docutils literal notranslate"><span class="pre">C</span></code>、<code class="docutils literal notranslate"><span class="pre">S</span></code>分别表示数据类型标记，值构造器标记以及选择器标记；<code class="docutils literal notranslate"><span class="pre">M1</span></code>类型用来表示元信息；<code class="docutils literal notranslate"><span class="pre">D1</span></code>、<code class="docutils literal notranslate"><span class="pre">C1</span></code>、<code class="docutils literal notranslate"><span class="pre">S1</span></code>为标记后的元信息标志。</p>
+<p>除此之外，还有与元信息紧密相关的三个类型类 – 数据类型类型类、构造器类型类和选择器类型类：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Datatype</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
 <span class="w">    </span><span class="n">datatypeName</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">[</span><span class="kt">Char</span><span class="p">]</span>
 <span class="w">        </span><span class="c1">-- the name of the datatype</span>
@@ -154,6 +166,9 @@
 <span class="w">    </span><span class="cm">{-# MINIMAL selName, selSourceUnpackedness, selSourceStrictness, selDecidedStrictness #-}</span>
 </pre></div>
 </div>
+<blockquote>
+<div><p>提示：我们后面会看到三种类型类与三种元信息标记的关系</p>
+</div></blockquote>
 <p>除了元信息还有几个重要的类型标记：</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">R</span><span class="w"> </span>
 
@@ -167,7 +182,7 @@
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;6.hs</span>
 
 <span class="cm">{-# LANGUAGE DeriveGeneric #-}</span>
-<span class="kr">import</span><span class="w"> </span><span class="nn">GHC.Generics</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">)</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">GHC.Generics</span>
 
 <span class="kr">data</span><span class="w"> </span><span class="kt">Tree</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
 <span class="w">    </span><span class="kt">Leaf</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
@@ -206,11 +221,142 @@ data<span class="w"> </span>Tree<span class="w"> </span><span class="nv">a</span
 <span class="s1">        -- Defined at code&#39;</span><span class="m">6</span>.hs:7:15
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">Rep</span> <span class="pre">(Tree</span> <span class="pre">a)</span></code>首先以<code class="docutils literal notranslate"><span class="pre">D1</span></code>开头声明了数据类型的相关信息，接着描述了该数据类型下的值构造器的构成，该类型一共由两种构造器的和组成，第一种构造器名称为<code class="docutils literal notranslate"><span class="pre">Leaf</span></code>并接受一个类型为<code class="docutils literal notranslate"><span class="pre">a</span></code>的参数；第二种为<code class="docutils literal notranslate"><span class="pre">Node</span></code>并接受两个<code class="docutils literal notranslate"><span class="pre">Tree</span> <span class="pre">a</span></code>作为参数。可以看到<code class="docutils literal notranslate"><span class="pre">Rep</span> <span class="pre">(Tree</span> <span class="pre">a)</span></code>与<code class="docutils literal notranslate"><span class="pre">Tree</span> <span class="pre">a</span></code>的构造是高度对应的。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D1</span> <span class="o">...</span>                                              <span class="o">---</span>             <span class="n">Tree</span> <span class="n">a</span> <span class="n">相关信息</span>
+    <span class="p">(</span>
+            <span class="n">C1</span> <span class="o">..</span> <span class="p">(</span><span class="n">S1</span> <span class="o">..</span> <span class="p">(</span><span class="n">Rec0</span> <span class="n">a</span><span class="p">))</span>                  <span class="o">---</span>             <span class="n">Leaf</span> <span class="n">a</span>
+      <span class="p">:</span><span class="o">+</span><span class="p">:</span>                                   
+                <span class="n">C1</span> <span class="o">..</span> <span class="p">(</span>                             <span class="o">---</span>             <span class="n">Node</span> 
+                        <span class="n">S1</span> <span class="o">..</span> <span class="p">(</span><span class="n">Rec0</span> <span class="p">(</span><span class="n">Tree</span> <span class="n">a</span><span class="p">))</span>       <span class="o">---</span>                 <span class="p">(</span><span class="n">Tree</span> <span class="n">a</span><span class="p">)</span>
+                    <span class="p">:</span><span class="o">*</span><span class="p">:</span> 
+                        <span class="n">S1</span> <span class="o">..</span> <span class="p">(</span><span class="n">Rec0</span> <span class="p">(</span><span class="n">Tree</span> <span class="n">a</span><span class="p">))</span>       <span class="o">---</span>                 <span class="p">(</span><span class="n">Tree</span> <span class="n">a</span><span class="p">)</span>
+                      <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">Rep</span> <span class="pre">(Tree</span> <span class="pre">a)</span></code>的定义中，<code class="docutils literal notranslate"><span class="pre">MetaData</span></code>、<code class="docutils literal notranslate"><span class="pre">MetaCons</span></code>、<code class="docutils literal notranslate"><span class="pre">MetaSel</span></code>分别用于真正存储数据类型信息、值构造器信息以及选择器信息，它们均为数据类型<code class="docutils literal notranslate"><span class="pre">Meta</span></code>下的构造器；另外，这三个构造器分别实现了<code class="docutils literal notranslate"><span class="pre">Datatype</span></code>、<code class="docutils literal notranslate"><span class="pre">MetaCons</span></code>以及<code class="docutils literal notranslate"><span class="pre">Selector</span></code>三个类型类的实例，形成了对应关系。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">Meta</span><span class="w"> </span><span class="ow">=</span>
+<span class="w">    </span><span class="kt">MetaData</span><span class="w"> </span><span class="kt">Symbol</span><span class="w"> </span><span class="kt">Symbol</span><span class="w"> </span><span class="kt">Symbol</span><span class="w"> </span><span class="kt">Bool</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">MetaCons</span><span class="w"> </span><span class="kt">Symbol</span><span class="w"> </span><span class="kt">FixityI</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="kt">MetaSel</span><span class="w"> </span><span class="p">(</span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Symbol</span><span class="p">)</span><span class="w"> </span><span class="kt">SourceUnpackedness</span><span class="w"> </span><span class="kt">SourceStrictness</span><span class="w"> </span><span class="kt">DecidedStrictness</span>
+</pre></div>
+</div>
+<section id="show">
+<h2>实现通用的Show<a class="headerlink" href="#show" title="此标题的永久链接"></a></h2>
+<p>本节我们给出如何使用通用编程实现一个类似Show的类型类(<code class="docutils literal notranslate"><span class="pre">Show'</span></code>)示例，这样只要我们能够对数据类型派生Generic，即可对这个类型的值进行展示。为了方便展示，我们在底层仍然调用了<code class="docutils literal notranslate"><span class="pre">show</span></code>函数用于展示基本的数据类型。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;6.hs</span>
+
+<span class="c1">-- Show&#39; 类型类 </span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">Show&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">    </span><span class="c1">-- 对Generic实例默认实现</span>
+<span class="w">    </span><span class="kr">default</span><span class="w"> </span><span class="n">show&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">Rep</span><span class="w"> </span><span class="n">a</span><span class="p">))</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show&#39;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">showsDefault</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+
+<span class="c1">-- 默认实现函数</span>
+<span class="nf">showsDefault</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">Rep</span><span class="w"> </span><span class="n">a</span><span class="p">))</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ShowS</span><span class="w"> </span>
+<span class="nf">showsDefault</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="kt">False</span><span class="w"> </span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1">-- Generic 可展示类 </span>
+<span class="kr">class</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="c1">-- ShowS :: String -&gt; String 方便字符串进行拼接和组合</span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ShowS</span><span class="w"> </span>
+
+<span class="c1">-- 实现基础代数数据类型：零元V1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="kt">V1</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="ne">error</span><span class="w"> </span><span class="s">&quot;cannot show void type&quot;</span>
+
+<span class="c1">-- 实现基础代数数据类型：单位元U1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="kt">U1</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">id</span><span class="w"> </span>
+
+<span class="c1">-- 实现基础代数数据类型：和类型:+:</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="kt">:+:</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">(</span><span class="kt">L1</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">l</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">(</span><span class="kt">R1</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">r</span><span class="w"> </span>
+
+<span class="c1">-- 实现基础代数数据类型：积类型:*:</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="kt">:*:</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="kt">:*:</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">showChar</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">y</span>
+
+<span class="c1">-- 实现递归的参数标记：K1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">Show&#39;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">K1</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="p">(</span><span class="kt">K1</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="nf">\</span><span class="n">x</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">show&#39;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">x</span><span class="w"> </span>
+
+<span class="c1">-- 实现数据类型标记：D1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">Datatype</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">D1</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">(</span><span class="kt">M1</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+
+<span class="c1">-- 实现值构造子标记：C1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">Constructor</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">C1</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="n">c</span><span class="o">@</span><span class="p">(</span><span class="kt">M1</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot;(&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                       </span><span class="n">showString</span><span class="w"> </span><span class="p">(</span><span class="n">conName</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                       </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                       </span><span class="n">wrapRecord</span><span class="w"> </span><span class="p">(</span><span class="n">gshow</span><span class="w"> </span><span class="p">(</span><span class="n">conIsRecord</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                       </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot;)&quot;</span>
+<span class="w">        </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">            </span><span class="c1">-- 处理记录语法的函数</span>
+<span class="w">            </span><span class="n">wrapRecord</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">ShowS</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">ShowS</span><span class="w"> </span>
+<span class="w">            </span><span class="n">wrapRecord</span><span class="w"> </span><span class="n">s</span><span class="w"> </span>
+<span class="w">                </span><span class="o">|</span><span class="w">   </span><span class="n">conIsRecord</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span>
+<span class="w">                            </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot;{ &quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot; }&quot;</span>
+<span class="w">                </span><span class="o">|</span><span class="w">   </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">s</span><span class="w">    </span>
+
+<span class="c1">-- 实现选择器标记：S1</span>
+<span class="kr">instance</span><span class="w"> </span><span class="p">(</span><span class="kt">GenericShow</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">Selector</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">GenericShow</span><span class="w"> </span><span class="p">(</span><span class="kt">S1</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">s</span><span class="o">@</span><span class="p">(</span><span class="kt">M1</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">null</span><span class="w"> </span><span class="p">(</span><span class="n">selName</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">showString</span><span class="w"> </span><span class="p">(</span><span class="n">selName</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                      </span><span class="n">showString</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                      </span><span class="n">gshow</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.</span><span class="w"> </span>
+<span class="w">                      </span><span class="n">showChar</span><span class="w"> </span><span class="sc">&#39; &#39;</span>
+
+<span class="c1">-- 为了方便底层调用show</span>
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Show&#39;</span><span class="w"> </span><span class="kt">Char</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">show</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Show&#39;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">show</span><span class="w"> </span>
+
+<span class="kr">instance</span><span class="w"> </span><span class="kt">Show</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Show&#39;</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">    </span><span class="n">show&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">show</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>至此，我们已经实现了<code class="docutils literal notranslate"><span class="pre">Show'</span></code>类型类，接下来我们定义一些数据类型来进行检验：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;6.hs</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="p">{</span><span class="n">name</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="p">}</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">,</span><span class="kt">Show&#39;</span><span class="p">)</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">Book&#39;</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Book&#39;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">,</span><span class="kt">Show&#39;</span><span class="p">)</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Zero</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Succ</span><span class="w"> </span><span class="kt">Nat</span><span class="w"> </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Generic</span><span class="p">,</span><span class="kt">Show&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>show<span class="s1">&#39; (Book &quot;haskell&quot; 2024)</span>
+<span class="s1">&quot;(Book { name = \&quot;haskell\&quot;  year = 2024  })&quot;</span>
+<span class="s1">Prelude&gt; show&#39;</span><span class="w"> </span><span class="o">(</span>Book<span class="s1">&#39; &quot;haskell&quot; 2024)</span>
+<span class="s1">&quot;(Book&#39;</span><span class="w"> </span><span class="se">\&quot;</span>haskell<span class="se">\&quot;</span><span class="w"> </span><span class="m">2024</span><span class="o">)</span><span class="s2">&quot;</span>
+<span class="s2">Prelude&gt; show&#39; (Succ (Succ Zero))</span>
+<span class="s2">&quot;</span><span class="o">(</span>Succ<span class="w"> </span><span class="o">(</span>Succ<span class="w"> </span><span class="o">(</span>Zero<span class="w"> </span><span class="o">)))</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>可以看到虽然我们的<code class="docutils literal notranslate"><span class="pre">Show'</span></code>不如内置的可展示类型类那样严谨，但仍然能够完整地输出有效信息。</p>
+</section>
+<section id="generic1">
+<h2>Generic1<a class="headerlink" href="#generic1" title="此标题的永久链接"></a></h2>
+<p>在<code class="docutils literal notranslate"><span class="pre">GHC.Generics</span></code>模块中,除了<code class="docutils literal notranslate"><span class="pre">Generic</span></code>类型类外，还有<code class="docutils literal notranslate"><span class="pre">Generic1</span></code>类型类，该类型类与<code class="docutils literal notranslate"><span class="pre">Generic</span></code>类型类功能类似，不同点在于其适用于种类为<code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">-&gt;</span> <span class="pre">*</span></code>的类型，其中<code class="docutils literal notranslate"><span class="pre">k</span></code>为种类参数表示种类多态。在实际编程中，对于两个类型类的选择往往取决于对于通用函数的设定。</p>
+<p>有关更多Generic1的知识，读者可以翻阅<a class="reference external" href="https://hackage.haskell.org/package/base-4.12.0.0/docs/GHC-Generics.html#t:Generic1">官方文档</a>进一步地了解。</p>
 <hr class="docutils" />
 <p id="ref1">[1] Generics. (2021, February 13). HaskellWiki, . Retrieved 09:09, July 23, 2024 from https://wiki.haskell.org/index.php?title=Generics&oldid=63969.
 </p>
 <p id="ref2">[2] GHC.Generics. (no date). Hackage,.  Retrieved 09:09, July 23, 2024 from https://hackage.haskell.org/package/base-4.12.0.0/docs/GHC-Generics.html.
 </p></section>
+</section>
 
 
            </div>
