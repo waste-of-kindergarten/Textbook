@@ -11,4 +11,5 @@ Welcome to Alfred's Textbook !
    :caption: 目录:
 
    haskell/index
+   logicInCS/index
 

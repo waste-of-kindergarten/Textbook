@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>命题逻辑 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">命题逻辑</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/logicInCS/命题逻辑.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>命题逻辑<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<section id="id2">
+<h2>声明语句<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p><em><strong>命题逻辑(propositional logic)</strong></em> 是一种基于命题（可判断真假的陈述语句）的逻辑。命题逻辑将自然的陈述语句转化为字符串和符号，一方面我们能够在保持陈述语句编码完整性，另一方面我们将陈述语句进行了压缩以便专注于逻辑推断机制。</p>
+<p>考虑某些 <em><strong>原子的(atomic)</strong></em> 陈述语句（或者说不可分解的），例如:</p>
+<center> 
+“数字5是奇数”
+</center><br><p>我们为每一个语句分配唯一的符号 <span class="math notranslate nohighlight">\( p,q,r, \dots \)</span>，这样就可以按组合的方式构造更加复杂的语句。</p>
+<p>为了构造更复杂的语句，需要一些构造规则：</p>
+<p><span class="math notranslate nohighlight">\(\neg\)</span>: <span class="math notranslate nohighlight">\(p\)</span>的 <em><strong>否定(negation)</strong></em> 是<span class="math notranslate nohighlight">\(\neg p\)</span></p>
+<p><span class="math notranslate nohighlight">\(\vee\)</span> : 给定<span class="math notranslate nohighlight">\(p\)</span>和<span class="math notranslate nohighlight">\(q\)</span>两个语句，我们使用<span class="math notranslate nohighlight">\(p \vee q\)</span>表示它们“至少有一个为真”，并称之为 <em><strong>析取(disjunction)</strong></em></p>
+<p><span class="math notranslate nohighlight">\(\wedge\)</span> : 给定<span class="math notranslate nohighlight">\(p\)</span>和<span class="math notranslate nohighlight">\(q\)</span>两个语句，我们使用<span class="math notranslate nohighlight">\(p \wedge q \)</span>表示“它们均为真”，并称之为 <em><strong>合取(conjunction)</strong></em></p>
+<p><span class="math notranslate nohighlight">\(\rightarrow\)</span> : 给定<span class="math notranslate nohighlight">\(p\)</span>和<span class="math notranslate nohighlight">\(q\)</span>两个语句，我们使用<span class="math notranslate nohighlight">\(p \rightarrow q\)</span>表示 “当<span class="math notranslate nohighlight">\(p\)</span>为真时<span class="math notranslate nohighlight">\(q\)</span>也为真”，并称其中的<span class="math notranslate nohighlight">\(p\)</span>为 <em><strong>假设(assumption)</strong></em>、<span class="math notranslate nohighlight">\(q\)</span>为结论，并称语句<span class="math notranslate nohighlight">\(p \rightarrow q\)</span>为 <em><strong>蕴含(implication)</strong></em>。</p>
+<blockquote>
+<div><p>惯例： 习惯上，结合性优先级 <span class="math notranslate nohighlight">\( \  \neg \ \)</span> &gt; <span class="math notranslate nohighlight">\(\ \wedge \ \)</span> &gt; <span class="math notranslate nohighlight">\(\ \vee \ \)</span> &gt; <span class="math notranslate nohighlight">\(\ \rightarrow \ \)</span>，且<span class="math notranslate nohighlight">\(\rightarrow\)</span>为右结合的。</p>
+</div></blockquote>
+</section>
+<section id="id3">
+<h2>自然演绎<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<p>我们需要一些规则以便能够从给定的一系列前提中推导出结论，在自然演绎中，我们称这些规则为 <em><strong>证明规则(proof rules)</strong></em>。</p>
+<p>假设我们有一系列称为 <em><strong>前提(premises)</strong></em> 的公式<span class="math notranslate nohighlight">\(\Phi_1,\Phi_2,\dots,\Phi_n\)</span>，以及另外一个称为 <em><strong>结论(conclusion)</strong></em> 的公式<span class="math notranslate nohighlight">\(\Psi\)</span>，通过对前提使用一系列的证明规则最终可以得到结论，我们将这个含义表示为</p>
+<div class="math notranslate nohighlight">
+\[  \Phi_1,\Phi_2,\dots,\Phi_n \vdash \Psi\]</div>
+<p>并称之为 <em><strong>相继式(sequent)</strong></em>。 如果我们可以找到它的一个证明，那么称之为 <em><strong>有效的(valid)</strong></em> 。</p>
+<section id="id4">
+<h3>自然演绎规则<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p><strong>合取规则</strong></p>
+<ul class="simple">
+<li><p>“与”引入规则（and-introduction）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi \ \ \ \Psi}{\Phi \wedge \Psi} \wedge_i\]</div>
+<ul class="simple">
+<li><p>“与”消去规则（and-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi \wedge \Psi}{\Phi} \wedge_{e_1} \ \ \ \ \frac{\Phi \wedge \Psi}{\Psi} \wedge_{e_2}\]</div>
+<p><strong>双重否定规则</strong></p>
+<ul class="simple">
+<li><p>“双重否定”引入规则 (double-negation-introduction)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\neg \neg \Psi}{\Psi} \neg\neg_e\]</div>
+<ul class="simple">
+<li><p>“双重否定”消去规则（double-negation-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi}{\neg \neg \Phi} \neg\neg_i\]</div>
+<p><strong>蕴含规则</strong></p>
+<ul class="simple">
+<li><p>“蕴含”消去规则（implies-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi \ \ \ \Phi \rightarrow \Psi}{\Psi} \rightarrow_e\]</div>
+<ul class="simple">
+<li><p>MT规则（modus tollens）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi \rightarrow \Psi \ \ \ \neg \Psi}{\neg \Phi} MT\]</div>
+<ul class="simple">
+<li><p>“蕴含”引入规则（implies-introduction）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \Psi \end{align}}}{\Phi \rightarrow \Psi} \rightarrow_i\end{split}\]</div>
+<p>这里与其他的规则不同的是，使用了一个方框标志，它表示暂时假设<span class="math notranslate nohighlight">\(\Phi\)</span>成立可以证明<span class="math notranslate nohighlight">\(\Psi\)</span>成立。</p>
+<blockquote>
+<div><p>注意：</p>
+<ol class="simple">
+<li><p>方框内外推导并无本质差别</p></li>
+<li><p>当处于方框中时，可以使用方框内上方以及方框外部的前提推导新的结论</p></li>
+<li><p>方框结束后，不能随意使用方框内的结论（因为其存在特定的假设），除非有演绎规则的支持</p></li>
+</ol>
+</div></blockquote>
+<p><strong>析取规则</strong></p>
+<ul class="simple">
+<li><p>“析取”引入规则（or-introduction）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi}{\Phi \vee \Psi} \vee_{i_1} \ \ \ \ \frac{\Psi}{\Phi \vee \Psi} \vee_{i_2}\]</div>
+<ul class="simple">
+<li><p>“析取”消去规则（or-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\Phi \vee \Psi \ \ \boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \chi \end{align}} \ \ \boxed{\begin{align} &amp; \Psi \\ &amp; \vdots \\ &amp; \chi \end{align}}}{\chi} \vee_e\end{split}\]</div>
+<p><strong>否定规则</strong></p>
+<ul class="simple">
+<li><p>“否定”消去规则（not-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\Phi \ \ \neg \Phi}{\bot} \neg_e\]</div>
+<ul class="simple">
+<li><p>“否定”引入规则（not-introduction）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\neg \Phi} \neg_i\end{split}\]</div>
+<p><strong>矛盾规则</strong></p>
+<ul class="simple">
+<li><p>矛盾消去规则（bottom-elimination）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{\bot}{\Phi}\bot_e\]</div>
+<p><strong>反证法</strong></p>
+<ul class="simple">
+<li><p>反证法（proof by contradiction, PBC）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \neg \Phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\Phi} PBC\end{split}\]</div>
+<p><strong>排中律</strong></p>
+<ul class="simple">
+<li><p>排中律（law of the excluded middle, LEM）</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\frac{}{\Phi \vee \neg \Phi} LEM\]</div>
+</section>
+<section id="id5">
+<h3>树状表示法与线性表示法<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>在自然演绎规则一节中，我们使用树状表示法进行表示；但对于长推导来说，使用树状表示推导过程会导致一些书写麻烦，一种替代方法是使用 <em><strong>线性表示(linear presentation)</strong></em>。我们将在下面进行展示。</p>
+</section>
+<section id="id6">
+<h3>派生的规则<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+<p>在所有的自然演绎规则中，某些规则并不“基本”，它们可以使用基本的规则派生出来。接下来我们使用线性表示法进行推导。</p>
+<ul class="simple">
+<li><p>MT</p></li>
+<li><p>PBC</p></li>
+<li><p>LEM</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; 1 &amp; \mid \ \ \ &amp;  \neg (\Phi \vee \neg \Phi) \ \ \ &amp; assumption \\ 
+&amp; 2 &amp; \mid \mid \ \ &amp; \Phi \ \ \ &amp; assumption \\ 
+&amp; 3 &amp; \mid \mid \ \ &amp; \Phi \vee \neg \Phi \ \ \ &amp; \vee_{i_1} 2 \\ 
+&amp; 4 &amp; \mid \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 3,1 \\
+&amp; 5 &amp; \mid \ \ \ &amp; \neg \Phi &amp; \neg_i 2-4 \\
+&amp; 6 &amp; \mid \ \ \ &amp; \Phi \vee \neg \Phi &amp; \vee_{i_2} 5 \\
+&amp; 7 &amp; \mid \ \ \ &amp; \bot \ \ \ &amp; \neg_e 6,1 \\
+&amp; 8 &amp; \ \ \ \ &amp; \neg \neg (\Phi \vee \neg \Phi) \ \ \ &amp; \neg_i 1-7 \\
+&amp; 9 &amp; \ \ \ \ &amp; \Phi \vee \neg \Phi \ \ \ &amp; \neg \neg_e 8
+\end{align}\end{split}\]</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
