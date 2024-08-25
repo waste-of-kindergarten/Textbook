@@ -27,7 +27,8 @@
         <script src="../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="搜索" href="../search.html" /> 
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="Logic In Computer Science" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,8 +51,22 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Logic In Computer Science</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">命题逻辑</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">声明语句</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">自然演绎</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">自然演绎规则</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">树状表示法与线性表示法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">派生的规则</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">可证等价</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -68,6 +83,7 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Logic In Computer Science</a></li>
       <li class="breadcrumb-item active">命题逻辑</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/logicInCS/命题逻辑.md.txt" rel="nofollow"> 查看页面源码</a>
@@ -202,7 +218,28 @@
 <p>在所有的自然演绎规则中，某些规则并不“基本”，它们可以使用基本的规则派生出来。接下来我们使用线性表示法进行推导。</p>
 <ul class="simple">
 <li><p>MT</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; 1 &amp; \ \ \ &amp; \Phi \rightarrow \Psi \ \ \ &amp; premise \\ 
+&amp; 2 &amp; \ \ \ &amp; \neg \Psi \ \ \ &amp; premise \\
+&amp; 3 &amp; \mid \ \ &amp; \Phi \ \ \ &amp; assumption \\ 
+&amp; 4 &amp; \mid \ \ &amp; \Psi \ \ \ &amp; \rightarrow_e 1,3 \\
+&amp; 5 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 4,2 \\
+&amp; 6 &amp;  \ \ \ &amp; \neg \Phi \ \ \ &amp; \neg_i 3-5   
+\end{align}\end{split}\]</div>
+<ul class="simple">
 <li><p>PBC</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; 1 &amp; \ \ \ &amp; \neg \Phi \rightarrow \bot \ \ \ &amp; given \\ 
+&amp; 2 &amp; \mid \ \ &amp; \neg \Phi \ \ \ &amp; assumption \\ 
+&amp; 3 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \rightarrow_e 1,2 \\
+&amp; 4 &amp; \ \ \ &amp; \neg \neg \Phi \ \ \ &amp; \neg_i 2-3 \\ 
+&amp; 5 &amp; \ \ \ &amp; \Phi \ \ \ &amp; \neg \neg_e 4
+\end{align}\end{split}\]</div>
+<ul class="simple">
 <li><p>LEM</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -218,13 +255,19 @@
 &amp; 9 &amp; \ \ \ \ &amp; \Phi \vee \neg \Phi \ \ \ &amp; \neg \neg_e 8
 \end{align}\end{split}\]</div>
 </section>
+<section id="id7">
+<h3>可证等价<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<p>令<span class="math notranslate nohighlight">\(Phi\)</span>和<span class="math notranslate nohighlight">\(Psi\)</span>为命题逻辑中的公式，我们称它们可证等价当且仅当两个相继式<span class="math notranslate nohighlight">\(\Phi \vdash \Psi\)</span>和<span class="math notranslate nohighlight">\(\Psi \vdash \Phi\)</span>都是有效的(valid)。对于这种双向的可证，我们也可以简写为<span class="math notranslate nohighlight">\(\Phi \dashv \vdash \Psi\)</span>。</p>
+</section>
 </section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="Logic In Computer Science" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
 
   <hr/>
 
