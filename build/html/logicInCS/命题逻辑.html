@@ -61,6 +61,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#id5">树状表示法与线性表示法</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id6">派生的规则</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id7">可证等价</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">经典逻辑与直觉逻辑</a></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +191,7 @@
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{\boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\neg \Phi} \neg_i\end{split}\]</div>
-<p><strong>矛盾规则</strong></p>
+<p><strong>矛盾律</strong></p>
 <ul class="simple">
 <li><p>矛盾消去规则（bottom-elimination）</p></li>
 </ul>
@@ -229,6 +230,16 @@
 &amp; 6 &amp;  \ \ \ &amp; \neg \Phi \ \ \ &amp; \neg_i 3-5   
 \end{align}\end{split}\]</div>
 <ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\neg \neg_i\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; 1 &amp; \ \ \ &amp; \Phi \ \ \ &amp; premise \\
+&amp; 2 &amp; \mid \ \ &amp; \neg \Phi \ \ \ &amp; assumption \\
+&amp; 3 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 1,2 \\
+&amp; 4 &amp; \ \ \ &amp; \neg \neg \Phi  \ \ \ &amp; \neg_i 2-3 
+\end{align}\end{split}\]</div>
+<ul class="simple">
 <li><p>PBC</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -257,7 +268,12 @@
 </section>
 <section id="id7">
 <h3>可证等价<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
-<p>令<span class="math notranslate nohighlight">\(Phi\)</span>和<span class="math notranslate nohighlight">\(Psi\)</span>为命题逻辑中的公式，我们称它们可证等价当且仅当两个相继式<span class="math notranslate nohighlight">\(\Phi \vdash \Psi\)</span>和<span class="math notranslate nohighlight">\(\Psi \vdash \Phi\)</span>都是有效的(valid)。对于这种双向的可证，我们也可以简写为<span class="math notranslate nohighlight">\(\Phi \dashv \vdash \Psi\)</span>。</p>
+<p>令<span class="math notranslate nohighlight">\(\Phi\)</span>和<span class="math notranslate nohighlight">\(\Psi\)</span>为命题逻辑中的公式，我们称它们可证等价当且仅当两个相继式<span class="math notranslate nohighlight">\(\Phi \vdash \Psi\)</span>和<span class="math notranslate nohighlight">\(\Psi \vdash \Phi\)</span>都是有效的(valid)。对于这种双向的可证，我们也可以简写为<span class="math notranslate nohighlight">\(\Phi \dashv \vdash \Psi\)</span>。</p>
+</section>
+<section id="id8">
+<h3>经典逻辑与直觉逻辑<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
+<p>在经典逻辑中，逻辑学家承认反证法、排中律、“双重否定”消去律；但另一种直觉注意逻辑中，逻辑学家认为这些规则并没有直接证明，即缺少构造性。</p>
+<p>对于反证法，直觉主义认为为了证明<span class="math notranslate nohighlight">\(\Phi\)</span>，我们需要直接证明，而不是证明<span class="math notranslate nohighlight">\(\neg \Phi\)</span>是不可能的；对于排中律，必须证明 <span class="math notranslate nohighlight">\(\Phi\)</span>或者<span class="math notranslate nohighlight">\(\neg \Phi\)</span>成立，如果都不能证明，那么则不能承认排中律；另外，直觉主义逻辑拒绝接受双重否定消去律因为我们使用其作用于其他接受的规则上（因此接受双重否定消去律意味着接受PBC和LEM）。</p>
 </section>
 </section>
 </section>
