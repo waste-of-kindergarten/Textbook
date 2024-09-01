@@ -64,6 +64,18 @@
 <li class="toctree-l4"><a class="reference internal" href="#id8">经典逻辑与直觉逻辑</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">形式语言下的命题逻辑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">命题逻辑的语义</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">逻辑连接词的含义</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">数学归纳法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">命题逻辑的可靠性</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">命题逻辑的完备性</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">范式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id16">语义等价性、可满足性和有效性</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -116,9 +128,9 @@
 <section id="id3">
 <h2>自然演绎<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <p>我们需要一些规则以便能够从给定的一系列前提中推导出结论，在自然演绎中，我们称这些规则为 <em><strong>证明规则(proof rules)</strong></em>。</p>
-<p>假设我们有一系列称为 <em><strong>前提(premises)</strong></em> 的公式<span class="math notranslate nohighlight">\(\Phi_1,\Phi_2,\dots,\Phi_n\)</span>，以及另外一个称为 <em><strong>结论(conclusion)</strong></em> 的公式<span class="math notranslate nohighlight">\(\Psi\)</span>，通过对前提使用一系列的证明规则最终可以得到结论，我们将这个含义表示为</p>
+<p>假设我们有一系列称为 <em><strong>前提(premises)</strong></em> 的公式<span class="math notranslate nohighlight">\(\phi_1,\phi_2,\dots,\phi_n\)</span>，以及另外一个称为 <em><strong>结论(conclusion)</strong></em> 的公式<span class="math notranslate nohighlight">\(\psi\)</span>，通过对前提使用一系列的证明规则最终可以得到结论，我们将这个含义表示为</p>
 <div class="math notranslate nohighlight">
-\[  \Phi_1,\Phi_2,\dots,\Phi_n \vdash \Psi\]</div>
+\[  \phi_1,\phi_2,\dots,\phi_n \vdash \psi\]</div>
 <p>并称之为 <em><strong>相继式(sequent)</strong></em>。 如果我们可以找到它的一个证明，那么称之为 <em><strong>有效的(valid)</strong></em> 。</p>
 <section id="id4">
 <h3>自然演绎规则<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
@@ -127,40 +139,40 @@
 <li><p>“与”引入规则（and-introduction）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi \ \ \ \Psi}{\Phi \wedge \Psi} \wedge_i\]</div>
+\[\frac{\phi \ \ \ \psi}{\phi \wedge \psi} \wedge_i\]</div>
 <ul class="simple">
 <li><p>“与”消去规则（and-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi \wedge \Psi}{\Phi} \wedge_{e_1} \ \ \ \ \frac{\Phi \wedge \Psi}{\Psi} \wedge_{e_2}\]</div>
+\[\frac{\phi \wedge \psi}{\phi} \wedge_{e_1} \ \ \ \ \frac{\phi \wedge \psi}{\psi} \wedge_{e_2}\]</div>
 <p><strong>双重否定规则</strong></p>
 <ul class="simple">
 <li><p>“双重否定”引入规则 (double-negation-introduction)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\neg \neg \Psi}{\Psi} \neg\neg_e\]</div>
+\[\frac{\neg \neg \psi}{\psi} \neg\neg_e\]</div>
 <ul class="simple">
 <li><p>“双重否定”消去规则（double-negation-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi}{\neg \neg \Phi} \neg\neg_i\]</div>
+\[\frac{\phi}{\neg \neg \phi} \neg\neg_i\]</div>
 <p><strong>蕴含规则</strong></p>
 <ul class="simple">
 <li><p>“蕴含”消去规则（implies-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi \ \ \ \Phi \rightarrow \Psi}{\Psi} \rightarrow_e\]</div>
+\[\frac{\phi \ \ \ \phi \rightarrow \psi}{\psi} \rightarrow_e\]</div>
 <ul class="simple">
 <li><p>MT规则（modus tollens）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi \rightarrow \Psi \ \ \ \neg \Psi}{\neg \Phi} MT\]</div>
+\[\frac{\phi \rightarrow \psi \ \ \ \neg \psi}{\neg \phi} MT\]</div>
 <ul class="simple">
 <li><p>“蕴含”引入规则（implies-introduction）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{\boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \Psi \end{align}}}{\Phi \rightarrow \Psi} \rightarrow_i\end{split}\]</div>
-<p>这里与其他的规则不同的是，使用了一个方框标志，它表示暂时假设<span class="math notranslate nohighlight">\(\Phi\)</span>成立可以证明<span class="math notranslate nohighlight">\(\Psi\)</span>成立。</p>
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \phi \\ &amp; \vdots \\ &amp; \psi \end{align}}}{\phi \rightarrow \psi} \rightarrow_i\end{split}\]</div>
+<p>这里与其他的规则不同的是，使用了一个方框标志，它表示暂时假设<span class="math notranslate nohighlight">\(\phi\)</span>成立可以证明<span class="math notranslate nohighlight">\(\psi\)</span>成立。</p>
 <blockquote>
 <div><p>注意：</p>
 <ol class="simple">
@@ -174,41 +186,41 @@
 <li><p>“析取”引入规则（or-introduction）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi}{\Phi \vee \Psi} \vee_{i_1} \ \ \ \ \frac{\Psi}{\Phi \vee \Psi} \vee_{i_2}\]</div>
+\[\frac{\phi}{\phi \vee \psi} \vee_{i_1} \ \ \ \ \frac{\psi}{\phi \vee \psi} \vee_{i_2}\]</div>
 <ul class="simple">
 <li><p>“析取”消去规则（or-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{\Phi \vee \Psi \ \ \boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \chi \end{align}} \ \ \boxed{\begin{align} &amp; \Psi \\ &amp; \vdots \\ &amp; \chi \end{align}}}{\chi} \vee_e\end{split}\]</div>
+\[\begin{split}\frac{\phi \vee \psi \ \ \boxed{\begin{align} &amp; \phi \\ &amp; \vdots \\ &amp; \chi \end{align}} \ \ \boxed{\begin{align} &amp; \psi \\ &amp; \vdots \\ &amp; \chi \end{align}}}{\chi} \vee_e\end{split}\]</div>
 <p><strong>否定规则</strong></p>
 <ul class="simple">
 <li><p>“否定”消去规则（not-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\Phi \ \ \neg \Phi}{\bot} \neg_e\]</div>
+\[\frac{\phi \ \ \neg \phi}{\bot} \neg_e\]</div>
 <ul class="simple">
 <li><p>“否定”引入规则（not-introduction）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{\boxed{\begin{align} &amp; \Phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\neg \Phi} \neg_i\end{split}\]</div>
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\neg \phi} \neg_i\end{split}\]</div>
 <p><strong>矛盾律</strong></p>
 <ul class="simple">
 <li><p>矛盾消去规则（bottom-elimination）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{\bot}{\Phi}\bot_e\]</div>
+\[\frac{\bot}{\phi}\bot_e\]</div>
 <p><strong>反证法</strong></p>
 <ul class="simple">
 <li><p>反证法（proof by contradiction, PBC）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{\boxed{\begin{align} &amp; \neg \Phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\Phi} PBC\end{split}\]</div>
+\[\begin{split}\frac{\boxed{\begin{align} &amp; \neg \phi \\ &amp; \vdots \\ &amp; \bot \end{align}}}{\phi} PBC\end{split}\]</div>
 <p><strong>排中律</strong></p>
 <ul class="simple">
 <li><p>排中律（law of the excluded middle, LEM）</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\frac{}{\Phi \vee \neg \Phi} LEM\]</div>
+\[\frac{}{\phi \vee \neg \phi} LEM\]</div>
 </section>
 <section id="id5">
 <h3>树状表示法与线性表示法<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
@@ -222,58 +234,184 @@
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
-&amp; 1 &amp; \ \ \ &amp; \Phi \rightarrow \Psi \ \ \ &amp; premise \\ 
-&amp; 2 &amp; \ \ \ &amp; \neg \Psi \ \ \ &amp; premise \\
-&amp; 3 &amp; \mid \ \ &amp; \Phi \ \ \ &amp; assumption \\ 
-&amp; 4 &amp; \mid \ \ &amp; \Psi \ \ \ &amp; \rightarrow_e 1,3 \\
+&amp; 1 &amp; \ \ \ &amp; \phi \rightarrow \psi \ \ \ &amp; premise \\ 
+&amp; 2 &amp; \ \ \ &amp; \neg \psi \ \ \ &amp; premise \\
+&amp; 3 &amp; \mid \ \ &amp; \phi \ \ \ &amp; assumption \\ 
+&amp; 4 &amp; \mid \ \ &amp; \psi \ \ \ &amp; \rightarrow_e 1,3 \\
 &amp; 5 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 4,2 \\
-&amp; 6 &amp;  \ \ \ &amp; \neg \Phi \ \ \ &amp; \neg_i 3-5   
+&amp; 6 &amp;  \ \ \ &amp; \neg \phi \ \ \ &amp; \neg_i 3-5   
 \end{align}\end{split}\]</div>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\neg \neg_i\)</span></p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
-&amp; 1 &amp; \ \ \ &amp; \Phi \ \ \ &amp; premise \\
-&amp; 2 &amp; \mid \ \ &amp; \neg \Phi \ \ \ &amp; assumption \\
+&amp; 1 &amp; \ \ \ &amp; \phi \ \ \ &amp; premise \\
+&amp; 2 &amp; \mid \ \ &amp; \neg \phi \ \ \ &amp; assumption \\
 &amp; 3 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 1,2 \\
-&amp; 4 &amp; \ \ \ &amp; \neg \neg \Phi  \ \ \ &amp; \neg_i 2-3 
+&amp; 4 &amp; \ \ \ &amp; \neg \neg \phi  \ \ \ &amp; \neg_i 2-3 
 \end{align}\end{split}\]</div>
 <ul class="simple">
 <li><p>PBC</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
-&amp; 1 &amp; \ \ \ &amp; \neg \Phi \rightarrow \bot \ \ \ &amp; given \\ 
-&amp; 2 &amp; \mid \ \ &amp; \neg \Phi \ \ \ &amp; assumption \\ 
+&amp; 1 &amp; \ \ \ &amp; \neg \phi \rightarrow \bot \ \ \ &amp; given \\ 
+&amp; 2 &amp; \mid \ \ &amp; \neg \phi \ \ \ &amp; assumption \\ 
 &amp; 3 &amp; \mid \ \ &amp; \bot \ \ \ &amp; \rightarrow_e 1,2 \\
-&amp; 4 &amp; \ \ \ &amp; \neg \neg \Phi \ \ \ &amp; \neg_i 2-3 \\ 
-&amp; 5 &amp; \ \ \ &amp; \Phi \ \ \ &amp; \neg \neg_e 4
+&amp; 4 &amp; \ \ \ &amp; \neg \neg \phi \ \ \ &amp; \neg_i 2-3 \\ 
+&amp; 5 &amp; \ \ \ &amp; \phi \ \ \ &amp; \neg \neg_e 4
 \end{align}\end{split}\]</div>
 <ul class="simple">
 <li><p>LEM</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
-&amp; 1 &amp; \mid \ \ \ &amp;  \neg (\Phi \vee \neg \Phi) \ \ \ &amp; assumption \\ 
-&amp; 2 &amp; \mid \mid \ \ &amp; \Phi \ \ \ &amp; assumption \\ 
-&amp; 3 &amp; \mid \mid \ \ &amp; \Phi \vee \neg \Phi \ \ \ &amp; \vee_{i_1} 2 \\ 
+&amp; 1 &amp; \mid \ \ \ &amp;  \neg (\phi \vee \neg \phi) \ \ \ &amp; assumption \\ 
+&amp; 2 &amp; \mid \mid \ \ &amp; \phi \ \ \ &amp; assumption \\ 
+&amp; 3 &amp; \mid \mid \ \ &amp; \phi \vee \neg \phi \ \ \ &amp; \vee_{i_1} 2 \\ 
 &amp; 4 &amp; \mid \mid \ \ &amp; \bot \ \ \ &amp; \neg_e 3,1 \\
-&amp; 5 &amp; \mid \ \ \ &amp; \neg \Phi &amp; \neg_i 2-4 \\
-&amp; 6 &amp; \mid \ \ \ &amp; \Phi \vee \neg \Phi &amp; \vee_{i_2} 5 \\
+&amp; 5 &amp; \mid \ \ \ &amp; \neg \phi &amp; \neg_i 2-4 \\
+&amp; 6 &amp; \mid \ \ \ &amp; \phi \vee \neg \phi &amp; \vee_{i_2} 5 \\
 &amp; 7 &amp; \mid \ \ \ &amp; \bot \ \ \ &amp; \neg_e 6,1 \\
-&amp; 8 &amp; \ \ \ \ &amp; \neg \neg (\Phi \vee \neg \Phi) \ \ \ &amp; \neg_i 1-7 \\
-&amp; 9 &amp; \ \ \ \ &amp; \Phi \vee \neg \Phi \ \ \ &amp; \neg \neg_e 8
+&amp; 8 &amp; \ \ \ \ &amp; \neg \neg (\phi \vee \neg \phi) \ \ \ &amp; \neg_i 1-7 \\
+&amp; 9 &amp; \ \ \ \ &amp; \phi \vee \neg \phi \ \ \ &amp; \neg \neg_e 8
 \end{align}\end{split}\]</div>
 </section>
 <section id="id7">
 <h3>可证等价<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
-<p>令<span class="math notranslate nohighlight">\(\Phi\)</span>和<span class="math notranslate nohighlight">\(\Psi\)</span>为命题逻辑中的公式，我们称它们可证等价当且仅当两个相继式<span class="math notranslate nohighlight">\(\Phi \vdash \Psi\)</span>和<span class="math notranslate nohighlight">\(\Psi \vdash \Phi\)</span>都是有效的(valid)。对于这种双向的可证，我们也可以简写为<span class="math notranslate nohighlight">\(\Phi \dashv \vdash \Psi\)</span>。</p>
+<p>令<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>为命题逻辑中的公式，我们称它们可证等价当且仅当两个相继式<span class="math notranslate nohighlight">\(\phi \vdash \psi\)</span>和<span class="math notranslate nohighlight">\(\psi \vdash \phi\)</span>都是有效的(valid)。对于这种双向的可证，我们也可以简写为<span class="math notranslate nohighlight">\(\phi \dashv \vdash \psi\)</span>。</p>
 </section>
 <section id="id8">
 <h3>经典逻辑与直觉逻辑<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
 <p>在经典逻辑中，逻辑学家承认反证法、排中律、“双重否定”消去律；但另一种直觉注意逻辑中，逻辑学家认为这些规则并没有直接证明，即缺少构造性。</p>
-<p>对于反证法，直觉主义认为为了证明<span class="math notranslate nohighlight">\(\Phi\)</span>，我们需要直接证明，而不是证明<span class="math notranslate nohighlight">\(\neg \Phi\)</span>是不可能的；对于排中律，必须证明 <span class="math notranslate nohighlight">\(\Phi\)</span>或者<span class="math notranslate nohighlight">\(\neg \Phi\)</span>成立，如果都不能证明，那么则不能承认排中律；另外，直觉主义逻辑拒绝接受双重否定消去律因为我们使用其作用于其他接受的规则上（因此接受双重否定消去律意味着接受PBC和LEM）。</p>
+<p>对于反证法，直觉主义认为为了证明<span class="math notranslate nohighlight">\(\phi\)</span>，我们需要直接证明，而不是证明<span class="math notranslate nohighlight">\(\neg \phi\)</span>是不可能的；对于排中律，必须证明 <span class="math notranslate nohighlight">\(\phi\)</span>或者<span class="math notranslate nohighlight">\(\neg \phi\)</span>成立，如果都不能证明，那么则不能承认排中律；另外，直觉主义逻辑拒绝接受双重否定消去律因为我们使用其作用于其他接受的规则上（因此接受双重否定消去律意味着接受PBC和LEM）。</p>
+</section>
+</section>
+<section id="id9">
+<h2>形式语言下的命题逻辑<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h2>
+<p>我们必须明确，对于我们声明的规则来说，只要我们构造的公式满足规则的要求，它就应该是有效的。</p>
+<p>我们必须定义 <strong>良形式(well-formed)</strong> 的公式，以保证其具有意义。命题逻辑中的良形式公式当且仅当通过有限次以下规则才能得到：</p>
+<ul class="simple">
+<li><p><em>原子(atom)</em>: 每个命题原子<span class="math notranslate nohighlight">\(p,q,r, ...\)</span>和<span class="math notranslate nohighlight">\(p_1,p_2, ...\)</span>是良形式的公式</p></li>
+<li><p><em><span class="math notranslate nohighlight">\(\neg\)</span></em>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>是良形式的公式，那么<span class="math notranslate nohighlight">\(\neg \phi\)</span>也是</p></li>
+<li><p><em><span class="math notranslate nohighlight">\(\wedge\)</span></em>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>是良形式的公式，那么<span class="math notranslate nohighlight">\(\phi \wedge \psi\)</span>也是</p></li>
+<li><p><em><span class="math notranslate nohighlight">\(\vee\)</span></em>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>是良形式的公式，那么<span class="math notranslate nohighlight">\(\phi \vee \psi\)</span>也是</p></li>
+<li><p><em><span class="math notranslate nohighlight">\(\rightarrow\)</span></em>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>是良形式的公式，那么<span class="math notranslate nohighlight">\(\phi \rightarrow \psi\)</span>也是</p></li>
+</ul>
+<p>以上规则也可以以 <em><strong>BNF语法(Backus Naur form)</strong></em> 定义:</p>
+<div class="math notranslate nohighlight">
+\[\phi ::= p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi)\]</div>
+</section>
+<section id="id10">
+<h2>命题逻辑的语义<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<section id="id11">
+<h3>逻辑连接词的含义<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<p>在现实世界中，我们往往关注某个陈述的“真假” – 即真值。真值集合中包含两个元素 <strong>T</strong> 和 <strong>F</strong>，分别代表“真”和“假”。</p>
+<p>在对于一个公式而言，它要么是原子的，要么是由其他公式通过逻辑连接词构造而成。对于前者，我们通过现实世界来赋予其真值；对于后者，一旦我们得到其中全部原子的真值，就可以通过逻辑连接词计算出它的真值，可以将逻辑连接词视为函数，根据参数的真值得到对应的真值结果。</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\wedge\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp;\phi   &amp;\psi  &amp;\ \ \ \ \phi \wedge \psi \\
+&amp;T  &amp;T &amp;\ \ \ \ \ \ \ T \\
+&amp;T  &amp;F &amp;\ \ \ \ \ \ \ F \\
+&amp;F  &amp;T  &amp;\ \ \ \ \ \ \ F \\
+&amp;F  &amp;F  &amp;\ \ \ \ \ \ \ F 
+\end{align}\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\vee\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp;\phi   &amp;\psi  &amp;\ \ \ \ \phi \vee \psi \\
+&amp;T  &amp;T &amp;\ \ \ \ \ \ \ T \\
+&amp;T  &amp;F &amp;\ \ \ \ \ \ \ T \\
+&amp;F  &amp;T  &amp;\ \ \ \ \ \ \ T \\
+&amp;F  &amp;F  &amp;\ \ \ \ \ \ \ F 
+\end{align}\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\rightarrow\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp;\phi   &amp;\psi  &amp;\ \ \ \ \phi \rightarrow \psi \\
+&amp;T  &amp;T &amp;\ \ \ \ \ \ \ T \\
+&amp;T  &amp;F &amp;\ \ \ \ \ \ \ F \\
+&amp;F  &amp;T  &amp;\ \ \ \ \ \ \ T \\
+&amp;F  &amp;F  &amp;\ \ \ \ \ \ \ T 
+\end{align}\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\neg\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp;\phi &amp; \neg \phi \\
+&amp; T &amp; F \\
+&amp; F &amp; T
+\end{align}\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\top\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; \top \\
+&amp; T 
+\end{align}\end{split}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\bot\)</span></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; \bot \\
+&amp; F
+\end{align}\end{split}\]</div>
+<p>给一个公式<span class="math notranslate nohighlight">\(\phi\)</span>中每一个命题的原子分配一个真值，这个过程被称为一个 <em><strong>赋值(valuation)</strong></em> 或者 <em><strong>模型(model)</strong></em>。</p>
+<p>在此之前为了判断一个相继式是否有效，我们需要寻找一个证明来验证。但在真实世界中，我们会关注公式的“真假”。为了便于区分，我们定义前提于结论的另一种关系：</p>
+<div class="math notranslate nohighlight">
+\[\phi_1, \phi_2, \dots,\phi_n \models \psi\]</div>
+<p>我们称<span class="math notranslate nohighlight">\(\models\)</span>为 <em><strong>语义蕴含(semantic entailment)</strong></em> 关系，这表明当前提全部为真时，结论也为真。</p>
+</section>
+<section id="id12">
+<h3>数学归纳法<a class="headerlink" href="#id12" title="此标题的永久链接"></a></h3>
+<p>数学归纳法内容如下：</p>
+<ul class="simple">
+<li><p><em><strong>基础情形(Base case)</strong></em> ： 自然数1拥有性质<span class="math notranslate nohighlight">\(M\)</span>，记为<span class="math notranslate nohighlight">\(M(1)\)</span></p></li>
+<li><p><em><strong>归纳步骤(Inductive step)</strong></em> ： 如果<code class="docutils literal notranslate"><span class="pre">n</span></code>是一个自然数，当我们假定其具有性质<span class="math notranslate nohighlight">\(M(n)\)</span>,那么我们可以得出<span class="math notranslate nohighlight">\( n + 1\)</span>拥有性质<span class="math notranslate nohighlight">\(M( n + 1)\)</span></p></li>
+</ul>
+<p>当以上两条信息满足，则每个自然数都满足性质<span class="math notranslate nohighlight">\(M(n)\)</span>， 在归纳步骤中的假设<span class="math notranslate nohighlight">\(M(n)\)</span>被称为 <em><strong>(I)归纳假设(induction hypothesis)</strong></em> .</p>
+<p>另外数学归纳法拥有一个变种，该变种将归纳步骤中的归纳假设改为<span class="math notranslate nohighlight">\(M(1) \wedge M(2) \wedge \dots \wedge M(n)\)</span>，并取消了基础情形。</p>
+<blockquote>
+<div><p>提示： 取消了基础情形是因为<code class="docutils literal notranslate"><span class="pre">M(1)</span></code>的证明已经包含在了归纳步骤中</p>
+</div></blockquote>
+</section>
+<section id="id13">
+<h3>命题逻辑的可靠性<a class="headerlink" href="#id13" title="此标题的永久链接"></a></h3>
+<p>给出一个<span class="math notranslate nohighlight">\(\phi_1, \phi_2, \dots , \phi_n \vdash \psi\)</span>的证明，是否存在当<span class="math notranslate nohighlight">\(\psi\)</span>为假时，所有的前提<span class="math notranslate nohighlight">\(\phi_1,\phi_2, \dots , \phi_n \)</span>仍然为真？即命题逻辑是否具有 <em><strong>可靠性(soundness)</strong></em> ？事实是肯定的，令<span class="math notranslate nohighlight">\(\phi_1, \phi_2, \dots , \phi_n\)</span> 和 <span class="math notranslate nohighlight">\(\psi\)</span> 为命题逻辑公式。如果<span class="math notranslate nohighlight">\(\phi_1, \phi_2, \dots , \phi_n \vdash \psi\)</span>是有效的，则<span class="math notranslate nohighlight">\(\phi_1, \phi_2, \dots , \phi_n \models \psi\)</span>成立。</p>
+</section>
+<section id="id14">
+<h3>命题逻辑的完备性<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
+<p>当<span class="math notranslate nohighlight">\(\phi_1,\phi_2,\dots,\phi_n \models \psi\)</span>成立，则存在一个相继式 <span class="math notranslate nohighlight">\(\phi_1,\phi_2,\dots,\phi_n \vdash \psi\)</span> 的自然归纳的证明。</p>
+</section>
+</section>
+<section id="id15">
+<h2>范式<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h2>
+<p>本节讨论检验语义蕴含成立的（除定义外）其他替代性方法。</p>
+<section id="id16">
+<h3>语义等价性、可满足性和有效性<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h3>
+<p>令<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>为命题逻辑公式，我们称它们 <em><strong>语义等价(semantically equivalent)</strong></em> 当且仅当 <span class="math notranslate nohighlight">\(\phi \models \psi\)</span>且<span class="math notranslate nohighlight">\(\psi \models \phi\)</span>均成立，此时可以写作<span class="math notranslate nohighlight">\(\phi \equiv \psi\)</span>。特别地，如果<span class="math notranslate nohighlight">\(\models \phi\)</span>，我们称<span class="math notranslate nohighlight">\(\phi\)</span>为 <em><strong>有效的(valid)</strong></em>。</p>
+<p>实际上，由于可靠性和完备性，语义等价和 <em><strong>可证等价(provable equivalence)</strong></em> 是一致的。</p>
+<p><strong>[引理]</strong>   给定命题逻辑公式<span class="math notranslate nohighlight">\(\phi_1,\phi_2,\dots,\phi_n\)</span> 和<span class="math notranslate nohighlight">\(\psi\)</span>，
+则<span class="math notranslate nohighlight">\( \phi_1,\phi_2,\dots,\phi_n \models \psi \)</span>成立当且仅当<span class="math notranslate nohighlight">\(\models \phi_1 \rightarrow (\phi_2 \rightarrow \dots \rightarrow (\phi_n \rightarrow \psi))\)</span>成立</p>
+<p>下面介绍 <em><strong>合取范式(conjunctive normal form，CNF)</strong></em>: 一个文字<span class="math notranslate nohighlight">\(L\)</span>要么为一个原子<span class="math notranslate nohighlight">\(p\)</span>要么为一个原子的否定<span class="math notranslate nohighlight">\(\neg p\)</span>，一个公式<span class="math notranslate nohighlight">\(C\)</span>是一个合取范式如果其是若干 <em><strong>子句(clauses)</strong></em> 组成，其中子句是若干文字的析取。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; L ::= &amp;p \ \ \ |\ \ \ &amp;\neg p  \\
+&amp; D ::= &amp;L \ \ \ |\ \ \ &amp;L \vee D \\
+&amp; C ::= &amp;D \ \ \ |\ \ \ &amp;D \wedge C 
+\end{align}\end{split}\]</div>
+<p><strong>[引理]</strong>   一组文字的合取 <span class="math notranslate nohighlight">\(L_1 \vee L_2 \vee \dots \vee L_m\)</span>是有效的当且仅当存在<span class="math notranslate nohighlight">\(1 \le i,j \le m\)</span>使得<span class="math notranslate nohighlight">\(L_i\)</span>是<span class="math notranslate nohighlight">\(\neg L_j\)</span></p>
 </section>
 </section>
 </section>
