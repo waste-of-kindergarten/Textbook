@@ -412,6 +412,30 @@
 &amp; C ::= &amp;D \ \ \ |\ \ \ &amp;D \wedge C 
 \end{align}\end{split}\]</div>
 <p><strong>[引理]</strong>   一组文字的合取 <span class="math notranslate nohighlight">\(L_1 \vee L_2 \vee \dots \vee L_m\)</span>是有效的当且仅当存在<span class="math notranslate nohighlight">\(1 \le i,j \le m\)</span>使得<span class="math notranslate nohighlight">\(L_i\)</span>是<span class="math notranslate nohighlight">\(\neg L_j\)</span></p>
+<p>给定一个命题逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>，我们称<span class="math notranslate nohighlight">\(\phi\)</span>是 <em><strong>可满足的(satisfiable)</strong></em> ，如果它的一个赋值可以使其为真。另外当<span class="math notranslate nohighlight">\(\phi\)</span>为可满足的，则<span class="math notranslate nohighlight">\(\neg \phi\)</span>不是有效的。</p>
+<p>如何计算合取范式？一种特殊的场景是，当我们已经拥有了真值表，那么我们可以根据真值表快速写出合取范式。</p>
+<p>例如：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+ p \ \ \ q \ \ \  r  &amp; \ \ \ \phi \\
+ T \ \ \ T  \ \ \ T  &amp; \ \ \ T \\
+ T \ \ \ T \ \ \ F &amp; \ \ \ F \\ 
+ T \ \ \ F \ \ \ T &amp; \ \ \ T \\ 
+ T \ \ \ F \ \ \ F &amp; \ \ \ T \\
+ F \ \ \ T \ \ \ T &amp; \ \ \ F \\ 
+ F \ \ \ T \ \ \ F &amp; \ \ \ F \\ 
+ F \ \ \ F \ \ \ T &amp; \ \ \ F \\ 
+ F \ \ \ F \ \ \ F &amp; \ \ \ T 
+\end{align}\end{split}\]</div>
+<p>我们将所有导致<span class="math notranslate nohighlight">\(\phi\)</span>为<span class="math notranslate nohighlight">\(F\)</span>的赋值（行）全部其出来，组成一个子句，以便其能够为<span class="math notranslate nohighlight">\(F\)</span>（进一步地，当且仅当此时为假）。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; \phi_1 = \neg p \vee \neg q \vee r \\
+&amp; \phi_2 = p \vee \neg q \vee \neg r \\
+&amp; \phi_3 = p \vee \neg q \vee r \\ 
+&amp; \phi_4 = p \vee q \vee \neg r 
+\end{align}\end{split}\]</div>
+<p>我们将这些子句合取，组成合取范式；此时，当且仅当赋值为真值表中使<span class="math notranslate nohighlight">\(\phi\)</span>为假的情况，才能使合取范式为假，其余情况为真，这与真值表是完全一致的，因此该合取范式与<span class="math notranslate nohighlight">\(\phi\)</span>等价，即为<span class="math notranslate nohighlight">\(\phi\)</span>的合取范式。</p>
 </section>
 </section>
 </section>
