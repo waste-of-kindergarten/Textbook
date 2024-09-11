@@ -74,6 +74,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id15">范式</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id16">语义等价性、可满足性和有效性</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">合取范式与有效性</a></li>
 </ul>
 </li>
 </ul>
@@ -436,6 +437,59 @@
 &amp; \phi_4 = p \vee q \vee \neg r 
 \end{align}\end{split}\]</div>
 <p>我们将这些子句合取，组成合取范式；此时，当且仅当赋值为真值表中使<span class="math notranslate nohighlight">\(\phi\)</span>为假的情况，才能使合取范式为假，其余情况为真，这与真值表是完全一致的，因此该合取范式与<span class="math notranslate nohighlight">\(\phi\)</span>等价，即为<span class="math notranslate nohighlight">\(\phi\)</span>的合取范式。</p>
+</section>
+<section id="id17">
+<h3>合取范式与有效性<a class="headerlink" href="#id17" title="此标题的永久链接"></a></h3>
+<p>实际上，任何公式都可以被转换为等价的合取范式。这样我们可以通过等价的合取范式检查公式是否是有效的。</p>
+<p>我们称该转换的算法为<span class="math notranslate nohighlight">\(CNF\)</span>，<span class="math notranslate nohighlight">\(CNF\)</span>应当满足以下的要求：</p>
+<p>(1) <span class="math notranslate nohighlight">\(CNF\)</span>对于任意的命题逻辑公式的输入都会终止
+<br>
+(2) 对于每个这样的输入，<span class="math notranslate nohighlight">\(CNF\)</span>输出一个等价的公式
+<br>
+(3) 所有的输出都满足合取范式CNF</p>
+<p>对于任意一个公式，首先需要去除蕴含符号，我们称去除操作为<span class="math notranslate nohighlight">\(IMPL\_FREE\)</span>,该操作将公式中的任何子公式中形式<span class="math notranslate nohighlight">\(\psi \rightarrow \eta\)</span>转换为<span class="math notranslate nohighlight">\(\neg \psi \vee \eta\)</span>.因此这个过程也是个递归过程。</p>
+<p>在使用蕴含消除操作后，可能会引入双重否定以及对于非原子公式的否定，我们需要保证否定必须作用在原子上（也就是说不能出现以上两种情况），即转化为 <em><strong>否定范式(negation normal form, NNF)</strong></em>.</p>
+<p>function  NNF(<span class="math notranslate nohighlight">\(\phi\)</span>):</p>
+<p>/* 前置条件： <span class="math notranslate nohighlight">\(\phi\)</span>中不包含蕴含*/</p>
+<p>/* 后置条件： <span class="math notranslate nohighlight">\(NNF(\phi)\)</span> 计算得到<span class="math notranslate nohighlight">\(\phi\)</span>的否定范式*/</p>
+<p>begin function</p>
+<p>  case</p>
+<p>     <span class="math notranslate nohighlight">\( \phi\)</span>是一个文字： 返回<span class="math notranslate nohighlight">\(\phi\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\neg\neg\phi_1\)</span>: 返回<span class="math notranslate nohighlight">\(NNF(\phi_1)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\phi_1 \wedge \phi_2\)</span>: 返回<span class="math notranslate nohighlight">\(NNF(\phi_1) \wedge NNF(\phi_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\phi_1 \vee \phi_2\)</span>: 返回<span class="math notranslate nohighlight">\(NNF(\phi_1) \vee NNF(\phi_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\neg(\phi_1 \wedge \phi_2)\)</span>: 返回<span class="math notranslate nohighlight">\(NNF(\neg\phi_1) \vee NNF(\neg\phi_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\neg(\phi_1 \vee \phi_2)\)</span>: 返回<span class="math notranslate nohighlight">\(NNF(\neg\phi_1) \wedge NNF(\neg\phi_2)\)</span></p>
+<p>  end case</p>
+<p>end function</p>
+<p>一旦完成了否定范式的转换，我们只需为<span class="math notranslate nohighlight">\(CNF\)</span>算法考虑处理以下三种情形：</p>
+<ul class="simple">
+<li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>是一个文字，它已经在定义中，因此输出为<span class="math notranslate nohighlight">\(\phi\)</span></p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>等于<span class="math notranslate nohighlight">\(\phi_1 \wedge \phi_2\)</span>，我们递归在每个<span class="math notranslate nohighlight">\(\phi_i\)</span>中调用<span class="math notranslate nohighlight">\(CNF\)</span>，并得到的结果<span class="math notranslate nohighlight">\(\eta_i\)</span>合取，得到<span class="math notranslate nohighlight">\(\eta_1 \wedge \eta_2\)</span>作为输出</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>等于<span class="math notranslate nohighlight">\(\phi_1 \vee \phi_2\)</span>，我们仍然进行递归调用，得到结果<span class="math notranslate nohighlight">\(\eta_i\)</span>，但由于这些结果未必是文字，因此不能简单地将它们析取，我们暂时将转换过程称为<span class="math notranslate nohighlight">\(DISTR(\phi_1,\phi_2)\)</span>.</p></li>
+</ul>
+<p>用伪代码可以写为：</p>
+<p>function <span class="math notranslate nohighlight">\(CNF(\phi)\)</span>:</p>
+<p>/* 前提条件： <span class="math notranslate nohighlight">\(\phi\)</span>没有蕴含且是否定范式 */</p>
+<p>/* 后置条件： <span class="math notranslate nohighlight">\(CNF(\phi)\)</span>计算得到<span class="math notranslate nohighlight">\(\phi\)</span>的一个等价的CNF */</p>
+<p>begin function</p>
+<p>  case</p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是一个文字： 返回<span class="math notranslate nohighlight">\(\phi\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\phi_1 \wedge \phi_2\)</span>: 返回<span class="math notranslate nohighlight">\(CNF(\phi_1) \wedge CNF(\phi_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\phi\)</span>是<span class="math notranslate nohighlight">\(\phi_1 \vee \phi_2\)</span>: 返回<span class="math notranslate nohighlight">\(DISTR(CNF(\phi_1,\phi_2))\)</span></p>
+<p>  end case</p>
+<p>end function</p>
+<p>下面考虑如何解决<span class="math notranslate nohighlight">\(DISTR\)</span>操作，实际上，顾名思义该算法实际上利用分配律进行操作：</p>
+<p>function <span class="math notranslate nohighlight">\(DISTR(\eta_1,\eta_2)\)</span>:</p>
+<p>/* 前置条件： <span class="math notranslate nohighlight">\(\eta_1\)</span>和<span class="math notranslate nohighlight">\(\eta_2\)</span>都是CNF*/</p>
+<p>/* 后置条件：<span class="math notranslate nohighlight">\(DISTR(\eta_1,\eta_2)\)</span>计算<span class="math notranslate nohighlight">\(\eta_1 \vee \eta_2\)</span>的一个CNF*/</p>
+<p>begin function</p>
+<p>   case</p>
+<p>     <span class="math notranslate nohighlight">\(\eta_1\)</span>是<span class="math notranslate nohighlight">\(\eta_{11} \wedge \eta_12\)</span>: 返回 <span class="math notranslate nohighlight">\(DISTR(\eta_{11},\eta_2) \wedge DISTR(\eta_{12},\eta_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\eta_2\)</span>是<span class="math notranslate nohighlight">\(\eta_{21} \wedge \eta_{22}\)</span>: 返回<span class="math notranslate nohighlight">\(DISTR(\eta_1,\eta_{21}) \wedge DISTR(\eta_1,\eta_{22})\)</span></p>
+<p>     否则返回<span class="math notranslate nohighlight">\(\eta_1 \vee \eta_2\)</span></p>
+<p>   end case</p>
+<p>end function</p>
 </section>
 </section>
 </section>
