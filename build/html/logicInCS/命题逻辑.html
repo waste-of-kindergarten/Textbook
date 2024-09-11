@@ -413,6 +413,7 @@
 &amp; C ::= &amp;D \ \ \ |\ \ \ &amp;D \wedge C 
 \end{align}\end{split}\]</div>
 <p><strong>[引理]</strong>   一组文字的合取 <span class="math notranslate nohighlight">\(L_1 \vee L_2 \vee \dots \vee L_m\)</span>是有效的当且仅当存在<span class="math notranslate nohighlight">\(1 \le i,j \le m\)</span>使得<span class="math notranslate nohighlight">\(L_i\)</span>是<span class="math notranslate nohighlight">\(\neg L_j\)</span></p>
+<p>对于一个合取范式，其为有效的，当且仅当每个子句都是有效的，而每个子句的有效性可以根据以上引理验证，因此，合取范式非常容易对公式的有效性进行检查。</p>
 <p>给定一个命题逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>，我们称<span class="math notranslate nohighlight">\(\phi\)</span>是 <em><strong>可满足的(satisfiable)</strong></em> ，如果它的一个赋值可以使其为真。另外当<span class="math notranslate nohighlight">\(\phi\)</span>为可满足的，则<span class="math notranslate nohighlight">\(\neg \phi\)</span>不是有效的。</p>
 <p>如何计算合取范式？一种特殊的场景是，当我们已经拥有了真值表，那么我们可以根据真值表快速写出合取范式。</p>
 <p>例如：</p>
