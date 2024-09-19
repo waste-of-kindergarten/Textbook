@@ -497,7 +497,7 @@
 <p>/* 后置条件：<span class="math notranslate nohighlight">\(DISTR(\eta_1,\eta_2)\)</span>计算<span class="math notranslate nohighlight">\(\eta_1 \vee \eta_2\)</span>的一个CNF*/</p>
 <p>begin function</p>
 <p>   case</p>
-<p>     <span class="math notranslate nohighlight">\(\eta_1\)</span>是<span class="math notranslate nohighlight">\(\eta_{11} \wedge \eta_12\)</span>: 返回 <span class="math notranslate nohighlight">\(DISTR(\eta_{11},\eta_2) \wedge DISTR(\eta_{12},\eta_2)\)</span></p>
+<p>     <span class="math notranslate nohighlight">\(\eta_1\)</span>是<span class="math notranslate nohighlight">\(\eta_{11} \wedge \eta_{12}\)</span>: 返回 <span class="math notranslate nohighlight">\(DISTR(\eta_{11},\eta_2) \wedge DISTR(\eta_{12},\eta_2)\)</span></p>
 <p>     <span class="math notranslate nohighlight">\(\eta_2\)</span>是<span class="math notranslate nohighlight">\(\eta_{21} \wedge \eta_{22}\)</span>: 返回<span class="math notranslate nohighlight">\(DISTR(\eta_1,\eta_{21}) \wedge DISTR(\eta_1,\eta_{22})\)</span></p>
 <p>     否则返回<span class="math notranslate nohighlight">\(\eta_1 \vee \eta_2\)</span></p>
 <p>   end case</p>
@@ -506,7 +506,7 @@
 <hr class="docutils" />
 <section id="horn">
 <h3>Horn子句及可满足性<a class="headerlink" href="#horn" title="此标题的永久链接"></a></h3>
-<p>合取范式在检查公式的有效性上非常容易，但总体来讲它并不容易检验满足性。实际上，有很多方法高效检验可满足性的方法，***Horn公式(Horm formula)***就是其中之一。</p>
+<p>合取范式在检查公式的有效性上非常容易，但总体来讲它并不容易检验满足性。实际上，有很多方法高效检验可满足性的方法，<em><strong>Horn公式(Horm formula)</strong></em> 就是其中之一。</p>
 <p>一个Horn公式是一个命题逻辑下的公式<span class="math notranslate nohighlight">\(\phi\)</span>，如果其能够使用以下语法生成一个H的实例：</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}

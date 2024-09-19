@@ -501,7 +501,7 @@ begin function
 
 &nbsp;&nbsp; case 
 
-&nbsp;&nbsp;&nbsp;&nbsp; ` $\eta_1$ `是` $\eta_{11} \wedge \eta_12$ `: 返回 ` $DISTR(\eta_{11},\eta_2) \wedge DISTR(\eta_{12},\eta_2)$ `
+&nbsp;&nbsp;&nbsp;&nbsp; ` $\eta_1$ `是` $\eta_{11} \wedge \eta_{12}$ `: 返回 ` $DISTR(\eta_{11},\eta_2) \wedge DISTR(\eta_{12},\eta_2)$ `
 
 &nbsp;&nbsp;&nbsp;&nbsp; ` $\eta_2$ `是` $\eta_{21} \wedge \eta_{22}$ `: 返回` $DISTR(\eta_1,\eta_{21}) \wedge DISTR(\eta_1,\eta_{22})$ `
 
@@ -515,7 +515,7 @@ end function
 
 ### Horn子句及可满足性
 
-合取范式在检查公式的有效性上非常容易，但总体来讲它并不容易检验满足性。实际上，有很多方法高效检验可满足性的方法，***Horn公式(Horm formula)***就是其中之一。
+合取范式在检查公式的有效性上非常容易，但总体来讲它并不容易检验满足性。实际上，有很多方法高效检验可满足性的方法，***Horn公式(Horm formula)*** 就是其中之一。
 
 一个Horn公式是一个命题逻辑下的公式` $\phi$ `，如果其能够使用以下语法生成一个H的实例：
 
