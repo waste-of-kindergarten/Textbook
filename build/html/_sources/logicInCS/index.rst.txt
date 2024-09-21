@@ -6,3 +6,4 @@ Logic In Computer Science
    :caption: 目录:
 
    命题逻辑
+   谓词逻辑

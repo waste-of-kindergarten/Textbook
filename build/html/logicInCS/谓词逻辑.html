@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logic In Computer Science &mdash; TextBook v0.1 文档</title>
+  <title>谓词逻辑 &mdash; TextBook v0.1 文档</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
       <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
@@ -22,13 +22,13 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../_static/dark_mode_js/default_dark.js"></script>
         <script src="../_static/dark_mode_js/theme_switcher.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="命题逻辑" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" />
-    <link rel="prev" title="资源" href="../haskell/%E8%B5%84%E6%BA%90.html" /> 
+    <link rel="prev" title="命题逻辑" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,9 +53,16 @@
               <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Logic In Computer Science</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Logic In Computer Science</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html">命题逻辑</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html">谓词逻辑</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">谓词逻辑</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">谓词逻辑作为形式语言</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">项</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">公式</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -74,9 +81,10 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Logic In Computer Science</li>
+          <li class="breadcrumb-item"><a href="index.html">Logic In Computer Science</a></li>
+      <li class="breadcrumb-item active">谓词逻辑</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/logicInCS/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+            <a href="../_sources/logicInCS/谓词逻辑.md.txt" rel="nofollow"> 查看页面源码</a>
       </li>
   </ul>
   <hr/>
@@ -84,34 +92,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="logic-in-computer-science">
-<h1>Logic In Computer Science<a class="headerlink" href="#logic-in-computer-science" title="此标题的永久链接"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html">命题逻辑</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#id2">声明语句</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#id3">自然演绎</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#id9">形式语言下的命题逻辑</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#id10">命题逻辑的语义</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#id15">范式</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html#sat">SAT 求解器</a></li>
+  <section id="id1">
+<h1>谓词逻辑<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p><em><strong>谓词逻辑(predicate logic)</strong></em> 也被称为 <em><strong>一阶逻辑(first-order logic)</strong></em>，相比命题逻辑更具有表现力。在谓词逻辑中，仍然满足可靠性和完备性。</p>
+<section id="id2">
+<h2>谓词逻辑作为形式语言<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>在谓词逻辑公式中，有两个重要的概念。首先，谓词逻辑中包含了对象，这些对象由变量符号表示，或者也可以通过函数符号来表示。在谓词逻辑中，用来表示对象的表达式均称为 <em><strong>项(terms)</strong></em>；另外一个概念与真值相关，用来表示真值的表达式被称为 <em><strong>公式(formulas)</strong></em>。</p>
+<p>谓词逻辑词汇均由三个集合组成：谓词符号集合<span class="math notranslate nohighlight">\(\mathcal{P}\)</span>、函数符号集合<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>以及常数符号集合<span class="math notranslate nohighlight">\(\mathcal{C}\)</span>。</p>
+<section id="id3">
+<h3>项<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>项的定义如下：</p>
+<ul class="simple">
+<li><p>任何的变量都是项</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(c \in \mathcal{F}\)</span>是一个零元函数，那么<span class="math notranslate nohighlight">\(c\)</span>是一个项</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(t\_1,t\_2,\dots,t\_n\)</span>是项，并且<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>有变元<span class="math notranslate nohighlight">\(n &gt; 0\)</span>，那么<span class="math notranslate nohighlight">\(f(t\_1,t\_2,\dots,t\_n)\)</span>是一个项</p></li>
+<li><p>除此之外均不是项</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html">谓词逻辑</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html#id2">谓词逻辑作为形式语言</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<p>使用BNF形式记为：</p>
+<div class="math notranslate nohighlight">
+\[t ::= \ x \ | \ c \ | \ f(t,\dots,t)\]</div>
+<p>其中<span class="math notranslate nohighlight">\(x\)</span>在一个变量集合<span class="math notranslate nohighlight">\(var\)</span>上取值，<span class="math notranslate nohighlight">\(c\)</span>在<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>中零元函数符号中取值，<span class="math notranslate nohighlight">\(f\)</span>在非零元函数符号中取值。</p>
+</section>
+<section id="id4">
+<h3>公式<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+</section>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
-        <a href="../haskell/%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-left" title="资源" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
-        <a href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" class="btn btn-neutral float-right" title="命题逻辑" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" class="btn btn-neutral float-left" title="命题逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
     </div>
 
   <hr/>
