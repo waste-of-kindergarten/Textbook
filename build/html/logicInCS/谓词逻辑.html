@@ -65,6 +65,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id7">谓词逻辑的证明理论</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id8">自然演绎规则</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">量词等价</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">谓词逻辑的语义</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">模型</a></li>
 </ul>
 </li>
 </ul>
@@ -144,6 +149,20 @@
 <h3>自由变量和约束变量<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
 <p>令<span class="math notranslate nohighlight">\(\phi\)</span>作为谓词逻辑中的公式。如果在<span class="math notranslate nohighlight">\(\phi\)</span>的解析树中，存在一个叶结点<span class="math notranslate nohighlight">\(x\)</span>，其向上的路径中没有通向<span class="math notranslate nohighlight">\(\forall x\)</span>或者<span class="math notranslate nohighlight">\(\exists x\)</span>，则称<span class="math notranslate nohighlight">\(x\)</span>为 <em><strong>自由变量(free variables)</strong></em> ；否则，称<span class="math notranslate nohighlight">\(x\)</span>为 <em><strong>约束变量(bound variables)</strong></em> 。一个变量<span class="math notranslate nohighlight">\(x\)</span>是约束变量当且仅当，它位于某个<span class="math notranslate nohighlight">\(\forall x\)</span>或<span class="math notranslate nohighlight">\(\exists x\)</span>的 <em><strong>作用域(scope)</strong></em> 中。</p>
 <p>一个量词的作用域是它的子树减去任何重新引入该量词的子树。例如<span class="math notranslate nohighlight">\(\forall x (O(x) \rightarrow \exists x Q(x))\)</span>的作用域是<span class="math notranslate nohighlight">\(P(x)\)</span>。</p>
+<p>更加形式化地，一个项<span class="math notranslate nohighlight">\(t\)</span>的自由变量集合<span class="math notranslate nohighlight">\(FV(t)\)</span>的定义如下：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(FV(x) = \{x\}\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(c) = \emptyset\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(f(t_1,t_2,\dots,t_n)) = FV(t_1) \cup FV(t_2) \cup \dots \cup FV(t_n)\)</span>.</p></li>
+</ul>
+<p>进一步，公式<span class="math notranslate nohighlight">\(\phi\)</span>地自由变量集合<span class="math notranslate nohighlight">\(FV(\phi)\)</span>:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(FV(\bot) = FV(p) = \emptyset\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(P(t_1,\dots,t_n)) = FV(t_1) \cup \dots \cup FV(t_n)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(t = s) = FV(t)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(\phi \wedge \psi) = FV(\phi \vee \psi) = FV(\phi \rightarrow \psi) = FV(\phi) \cup FV(\psi)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(FV(\forall x . \phi) = FV(\exists x . \phi) = FV(\phi) - {x}\)</span></p></li>
+</ul>
 </section>
 <section id="id6">
 <h3>替换<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
@@ -151,18 +170,30 @@
 <p>给定一个变量<span class="math notranslate nohighlight">\(x\)</span>，一个项<span class="math notranslate nohighlight">\(t\)</span>和一个公式<span class="math notranslate nohighlight">\(\phi\)</span>,我们定义<span class="math notranslate nohighlight">\(\phi[t/x]\)</span>为将每个<span class="math notranslate nohighlight">\(\phi\)</span>中的每个出现的自由的<span class="math notranslate nohighlight">\(x\)</span>替换为<span class="math notranslate nohighlight">\(t\)</span>后的公式。</p>
 <center><p><img alt="../_images/substitution.png" src="../_images/substitution.png" /></p>
 </center><p>然而，这样替换可能造成麻烦，如果一个项<span class="math notranslate nohighlight">\(t\)</span>中含有其他的变量<span class="math notranslate nohighlight">\(y\)</span>，而变量在被替换的公式中是约束变量，则会导致公式的实质发生改变。</p>
-<p>如果对于<span class="math notranslate nohighlight">\(t\)</span>中的任何变量<span class="math notranslate nohighlight">\(y\)</span>，所有待替换的自由的<span class="math notranslate nohighlight">\(x\)</span>均不在<span class="math notranslate nohighlight">\(\forall y、\exists y\)</span>的作用域中，则称<span class="math notranslate nohighlight">\(t\)</span>对于<span class="math notranslate nohighlight">\(\phi\)</span>中的<span class="math notranslate nohighlight">\(x\)</span>是自由的。</p>
+<p>如果对于<span class="math notranslate nohighlight">\(t\)</span>中的任何变量<span class="math notranslate nohighlight">\(y\)</span>，所有待替换的自由的<span class="math notranslate nohighlight">\(x\)</span>均不在<span class="math notranslate nohighlight">\(\forall y、\exists y\)</span>的作用域中，则称<span class="math notranslate nohighlight">\(t\)</span>对于<span class="math notranslate nohighlight">\(\phi\)</span>中的<span class="math notranslate nohighlight">\(x\)</span>是自由的 <strong>(free for .. in ..)</strong> 。</p>
 <blockquote>
 <div><p>注意：因此，在进行替换时，应当检查是否满足上述条件</p>
 </div></blockquote>
 <center><p><img alt="../_images/substitution_not_free.png" src="../_images/substitution_not_free.png" /></p>
-</center></section>
+</center><p>更加形式化地，”在..中对于..是自由的”可以定义为：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\bot\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(p\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(P(t_1,\dots,t_n)\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(t_1 = t_2\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，那么<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi \wedge \psi, \phi \vee \psi , \phi \rightarrow \psi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(x \not \in FV(\forall y . \phi)\)</span>，那么<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(x \not \in FV(\exists y . \phi)\)</span>，那么<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\exists y . \phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(x \in FV(\forall y . \phi), y \not \in FV(t)\)</span>，并且<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，则<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(x \in FV(\exists y . \phi), y \not \in FV(t)\)</span>，并且<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，则<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+</ul>
+</section>
 </section>
 <section id="id7">
 <h2>谓词逻辑的证明理论<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h2>
 <section id="id8">
 <h3>自然演绎规则<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
-<p><strong>相等性证明规则</strong></p>
+<p><strong>相等性规则</strong></p>
 <div class="math notranslate nohighlight">
 \[\frac{}{t=t}=_i\]</div>
 <div class="math notranslate nohighlight">
@@ -181,6 +212,70 @@
 &amp;2 &amp; \ \ \ t_2 = t_3 &amp; \ \ \ premise \\ 
 &amp;3 &amp; \ \ \ t_1 = t_3 &amp; \ \ \ =_e 2,1
 \end{align}\end{split}\]</div>
+<p><strong>全称量词规则</strong></p>
+<div class="math notranslate nohighlight">
+\[\frac{\forall x \ \phi}{\phi[t/x]} \forall x_e\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\boxed{\begin{align}
+&amp; x_0 &amp; \\
+&amp; &amp; \vdots \\ 
+&amp; &amp; \phi[x_0/x]
+\end{align}}}{\forall x \ \phi} \forall x_i\end{split}\]</div>
+<p><strong>存在量词规则</strong></p>
+<div class="math notranslate nohighlight">
+\[\frac{\phi[t/x]}{\exists x \ \phi} \exists x_i\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\exists x \ \phi \ \boxed{
+\begin{align}
+&amp; x_0 &amp; \phi[x_0/x] \\ 
+&amp; &amp; \vdots \\ 
+&amp; &amp; \chi
+\end{align}
+}}{\chi} \exists x_e\end{split}\]</div>
+<p>对于全称量词的命题，将全称量词换为存在量词也成立<span class="math notranslate nohighlight">\(\forall x \ \phi \vdash \exists x \ \phi\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; 1 &amp; \ \ \ \forall x \ \phi \ \ \ &amp; premise \\ 
+&amp; 2 &amp; \ \ \ \phi[x/x] \ \ \ &amp; \forall x_e 1 \\ 
+&amp; 3 &amp; \ \ \ \exists x \ \phi \ \ \ &amp; \exists x_i 2
+\end{align}\end{split}\]</div>
+</section>
+<section id="id9">
+<h3>量词等价<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p>下面给出量词的一些等价关系：</p>
+<p>1 .</p>
+<p>(a) <span class="math notranslate nohighlight">\(\neg \forall x \ \phi \dashv \vdash \exists x \ \neg     \phi\)</span></p>
+<p>(b) <span class="math notranslate nohighlight">\(\neg \exists x \ \phi \dashv \vdash \forall x \ \neg \phi\)</span></p>
+<p>2 . 假设<span class="math notranslate nohighlight">\(x\)</span>在<span class="math notranslate nohighlight">\(\psi\)</span>不是自由的：</p>
+<p>(a) <span class="math notranslate nohighlight">\(\forall x \ \phi \wedge \psi \dashv \vdash \forall x \ (\phi \wedge \psi)\)</span></p>
+<p>(b) <span class="math notranslate nohighlight">\(\forall x \ \phi \vee \psi \dashv \vdash \forall x \ (\phi \vee \psi)\)</span></p>
+<p>(c) <span class="math notranslate nohighlight">\(\exists x \phi \wedge \psi \dashv \vdash \exists x \ (\phi \wedge \psi)\)</span></p>
+<p>(d) <span class="math notranslate nohighlight">\(\exists x \ \phi \vee \psi \dashv \vdash \exists x \ (\phi \vee \psi)\)</span></p>
+<p>(e) <span class="math notranslate nohighlight">\(\forall x \  (\psi \rightarrow \phi) \dashv \vdash \phi \rightarrow \forall x \ \phi\)</span></p>
+<p>(f) <span class="math notranslate nohighlight">\(\exists x \ (\phi \rightarrow \psi) \dashv \vdash \forall x \ \phi \rightarrow \psi\)</span></p>
+<p>(g) <span class="math notranslate nohighlight">\(\forall x \ (\phi \rightarrow \psi) \dashv \vdash \exists x \ \phi \rightarrow \psi\)</span></p>
+<p>(h) <span class="math notranslate nohighlight">\(\exists x \ (\psi \rightarrow \phi) \dashv \vdash \psi \rightarrow \exists x \ \phi\)</span></p>
+<p>3 .</p>
+<p>(a) <span class="math notranslate nohighlight">\(\forall x \ \phi \wedge \forall x \ \psi \dashv \vdash \forall x \ (\phi \wedge \psi)\)</span></p>
+<p>(b) <span class="math notranslate nohighlight">\(\exists x \ \phi \vee \exists x \ \psi \dashv \vdash \exists x \ (\phi \vee \psi)\)</span></p>
+</section>
+</section>
+<section id="id10">
+<h2>谓词逻辑的语义<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h2>
+<section id="id11">
+<h3>模型<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<p>令<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>为函数符号集合，<span class="math notranslate nohighlight">\(\mathcal{P}\)</span>为谓词符号集合，每个符号有固定数量的的参数。对<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>的模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>由如下数据组成：</p>
+<ul class="simple">
+<li><p>一个非空即可<span class="math notranslate nohighlight">\(A\)</span>，具体值宇宙</p></li>
+<li><p>对于每个非零元的函数符号<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>，A的一个具体的元素<span class="math notranslate nohighlight">\(f^{\mathcal{M}}\)</span></p></li>
+<li><p>对于每个变元数大于零的函数符号<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>，一个具体的元素<span class="math notranslate nohighlight">\(f^\mathcal{M} : A^n \rightarrow A\)</span>，其中<span class="math notranslate nohighlight">\(A^n\)</span>是<span class="math notranslate nohighlight">\(A\)</span>上的n元组</p></li>
+<li><p>对于每个变元数大于零的谓词符号<span class="math notranslate nohighlight">\(P \in \mathcal{P}\)</span>，一个子集<span class="math notranslate nohighlight">\(P^\mathcal{P} \subseteq A^n\)</span></p></li>
+</ul>
+<p>下面给出一个例子：</p>
+<p>令<span class="math notranslate nohighlight">\(\mathcal{F} \stackrel{\text{def}}{=} \{i\}\)</span>以及<span class="math notranslate nohighlight">\(\mathcal{P} \stackrel{\text{def}}{=} \{R,F\}\)</span>。其中<span class="math notranslate nohighlight">\(i\)</span>是常量，<span class="math notranslate nohighlight">\(F\)</span>是一个一元的谓词符号，而<span class="math notranslate nohighlight">\(R\)</span>是一个二元的谓词符号。一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>包含了一个具体元素的集合<span class="math notranslate nohighlight">\(A\)</span>(在计算机中可能表示一组计算机程序的状态)。我们令<span class="math notranslate nohighlight">\(A \stackrel{\text{def}}{=} \{a,b,c\},i^\mathcal{M}\stackrel{\text{def}}{=} a,R^\mathcal{M}\stackrel{\text{def}}{=}\{(a,a),(a,b),(a,c),(b,c),(c,c)\},F^\mathcal{M} \stackrel{\text{def}}{=} \{b,c\}\)</span>。</p>
+<p>公式<span class="math notranslate nohighlight">\(\exists y \ R(i,y)\)</span>是真的，因为在模型中，我们有<span class="math notranslate nohighlight">\((a,a),(a,b),(a,c)\)</span>；公式<span class="math notranslate nohighlight">\(\neg F(i)\)</span>是真的，因为<span class="math notranslate nohighlight">\(i\)</span>被解释为了<span class="math notranslate nohighlight">\(a\)</span>；公式<span class="math notranslate nohighlight">\(\forall x \forall y \forall z \ (R(x,y) \wedge R(x,z) \rightarrow y = z)\)</span>为假，因为存在<span class="math notranslate nohighlight">\(R(a,b),R(a,c)\)</span>但很显然<span class="math notranslate nohighlight">\(b \not = c\)</span>。</p>
+<p>对于一个具体值宇宙<span class="math notranslate nohighlight">\(A\)</span>，环境或 <em><strong>查找表(look-up table)</strong></em> 是一个函数<span class="math notranslate nohighlight">\(l : var \rightarrow A\)</span>从变量集合<span class="math notranslate nohighlight">\(var\)</span>到<span class="math notranslate nohighlight">\(A\)</span>。对于这样一个<span class="math notranslate nohighlight">\(l\)</span>，我们将查找表记为<span class="math notranslate nohighlight">\(l[x \mapsto a]\)</span>，它将<span class="math notranslate nohighlight">\(x\)</span>映射到<span class="math notranslate nohighlight">\(a\)</span>以及任何其他的变量<span class="math notranslate nohighlight">\(y\)</span>映射到<span class="math notranslate nohighlight">\(l(y)\)</span>。</p>
+<p>为一个对<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>给定一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>并给出一个环境<span class="math notranslate nohighlight">\(l\)</span>，我们为每个逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>定义满足关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>。如果<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>满足，我们称<span class="math notranslate nohighlight">\(\phi\)</span>对于环境<span class="math notranslate nohighlight">\(l\)</span>在模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>下计算为真。</p>
 </section>
 </section>
 </section>
