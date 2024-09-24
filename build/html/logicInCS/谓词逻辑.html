@@ -154,7 +154,7 @@
 <section id="id5">
 <h3>自由变量和约束变量<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
 <p>令<span class="math notranslate nohighlight">\(\phi\)</span>作为谓词逻辑中的公式。如果在<span class="math notranslate nohighlight">\(\phi\)</span>的解析树中，存在一个叶结点<span class="math notranslate nohighlight">\(x\)</span>，其向上的路径中没有通向<span class="math notranslate nohighlight">\(\forall x\)</span>或者<span class="math notranslate nohighlight">\(\exists x\)</span>，则称<span class="math notranslate nohighlight">\(x\)</span>为 <em><strong>自由变量(free variables)</strong></em> ；否则，称<span class="math notranslate nohighlight">\(x\)</span>为 <em><strong>约束变量(bound variables)</strong></em> 。一个变量<span class="math notranslate nohighlight">\(x\)</span>是约束变量当且仅当，它位于某个<span class="math notranslate nohighlight">\(\forall x\)</span>或<span class="math notranslate nohighlight">\(\exists x\)</span>的 <em><strong>作用域(scope)</strong></em> 中。</p>
-<p>一个量词的作用域是它的子树减去任何重新引入该量词的子树。例如<span class="math notranslate nohighlight">\(\forall x (O(x) \rightarrow \exists x Q(x))\)</span>的作用域是<span class="math notranslate nohighlight">\(P(x)\)</span>。</p>
+<p>一个量词的作用域是它的子树减去任何重新引入该量词的子树。例如<span class="math notranslate nohighlight">\(\forall x (P(x) \rightarrow \exists x Q(x))\)</span>的作用域是<span class="math notranslate nohighlight">\(P(x)\)</span>。</p>
 <p>更加形式化地，一个项<span class="math notranslate nohighlight">\(t\)</span>的自由变量集合<span class="math notranslate nohighlight">\(FV(t)\)</span>的定义如下：</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(FV(x) = \{x\}\)</span>.</p></li>
