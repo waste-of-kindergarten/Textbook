@@ -18,7 +18,7 @@
 
 - 如果` $c \in \mathcal{F}$ `是一个零元函数，那么` $c$ `是一个项
 
-- 如果` $t\_1,t\_2,\dots,t\_n$ `是项，并且` $f \in \mathcal{F}$ `有变元` $n > 0$ `，那么` $f(t\_1,t\_2,\dots,t\_n)$ `是一个项
+- 如果` $t_1,t_2,\dots,t_n$ `是项，并且` $f \in \mathcal{F}$ `有变元` $n > 0$ `，那么` $f(t_1,t_2,\dots,t_n)$ `是一个项
 
 - 除此之外均不是项
 
@@ -34,7 +34,13 @@ t ::= \ x \ | \ c \ | \ f(t,\dots,t)
 
 我们递归地在` $(\mathcal{F},\mathcal{P})$ `上定义公式的集合，并使用基于` $\mathcal{F}$ `定义的项：
 
-- 如果 ` $P \in \mathcal{P}$ `是一个变元` $n \ge 1$ `的谓词符号，且如果` $t\_1,t\_2,\dots,t\_n$ `是定义在` $\mathcal{F}$ `上的项，那么` $P(t\_1,t\_2,\dots,t\_n)$ `是一个公式。
+- ` $\bot$ `是一个公式
+
+- 任何的命题原子（或者说零元谓词）` $p$ `是一个公式
+
+- 如果 ` $P \in \mathcal{P}$ `是一个变元` $n \ge 1$ `的谓词符号，且如果` $t_1,t_2,\dots,t_n$ `是定义在` $\mathcal{F}$ `上的项，那么` $P(t_1,t_2,\dots,t_n)$ `是一个公式。
+
+- 如果` $t$ `和` $s$ `都是` $\mathcal{F}$ `上的项，则` $t = s$ `是一个公式
 
 - 如果` $\phi$ `是一个公式，那么` $\neg \phi$ `也是公式。
 
@@ -45,12 +51,14 @@ t ::= \ x \ | \ c \ | \ f(t,\dots,t)
 - 除此之外均不是公式
 
 ```math
-\phi ::= P(t_1,t_2,\dots,t_n) \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \ (\forall x \ \phi) \ | \ (\exists x \ \phi)    
+\begin{align}
+\phi ::= & \bot \ | \ p \ | \ P(t_1,t_2,\dots,t_n) \ |\ t = s \ | \\ 
+ & \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \ (\forall x \ \phi) \ | \ (\exists x \ \phi) 
+\end{align}   
 ```
 
 其中` $P \in \mathcal{P}$ `是变元数量` $n \ge 1$ `的谓词符号，` $t_i$ `是` $\mathcal{F}$ `上的项，` $x$ `是一个变量。
 
-> 提示：谓词逻辑并不包含变元为0的谓词，变元为0的谓词弱化为了命题逻辑
 
 习惯上，` $\neg,\forall y, \exists y $ `结合最紧密，` $\wedge, \vee$ `次之，` $\rightarrow$ `结合性最弱且是右结合的。
 

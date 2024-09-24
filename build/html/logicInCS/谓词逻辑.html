@@ -122,7 +122,7 @@
 <ul class="simple">
 <li><p>任何的变量都是项</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(c \in \mathcal{F}\)</span>是一个零元函数，那么<span class="math notranslate nohighlight">\(c\)</span>是一个项</p></li>
-<li><p>如果<span class="math notranslate nohighlight">\(t\_1,t\_2,\dots,t\_n\)</span>是项，并且<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>有变元<span class="math notranslate nohighlight">\(n &gt; 0\)</span>，那么<span class="math notranslate nohighlight">\(f(t\_1,t\_2,\dots,t\_n)\)</span>是一个项</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span>是项，并且<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>有变元<span class="math notranslate nohighlight">\(n &gt; 0\)</span>，那么<span class="math notranslate nohighlight">\(f(t_1,t_2,\dots,t_n)\)</span>是一个项</p></li>
 <li><p>除此之外均不是项</p></li>
 </ul>
 <p>使用BNF形式记为：</p>
@@ -134,18 +134,21 @@
 <h3>公式<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
 <p>我们递归地在<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>上定义公式的集合，并使用基于<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>定义的项：</p>
 <ul class="simple">
-<li><p>如果 <span class="math notranslate nohighlight">\(P \in \mathcal{P}\)</span>是一个变元<span class="math notranslate nohighlight">\(n \ge 1\)</span>的谓词符号，且如果<span class="math notranslate nohighlight">\(t\_1,t\_2,\dots,t\_n\)</span>是定义在<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>上的项，那么<span class="math notranslate nohighlight">\(P(t\_1,t\_2,\dots,t\_n)\)</span>是一个公式。</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bot\)</span>是一个公式</p></li>
+<li><p>任何的命题原子（或者说零元谓词）<span class="math notranslate nohighlight">\(p\)</span>是一个公式</p></li>
+<li><p>如果 <span class="math notranslate nohighlight">\(P \in \mathcal{P}\)</span>是一个变元<span class="math notranslate nohighlight">\(n \ge 1\)</span>的谓词符号，且如果<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span>是定义在<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>上的项，那么<span class="math notranslate nohighlight">\(P(t_1,t_2,\dots,t_n)\)</span>是一个公式。</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(t\)</span>和<span class="math notranslate nohighlight">\(s\)</span>都是<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>上的项，则<span class="math notranslate nohighlight">\(t = s\)</span>是一个公式</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>是一个公式，那么<span class="math notranslate nohighlight">\(\neg \phi\)</span>也是公式。</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>是公式，那么<span class="math notranslate nohighlight">\((\phi \wedge \psi)\)</span>，<span class="math notranslate nohighlight">\((\phi \vee \psi)\)</span>和<span class="math notranslate nohighlight">\((\phi \rightarrow \psi)\)</span>也是公式。</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(\phi\)</span>是一个公式且<span class="math notranslate nohighlight">\(x\)</span>是一个变量，那么<span class="math notranslate nohighlight">\((\forall x \ \phi)\)</span>和<span class="math notranslate nohighlight">\((\exists x \ \phi)\)</span>也是公式。</p></li>
 <li><p>除此之外均不是公式</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[\phi ::= P(t_1,t_2,\dots,t_n) \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \ (\forall x \ \phi) \ | \ (\exists x \ \phi)    \]</div>
+\[\begin{split}\begin{align}
+\phi ::= &amp; \bot \ | \ p \ | \ P(t_1,t_2,\dots,t_n) \ |\ t = s \ | \\ 
+ &amp; \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \ (\forall x \ \phi) \ | \ (\exists x \ \phi) 
+\end{align}   \end{split}\]</div>
 <p>其中<span class="math notranslate nohighlight">\(P \in \mathcal{P}\)</span>是变元数量<span class="math notranslate nohighlight">\(n \ge 1\)</span>的谓词符号，<span class="math notranslate nohighlight">\(t_i\)</span>是<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>上的项，<span class="math notranslate nohighlight">\(x\)</span>是一个变量。</p>
-<blockquote>
-<div><p>提示：谓词逻辑并不包含变元为0的谓词，变元为0的谓词弱化为了命题逻辑</p>
-</div></blockquote>
 <p>习惯上，<span class="math notranslate nohighlight">\(\neg,\forall y, \exists y \)</span>结合最紧密，<span class="math notranslate nohighlight">\(\wedge, \vee\)</span>次之，<span class="math notranslate nohighlight">\(\rightarrow\)</span>结合性最弱且是右结合的。</p>
 </section>
 <section id="id5">
