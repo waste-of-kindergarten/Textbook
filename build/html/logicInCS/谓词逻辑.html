@@ -274,7 +274,7 @@
 <h3>模型<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
 <p>令<span class="math notranslate nohighlight">\(\mathcal{F}\)</span>为函数符号集合，<span class="math notranslate nohighlight">\(\mathcal{P}\)</span>为谓词符号集合，每个符号有固定数量的的参数。对<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>的模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>由如下数据组成：</p>
 <ul class="simple">
-<li><p>一个非空即可<span class="math notranslate nohighlight">\(A\)</span>，具体值宇宙</p></li>
+<li><p>一个非空集合<span class="math notranslate nohighlight">\(A\)</span>，具体值宇宙</p></li>
 <li><p>对于每个非零元的函数符号<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>，A的一个具体的元素<span class="math notranslate nohighlight">\(f^{\mathcal{M}}\)</span></p></li>
 <li><p>对于每个变元数大于零的函数符号<span class="math notranslate nohighlight">\(f \in \mathcal{F}\)</span>，一个具体的元素<span class="math notranslate nohighlight">\(f^\mathcal{M} : A^n \rightarrow A\)</span>，其中<span class="math notranslate nohighlight">\(A^n\)</span>是<span class="math notranslate nohighlight">\(A\)</span>上的n元组</p></li>
 <li><p>对于每个变元数大于零的谓词符号<span class="math notranslate nohighlight">\(P \in \mathcal{P}\)</span>，一个子集<span class="math notranslate nohighlight">\(P^\mathcal{M} \subseteq A^n\)</span></p></li>
@@ -327,6 +327,9 @@
 <p>这是一个无穷公式，因此它不是 <strong>良类型的(well-formed)</strong>。我们希望得到一个具有相同含义的良类型公式。</p>
 <p>不幸的是，事实并非如此。在此之前，先给出一个重要的定理，该定理是谓词逻辑自然演绎完备性的结果。</p>
 <p><strong>紧致性定理(Compactness Theorem)</strong>  让<span class="math notranslate nohighlight">\(\Gamma\)</span>为谓词逻辑句子的<em>集合</em>。如果<span class="math notranslate nohighlight">\(\Gamma\)</span>任意有限子集都是可满足的，那么<span class="math notranslate nohighlight">\(\Gamma\)</span>也是可满足的。</p>
+<blockquote>
+<div><p>提示：这里一个句子指的是不包含任何自由变量的公式</p>
+</div></blockquote>
 <p>通过这个定理，我们可以得到一个有用的技巧，该技巧保证了存在无穷大小的模型的存在性。</p>
 <p><strong>Löwenheim-Skolem 定理</strong> 令<span class="math notranslate nohighlight">\(\psi\)</span>是一个谓词逻辑的句子，如果对于任意的自然数<span class="math notranslate nohighlight">\(n \ge 1\)</span>存在<span class="math notranslate nohighlight">\(\psi\)</span>的一个模型，该模型有至少<span class="math notranslate nohighlight">\(n\)</span>个元素，那么<span class="math notranslate nohighlight">\(\psi\)</span>有一个模型具有无穷元素的模型。</p>
 <p>据此可以证明可达性在谓词逻辑中是不可表达的了。</p>
