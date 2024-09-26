@@ -75,6 +75,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#id14">谓词逻辑的不可判定性</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">谓词逻辑的表达力</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">存在性二阶逻辑</a></li>
 </ul>
 </li>
 </ul>
@@ -191,7 +193,7 @@
 <li><p>如果<span class="math notranslate nohighlight">\(x \not \in FV(\forall y . \phi)\)</span>，那么<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(x \not \in FV(\exists y . \phi)\)</span>，那么<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\exists y . \phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
 <li><p>如果<span class="math notranslate nohighlight">\(x \in FV(\forall y . \phi), y \not \in FV(t)\)</span>，并且<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>中对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，则<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
-<li><p>如果<span class="math notranslate nohighlight">\(x \in FV(\exists y . \phi), y \not \in FV(t)\)</span>，并且<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，则<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\forall y . \phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
+<li><p>如果<span class="math notranslate nohighlight">\(x \in FV(\exists y . \phi), y \not \in FV(t)\)</span>，并且<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的，则<span class="math notranslate nohighlight">\(t\)</span>在<span class="math notranslate nohighlight">\(\exists y . \phi\)</span>对于<span class="math notranslate nohighlight">\(x\)</span>是自由的</p></li>
 </ul>
 </section>
 </section>
@@ -283,8 +285,9 @@
 <p>对于一个具体值宇宙<span class="math notranslate nohighlight">\(A\)</span>，环境或 <em><strong>查找表(look-up table)</strong></em> 是一个函数<span class="math notranslate nohighlight">\(l : var \rightarrow A\)</span>从变量集合<span class="math notranslate nohighlight">\(var\)</span>到<span class="math notranslate nohighlight">\(A\)</span>。对于这样一个<span class="math notranslate nohighlight">\(l\)</span>，我们将查找表记为<span class="math notranslate nohighlight">\(l[x \mapsto a]\)</span>，它将<span class="math notranslate nohighlight">\(x\)</span>映射到<span class="math notranslate nohighlight">\(a\)</span>以及任何其他的变量<span class="math notranslate nohighlight">\(y\)</span>映射到<span class="math notranslate nohighlight">\(l(y)\)</span>。</p>
 <p>为一个对<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>给定一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>并给出一个环境<span class="math notranslate nohighlight">\(l\)</span>，我们为每个逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>定义满足关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>。如果<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>满足，我们称<span class="math notranslate nohighlight">\(\phi\)</span>对于环境<span class="math notranslate nohighlight">\(l\)</span>在模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>下计算为真。</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(P\)</span>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>形式为<span class="math notranslate nohighlight">\(P(t_1,t_2,\dots,t_n)\)</span>，那么我们通过将其中所有变量替换为它们对应的值来解释项<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(\forall x\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models \forall x \ \psi\)</span>成立当且仅当对于所有的<span class="math notranslate nohighlight">\(a \in A\)</span>，<span class="math notranslate nohighlight">\(\mathcal{M} \models_{l[x \mapsto a]} \psi\)</span>成立</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bot\)</span>: <span class="math notranslate nohighlight">\(\mathcal{M} \models_l \bot\)</span>永不成立</p></li>
+<li><p><span class="math notranslate nohighlight">\(P\)</span>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>形式为<span class="math notranslate nohighlight">\(P(t_1,t_2,\dots,t_n)\)</span>，那么我们通过将其中所有变量替换为它们对应的值来解释项<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span>；即<span class="math notranslate nohighlight">\(\mathcal{M} \models_l P(t_1,\dots,t_n)\)</span>成立当且仅当<span class="math notranslate nohighlight">\((t_1,\dots,t_n) \in P^\mathcal{M}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\forall x\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \forall x \ \psi\)</span>成立当且仅当对于所有的<span class="math notranslate nohighlight">\(a \in A\)</span>，<span class="math notranslate nohighlight">\(\mathcal{M} \models_{l[x \mapsto a]} \psi\)</span>成立</p></li>
 <li><p><span class="math notranslate nohighlight">\(\exists x\)</span>: 同样地，<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \exists x \ \psi\)</span>满足当且仅当存在<span class="math notranslate nohighlight">\(a \in A\)</span>使得<span class="math notranslate nohighlight">\(\mathcal{M} \models_{l[x \mapsto a]} \ \psi\)</span>也满足</p></li>
 <li><p><span class="math notranslate nohighlight">\(\neg\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ \neg \psi\)</span>满足当且仅当<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ \psi\)</span>不成立</p></li>
 <li><p><span class="math notranslate nohighlight">\(\vee\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \psi_1 \vee \psi_2\)</span>成立当且仅当<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ \psi_1\)</span>成立或者<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ psi_2\)</span>成立</p></li>
@@ -312,8 +315,28 @@
 <section id="id14">
 <h3>谓词逻辑的不可判定性<a class="headerlink" href="#id14" title="此标题的永久链接"></a></h3>
 <p><strong>谓词逻辑的有效性</strong>  给定一个逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>，<span class="math notranslate nohighlight">\(\models \phi\)</span>成立还是不成立？</p>
-<p>答案是否定的。这并不意味着某个特定的公式是无法判断有效性的，而是不存在一个通用的算法能够针对任意谓词逻辑公式纪念性判定。通过<em>problem reduction</em>，我们可以证明另一个不可解决的问题(the post correspondence problem)，这个结论将蕴含另一个问题的可解决性，最终得到我们的我问题也是不可解决的。</p>
+<p>答案是否定的。这并不意味着某个特定的公式是无法判断有效性的，而是不存在一个通用的算法能够针对任意谓词逻辑公式有效性判定。通过<em>problem reduction</em>，我们可以证明另一个不可解决的问题(the post correspondence problem)，这个结论将蕴含另一个问题的可解决性，最终得到我们的我问题也是不可解决的。</p>
 </section>
+</section>
+<section id="id15">
+<h2>谓词逻辑的表达力<a class="headerlink" href="#id15" title="此标题的永久链接"></a></h2>
+<p>虽然牺牲了对有效性，可满足行和可证明性的可判定性，但谓词逻辑远比命题逻辑更具表达力。</p>
+<p>即便如此，仍然有一些问题是谓词逻辑无法表达的，例如图的可达性问题：我们能否找到一个谓词逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>其中只有<span class="math notranslate nohighlight">\(u\)</span>和<span class="math notranslate nohighlight">\(v\)</span>两个自由变量，以及<span class="math notranslate nohighlight">\(R\)</span>作为仅有的二元谓词符号，使得<span class="math notranslate nohighlight">\(\phi\)</span>在有向图中满足满足当且仅当存在一条从<span class="math notranslate nohighlight">\(u\)</span>到<span class="math notranslate nohighlight">\(v\)</span>的路径。例如：</p>
+<div class="math notranslate nohighlight">
+\[R(u,v) \vee \exists x(R(u,x) \wedge R(x,v)) \vee \exists x_1 \exists x_2 (R(u,x_1) \wedge R(x_1,x_2) \wedge R(x_2,v)) \vee \dots\]</div>
+<p>这是一个无穷公式，因此它不是 <strong>良类型的(well-formed)</strong>。我们希望得到一个具有相同含义的良类型公式。</p>
+<p>不幸的是，事实并非如此。在此之前，先给出一个重要的定理，该定理是谓词逻辑自然演绎完备性的结果。</p>
+<p><strong>紧致性定理(Compactness Theorem)</strong>  让<span class="math notranslate nohighlight">\(\Gamma\)</span>为谓词逻辑句子的<em>集合</em>。如果<span class="math notranslate nohighlight">\(\Gamma\)</span>任意有限子集都是可满足的，那么<span class="math notranslate nohighlight">\(\Gamma\)</span>也是可满足的。</p>
+<p>通过这个定理，我们可以得到一个有用的技巧，该技巧保证了存在无穷大小的模型的存在性。</p>
+<p><strong>Löwenheim-Skolem 定理</strong> 令<span class="math notranslate nohighlight">\(\psi\)</span>是一个谓词逻辑的句子，如果对于任意的自然数<span class="math notranslate nohighlight">\(n \ge 1\)</span>存在<span class="math notranslate nohighlight">\(\psi\)</span>的一个模型，该模型有至少<span class="math notranslate nohighlight">\(n\)</span>个元素，那么<span class="math notranslate nohighlight">\(\psi\)</span>有一个模型具有无穷元素的模型。</p>
+<p>据此可以证明可达性在谓词逻辑中是不可表达的了。</p>
+<p>我们令<span class="math notranslate nohighlight">\(c\)</span>和<span class="math notranslate nohighlight">\(c'\)</span>是常数，令<span class="math notranslate nohighlight">\(\phi_n\)</span>公式表示存在一个从<span class="math notranslate nohighlight">\(c\)</span>到<span class="math notranslate nohighlight">\(c'\)</span>长度为<span class="math notranslate nohighlight">\(n\)</span>的路径。特别地，我们定义<span class="math notranslate nohighlight">\(\phi_0\)</span>为<span class="math notranslate nohighlight">\(c = c'\)</span>，<span class="math notranslate nohighlight">\(\phi_1\)</span>为<span class="math notranslate nohighlight">\(R(c,c')\)</span>；对于<span class="math notranslate nohighlight">\(n &gt; 1\)</span>的情况，定义：</p>
+<div class="math notranslate nohighlight">
+\[\phi_n = \stackrel{\text{def}}{=} \exists x_1 \dots \exists x_{n - 1}(R(c,x_1) \wedge R(x_1,x_2) \wedge \dots \wedge R(x_{n-1},c'))\]</div>
+<p>让<span class="math notranslate nohighlight">\(\Delta = \{ \neg\phi_i | i \ge 0\} \cup \{ \phi[c/u][c'/v]\}\)</span>.<span class="math notranslate nohighlight">\(\Delta\)</span>是不可满足的，因为<span class="math notranslate nohighlight">\(\Delta\)</span>中全部公式的合取表示不存在长度为0、1、2…的路径，但存在一个有限路径(由<span class="math notranslate nohighlight">\(\phi[c/u][c'/v]\)</span>给出)。不过任何<span class="math notranslate nohighlight">\(\Delta\)</span>的子集都是可满足的，因为任何有限长度的路径都是可能的（可以据此给出构造的模型）。根据紧致性定理，<span class="math notranslate nohighlight">\(\Delta\)</span>是一致的，或者说可满足的，这与前面产生矛盾。因此不可能存在这样的公式<span class="math notranslate nohighlight">\(\phi\)</span>。</p>
+</section>
+<section id="id16">
+<h2>存在性二阶逻辑<a class="headerlink" href="#id16" title="此标题的永久链接"></a></h2>
 </section>
 </section>
 
