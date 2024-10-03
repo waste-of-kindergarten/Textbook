@@ -7,3 +7,4 @@ Logic In Computer Science
 
    命题逻辑
    谓词逻辑
+   模型检验与时序逻辑

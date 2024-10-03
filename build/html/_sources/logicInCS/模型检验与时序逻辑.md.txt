@@ -1,0 +1,83 @@
+# 模型检验与时序逻辑
+
+对计算机系统的正确性进行验证有很多好处，尤其是对于安全性要求较高的及系统，这其实也适用于商业关键系统。
+
+***形式化验证方法(Formal verification)*** 在近几年被工业界大量使用，形式化验证技巧被认为由三个部分组成：
+
+- 一个模型系统框架，通常为某种描述语言
+
+- 一个规范语言用来描述待验证的形式
+
+- 一个验证方法用来确定系统的描述是否符合规范
+
+根据验证方法可以分类为：
+
+- 基于证明(proof-based) / 基于模型(model-based): 在基于证明的方法中，模型系统描述为一个公式的集合` $\Gamma$ `，而规范是另外一个公式` $\phi$ `。验证方法为找到一个证明，使得` $\Gamma \vdash \phi$ `成立；在基于模型的方法中，模型系统为一个模型` $\mathcal{M}$ `，规范为一个公式` $\phi$ `，验证方法为计算模型是否满足` $\phi$ `（即` $\mathcal{M} \models \phi$ `）。
+
+- 自动化程度(degree of automation) ： 根据自动化程度可以对形式化验证方法进行分类，最极端的是完全自动和完全手动的。但许多计算机辅助技术是居于两者之间。
+
+- 完全验证(full-verification) / 性质验证(property-verification) : 规范由可能描述系统的单个性质，或者描述其全部行为，往往后者验证起来很昂贵。
+
+- 应用领域(intended domain of application) : 例如硬件或者软件，顺序的还是并行的，反应式还是终止的等。
+
+> 补充： 反应式系统指的式根据环境做出反应且不会终止，例如操作系统，嵌入式系统以及计算机硬件
+
+- 开发前(pre-development) / 开发后(post-development) : 在开发工程的早期阶段进行验证具有很大的优势，因为在生产周期的早期阶段，捕获错误的纠正成本更低。
+
+## 模型检验
+
+我们介绍一种验证方法为 ***模型检验(model checking)***， 根据上述的分类，模型检验式一种自动化的，基于模型，性质验证的方法。它通常被期望应用于并行的反应式系统。
+
+模型检验基于时序逻辑，即一个公式在一个模型中并不是恒为真或假；在时序逻辑中的模型包含几个状态，一个公式在某些状态中为真，另一些状态为假。
+
+在模型检验中，模型` $\mathcal{M}$ `为 ***转移系统(transition systems)*** ，性质为时序逻辑中的公式` $\phi$ `。为了验证一个系统满足某个性质，我们需要做：
+
+- 使用模型检验器的描述语言模型化系统，形成一个模型` $\mathcal{M}$ `
+
+- 使用模型检验器的规范语言编码性质，形成一个时序逻辑公式` $\phi$ `
+
+- 根据输入的` $\mathcal{M},\phi$ `运行模型检验器
+
+最终模型检验器输出“是”(如果` $\mathcal{M} \models \phi$ `)或者“否”。对于后者，大多的模型检验器还会产生一个系统行为追踪，用来追溯失败原因。
+
+### 线性时序逻辑 LTL
+
+***线性时序逻辑(Linear-time Temporal Logic, LTL)*** 有如下的语法（以BNF形式给出）： 
+
+```math
+\phi ::= \top \ | \ \bot \ | \ p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \\ (X \phi) \ | \ (F \phi) \ | \ (G \phi) \ | \ (\phi U \phi) \ | \ (\phi W \phi) \ | \ (\phi R \phi) 
+```
+
+其中` $p$ `是原子，第一行定义我们已经比较熟悉；第二行是时序逻辑特有的连接词，` $X$ `表示“接下来的状态是”；` $F$ `表示“未来的某个状态是”；` $G$ `表示“未来所有状态是”；` $U$ `表示“直到（前者）结束后状态变为（后者）”；` $R$ `表示“在到达（前者）状态前（后者）成立 或者 （后者）始终成立”；` $W$ `表示“直到（前者）结束后状态变为（后者） 或者 （后者）始终成立”
+
+> 在笔记来源的教材中，分别称` $U,R,W$ `为“直到(until)”，“释放(release)”，“弱-直到(weak-until)”；此处描述不甚清晰，读者可以移步下文的语义部分
+
+> 补充：为了减少括号，根据传统时序逻辑的优先级为： 一元连接词(` $\neg,X,F,G$ `)，` $U$ ` ，` $R$ ` ，` $\wedge$ `和` $\vee$ `，最后是` $\rightarrow$ `。
+
+下面给出LTL的模型（即转移系统）：
+
+一个转移系统` $\mathcal{M} = （S,\rightarrow,L）$ `是一组状态` $S$ `、转移关系` $\rightarrow$ `（使得对于每个` $s \in S$ `，总有某个` $s' \in S$ `满足` $s \rightarrow s'$ `）以及一个标记函数` $L : S \rightarrow \mathcal{P}(Atoms)$ `。
+
+在一个模型` $\mathcal{M} = (S,\rightarrow,L)$ `中，***路径(path)*** 是一个` $S$ `中无限的状态序列` $s_1,s_2,s_3,...$ `，对于每个` $i \ge 1$ `，有` $s_i \rightarrow s_{i + 1}$ `。我们将路径写为` $s_1 \rightarrow s_2 \rightarrow ...$ `。
+
+特别的，我们` $\pi^i$ `表示从` $s^i$ `开始的后缀，即` $\pi^i = s_3 \rightarrow s_4 \rightarrow ....$ `。
+
+通过将状态系统延展为路径，我们可以很清晰看到模型的执行过程。
+
+令` $\mathcal{M} = (S,\rightarrow,L)$ `为一个模型，并且` $\pi = s_1 \rightarrow ...$ `为一个` $\mathcal{M}$ `的一个路径。那么路径` $\pi$ `是否满足LTL公式由满足性关系` $\models$ `定义：
+
+1 . ` $\pi \models \top$ `
+
+2 . ` $\pi \not \models \bot$ `
+
+3 . ` $\pi \models p$ ` iff ` $p \in L(s_1)$ `
+
+4 . ` $\pi \models \neg \phi$ ` iff ` $\pi \not \models \phi$ ` 
+
+5 . ` $\pi \models \phi_1 \wedge \phi_2$ ` iff ` $\pi \models \phi_1$ ` and ` $\pi \models \phi_2$ `
+
+6 . ` $\pi \models \phi_1 \vee \phi_2$ ` iff ` $\pi \models \phi_1$ ` or ` $\pi \models \phi_2$ `
+
+7 . ` $\pi \models \phi_1 \rightarrow \phi_2$ ` iff 当` $\phi \models \phi_1$ `成立时，` $\pi \models \phi_2$ ` 成立
+
+8 . ` $\pi \models X \phi$ ` iff ` $\pi^2 \models \phi$ `

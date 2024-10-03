@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模型检验与时序逻辑 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="谓词逻辑" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Logic In Computer Science</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html">命题逻辑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html">谓词逻辑</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">模型检验与时序逻辑</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">模型检验</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ltl">线性时序逻辑 LTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Logic In Computer Science</a></li>
+      <li class="breadcrumb-item active">模型检验与时序逻辑</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/logicInCS/模型检验与时序逻辑.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>模型检验与时序逻辑<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p>对计算机系统的正确性进行验证有很多好处，尤其是对于安全性要求较高的及系统，这其实也适用于商业关键系统。</p>
+<p><em><strong>形式化验证方法(Formal verification)</strong></em> 在近几年被工业界大量使用，形式化验证技巧被认为由三个部分组成：</p>
+<ul class="simple">
+<li><p>一个模型系统框架，通常为某种描述语言</p></li>
+<li><p>一个规范语言用来描述待验证的形式</p></li>
+<li><p>一个验证方法用来确定系统的描述是否符合规范</p></li>
+</ul>
+<p>根据验证方法可以分类为：</p>
+<ul class="simple">
+<li><p>基于证明(proof-based) / 基于模型(model-based): 在基于证明的方法中，模型系统描述为一个公式的集合<span class="math notranslate nohighlight">\(\Gamma\)</span>，而规范是另外一个公式<span class="math notranslate nohighlight">\(\phi\)</span>。验证方法为找到一个证明，使得<span class="math notranslate nohighlight">\(\Gamma \vdash \phi\)</span>成立；在基于模型的方法中，模型系统为一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>，规范为一个公式<span class="math notranslate nohighlight">\(\phi\)</span>，验证方法为计算模型是否满足<span class="math notranslate nohighlight">\(\phi\)</span>（即<span class="math notranslate nohighlight">\(\mathcal{M} \models \phi\)</span>）。</p></li>
+<li><p>自动化程度(degree of automation) ： 根据自动化程度可以对形式化验证方法进行分类，最极端的是完全自动和完全手动的。但许多计算机辅助技术是居于两者之间。</p></li>
+<li><p>完全验证(full-verification) / 性质验证(property-verification) : 规范由可能描述系统的单个性质，或者描述其全部行为，往往后者验证起来很昂贵。</p></li>
+<li><p>应用领域(intended domain of application) : 例如硬件或者软件，顺序的还是并行的，反应式还是终止的等。</p></li>
+</ul>
+<blockquote>
+<div><p>补充： 反应式系统指的式根据环境做出反应且不会终止，例如操作系统，嵌入式系统以及计算机硬件</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>开发前(pre-development) / 开发后(post-development) : 在开发工程的早期阶段进行验证具有很大的优势，因为在生产周期的早期阶段，捕获错误的纠正成本更低。</p></li>
+</ul>
+<section id="id2">
+<h2>模型检验<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>我们介绍一种验证方法为 <em><strong>模型检验(model checking)</strong></em>， 根据上述的分类，模型检验式一种自动化的，基于模型，性质验证的方法。它通常被期望应用于并行的反应式系统。</p>
+<p>模型检验基于时序逻辑，即一个公式在一个模型中并不是恒为真或假；在时序逻辑中的模型包含几个状态，一个公式在某些状态中为真，另一些状态为假。</p>
+<p>在模型检验中，模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>为 <em><strong>转移系统(transition systems)</strong></em> ，性质为时序逻辑中的公式<span class="math notranslate nohighlight">\(\phi\)</span>。为了验证一个系统满足某个性质，我们需要做：</p>
+<ul class="simple">
+<li><p>使用模型检验器的描述语言模型化系统，形成一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span></p></li>
+<li><p>使用模型检验器的规范语言编码性质，形成一个时序逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span></p></li>
+<li><p>根据输入的<span class="math notranslate nohighlight">\(\mathcal{M},\phi\)</span>运行模型检验器</p></li>
+</ul>
+<p>最终模型检验器输出“是”(如果<span class="math notranslate nohighlight">\(\mathcal{M} \models \phi\)</span>)或者“否”。对于后者，大多的模型检验器还会产生一个系统行为追踪，用来追溯失败原因。</p>
+<section id="ltl">
+<h3>线性时序逻辑 LTL<a class="headerlink" href="#ltl" title="此标题的永久链接"></a></h3>
+<p><em><strong>线性时序逻辑(Linear-time Temporal Logic, LTL)</strong></em> 有如下的语法（以BNF形式给出）：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\phi ::= \top \ | \ \bot \ | \ p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \\ (X \phi) \ | \ (F \phi) \ | \ (G \phi) \ | \ (\phi U \phi) \ | \ (\phi W \phi) \ | \ (\phi R \phi) \end{split}\]</div>
+<p>其中<span class="math notranslate nohighlight">\(p\)</span>是原子，第一行定义我们已经比较熟悉；第二行是时序逻辑特有的连接词，<span class="math notranslate nohighlight">\(X\)</span>表示“接下来的状态是”；<span class="math notranslate nohighlight">\(F\)</span>表示“未来的某个状态是”；<span class="math notranslate nohighlight">\(G\)</span>表示“未来所有状态是”；<span class="math notranslate nohighlight">\(U\)</span>表示“直到（前者）结束后状态变为（后者）”；<span class="math notranslate nohighlight">\(R\)</span>表示“在到达（前者）状态前（后者）成立 或者 （后者）始终成立”；<span class="math notranslate nohighlight">\(W\)</span>表示“直到（前者）结束后状态变为（后者） 或者 （后者）始终成立”</p>
+<blockquote>
+<div><p>在笔记来源的教材中，分别称<span class="math notranslate nohighlight">\(U,R,W\)</span>为“直到(until)”，“释放(release)”，“弱-直到(weak-until)”；此处描述不甚清晰，读者可以移步下文的语义部分</p>
+</div></blockquote>
+<blockquote>
+<div><p>补充：为了减少括号，根据传统时序逻辑的优先级为： 一元连接词(<span class="math notranslate nohighlight">\(\neg,X,F,G\)</span>)，<span class="math notranslate nohighlight">\(U\)</span> ，<span class="math notranslate nohighlight">\(R\)</span> ，<span class="math notranslate nohighlight">\(\wedge\)</span>和<span class="math notranslate nohighlight">\(\vee\)</span>，最后是<span class="math notranslate nohighlight">\(\rightarrow\)</span>。</p>
+</div></blockquote>
+<p>下面给出LTL的模型（即转移系统）：</p>
+<p>一个转移系统<span class="math notranslate nohighlight">\(\mathcal{M} = （S,\rightarrow,L）\)</span>是一组状态<span class="math notranslate nohighlight">\(S\)</span>、转移关系<span class="math notranslate nohighlight">\(\rightarrow\)</span>（使得对于每个<span class="math notranslate nohighlight">\(s \in S\)</span>，总有某个<span class="math notranslate nohighlight">\(s' \in S\)</span>满足<span class="math notranslate nohighlight">\(s \rightarrow s'\)</span>）以及一个标记函数<span class="math notranslate nohighlight">\(L : S \rightarrow \mathcal{P}(Atoms)\)</span>。</p>
+<p>在一个模型<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>中，<em><strong>路径(path)</strong></em> 是一个<span class="math notranslate nohighlight">\(S\)</span>中无限的状态序列<span class="math notranslate nohighlight">\(s_1,s_2,s_3,...\)</span>，对于每个<span class="math notranslate nohighlight">\(i \ge 1\)</span>，有<span class="math notranslate nohighlight">\(s_i \rightarrow s_{i + 1}\)</span>。我们将路径写为<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow ...\)</span>。</p>
+<p>特别的，我们<span class="math notranslate nohighlight">\(\pi^i\)</span>表示从<span class="math notranslate nohighlight">\(s^i\)</span>开始的后缀，即<span class="math notranslate nohighlight">\(\pi^i = s_3 \rightarrow s_4 \rightarrow ....\)</span>。</p>
+<p>通过将状态系统延展为路径，我们可以很清晰看到模型的执行过程。</p>
+<p>令<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>为一个模型，并且<span class="math notranslate nohighlight">\(\pi = s_1 \rightarrow ...\)</span>为一个<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>的一个路径。那么路径<span class="math notranslate nohighlight">\(\pi\)</span>是否满足LTL公式由满足性关系<span class="math notranslate nohighlight">\(\models\)</span>定义：</p>
+<p>1 . <span class="math notranslate nohighlight">\(\pi \models \top\)</span></p>
+<p>2 . <span class="math notranslate nohighlight">\(\pi \not \models \bot\)</span></p>
+<p>3 . <span class="math notranslate nohighlight">\(\pi \models p\)</span> iff <span class="math notranslate nohighlight">\(p \in L(s_1)\)</span></p>
+<p>4 . <span class="math notranslate nohighlight">\(\pi \models \neg \phi\)</span> iff <span class="math notranslate nohighlight">\(\pi \not \models \phi\)</span></p>
+<p>5 . <span class="math notranslate nohighlight">\(\pi \models \phi_1 \wedge \phi_2\)</span> iff <span class="math notranslate nohighlight">\(\pi \models \phi_1\)</span> and <span class="math notranslate nohighlight">\(\pi \models \phi_2\)</span></p>
+<p>6 . <span class="math notranslate nohighlight">\(\pi \models \phi_1 \vee \phi_2\)</span> iff <span class="math notranslate nohighlight">\(\pi \models \phi_1\)</span> or <span class="math notranslate nohighlight">\(\pi \models \phi_2\)</span></p>
+<p>7 . <span class="math notranslate nohighlight">\(\pi \models \phi_1 \rightarrow \phi_2\)</span> iff 当<span class="math notranslate nohighlight">\(\phi \models \phi_1\)</span>成立时，<span class="math notranslate nohighlight">\(\pi \models \phi_2\)</span> 成立</p>
+<p>8 . <span class="math notranslate nohighlight">\(\pi \models X \phi\)</span> iff <span class="math notranslate nohighlight">\(\pi^2 \models \phi\)</span></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html" class="btn btn-neutral float-left" title="谓词逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
