@@ -57,8 +57,23 @@
 <li class="toctree-l2"><a class="reference internal" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html">命题逻辑</a></li>
 <li class="toctree-l2"><a class="reference internal" href="%E8%B0%93%E8%AF%8D%E9%80%BB%E8%BE%91.html">谓词逻辑</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">模型检验与时序逻辑</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">模型检验</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ltl">线性时序逻辑 LTL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ltl">线性时序逻辑 LTL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">LTL 语法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">LTL 语义</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">LTL公式的等价关系</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">LTL 连接词充分集合</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">LTL 模型检验：系统，工具与性质</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ctl">计算树逻辑 CTL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">CTL 语法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">CTL 语义</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">CTL 公式的等价关系</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">CTL 连接词充分集合</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ctl-ltlctl">CTL* 和 LTL与CTL的表达力</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">CTL时序公式中的布尔连接词</a></li>
 </ul>
 </li>
 </ul>
@@ -114,8 +129,6 @@
 <ul class="simple">
 <li><p>开发前(pre-development) / 开发后(post-development) : 在开发工程的早期阶段进行验证具有很大的优势，因为在生产周期的早期阶段，捕获错误的纠正成本更低。</p></li>
 </ul>
-<section id="id2">
-<h2>模型检验<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <p>我们介绍一种验证方法为 <em><strong>模型检验(model checking)</strong></em>， 根据上述的分类，模型检验式一种自动化的，基于模型，性质验证的方法。它通常被期望应用于并行的反应式系统。</p>
 <p>模型检验基于时序逻辑，即一个公式在一个模型中并不是恒为真或假；在时序逻辑中的模型包含几个状态，一个公式在某些状态中为真，另一些状态为假。</p>
 <p>在模型检验中，模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>为 <em><strong>转移系统(transition systems)</strong></em> ，性质为时序逻辑中的公式<span class="math notranslate nohighlight">\(\phi\)</span>。为了验证一个系统满足某个性质，我们需要做：</p>
@@ -126,7 +139,9 @@
 </ul>
 <p>最终模型检验器输出“是”(如果<span class="math notranslate nohighlight">\(\mathcal{M} \models \phi\)</span>)或者“否”。对于后者，大多的模型检验器还会产生一个系统行为追踪，用来追溯失败原因。</p>
 <section id="ltl">
-<h3>线性时序逻辑 LTL<a class="headerlink" href="#ltl" title="此标题的永久链接"></a></h3>
+<h2>线性时序逻辑 LTL<a class="headerlink" href="#ltl" title="此标题的永久链接"></a></h2>
+<section id="id2">
+<h3>LTL 语法<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h3>
 <p><em><strong>线性时序逻辑(Linear-time Temporal Logic, LTL)</strong></em> 有如下的语法（以BNF形式给出）：</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\phi ::= \top \ | \ \bot \ | \ p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \\ (X \phi) \ | \ (F \phi) \ | \ (G \phi) \ | \ (\phi U \phi) \ | \ (\phi W \phi) \ | \ (\phi R \phi) \end{split}\]</div>
@@ -137,6 +152,9 @@
 <blockquote>
 <div><p>补充：为了减少括号，根据传统时序逻辑的优先级为： 一元连接词(<span class="math notranslate nohighlight">\(\neg,X,F,G\)</span>)，<span class="math notranslate nohighlight">\(U\)</span> ，<span class="math notranslate nohighlight">\(R\)</span> ，<span class="math notranslate nohighlight">\(\wedge\)</span>和<span class="math notranslate nohighlight">\(\vee\)</span>，最后是<span class="math notranslate nohighlight">\(\rightarrow\)</span>。</p>
 </div></blockquote>
+</section>
+<section id="id3">
+<h3>LTL 语义<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
 <p>下面给出LTL的模型（即转移系统）：</p>
 <p>一个转移系统<span class="math notranslate nohighlight">\(\mathcal{M} = （S,\rightarrow,L）\)</span>是一组状态<span class="math notranslate nohighlight">\(S\)</span>、转移关系<span class="math notranslate nohighlight">\(\rightarrow\)</span>（使得对于每个<span class="math notranslate nohighlight">\(s \in S\)</span>，总有某个<span class="math notranslate nohighlight">\(s' \in S\)</span>满足<span class="math notranslate nohighlight">\(s \rightarrow s'\)</span>）以及一个标记函数<span class="math notranslate nohighlight">\(L : S \rightarrow \mathcal{P}(Atoms)\)</span>。</p>
 <p>在一个模型<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>中，<em><strong>路径(path)</strong></em> 是一个<span class="math notranslate nohighlight">\(S\)</span>中无限的状态序列<span class="math notranslate nohighlight">\(s_1,s_2,s_3,...\)</span>，对于每个<span class="math notranslate nohighlight">\(i \ge 1\)</span>，有<span class="math notranslate nohighlight">\(s_i \rightarrow s_{i + 1}\)</span>。我们将路径写为<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow ...\)</span>。</p>
@@ -151,6 +169,149 @@
 <p>6 . <span class="math notranslate nohighlight">\(\pi \models \phi_1 \vee \phi_2\)</span> iff <span class="math notranslate nohighlight">\(\pi \models \phi_1\)</span> or <span class="math notranslate nohighlight">\(\pi \models \phi_2\)</span></p>
 <p>7 . <span class="math notranslate nohighlight">\(\pi \models \phi_1 \rightarrow \phi_2\)</span> iff 当<span class="math notranslate nohighlight">\(\phi \models \phi_1\)</span>成立时，<span class="math notranslate nohighlight">\(\pi \models \phi_2\)</span> 成立</p>
 <p>8 . <span class="math notranslate nohighlight">\(\pi \models X \phi\)</span> iff <span class="math notranslate nohighlight">\(\pi^2 \models \phi\)</span></p>
+<p>9 . <span class="math notranslate nohighlight">\(\phi \models G \phi\)</span> iff 对于任意的<span class="math notranslate nohighlight">\(i \ge 1\)</span>，有<span class="math notranslate nohighlight">\(\pi^i \models \phi\)</span></p>
+<p>10 . <span class="math notranslate nohighlight">\(\pi \models F \phi\)</span> iff 存在某个<span class="math notranslate nohighlight">\(i \ge 1\)</span>使得<span class="math notranslate nohighlight">\(\pi^i \models \phi\)</span></p>
+<p>11 . <span class="math notranslate nohighlight">\(\pi \models \phi U \psi\)</span> iff 存在某个<span class="math notranslate nohighlight">\(i \ge 1\)</span>使得<span class="math notranslate nohighlight">\(\pi^i \models \psi\)</span>且对任意的<span class="math notranslate nohighlight">\(j = 1,...,i-1\)</span>，有<span class="math notranslate nohighlight">\(\pi^j \models \phi\)</span></p>
+<p>12 . <span class="math notranslate nohighlight">\(\pi \models \phi W \psi\)</span> iff 或者存在某个<span class="math notranslate nohighlight">\(i \ge 1\)</span>使得<span class="math notranslate nohighlight">\(\pi^i \models \psi\)</span>且对于任意的<span class="math notranslate nohighlight">\(j = 1,...,i-1\)</span>我们有<span class="math notranslate nohighlight">\(\pi^j \models \phi\)</span>;或者对于任意的<span class="math notranslate nohighlight">\(k \ge 1\)</span>我们有<span class="math notranslate nohighlight">\(\pi^k \models \phi\)</span></p>
+<p>13 . <span class="math notranslate nohighlight">\(\pi \models \phi R \psi\)</span> iff 或者存在某个<span class="math notranslate nohighlight">\(i \ge 1\)</span>使得<span class="math notranslate nohighlight">\(\pi^i \models \phi\)</span>且对任意的<span class="math notranslate nohighlight">\(j = 1,...,i\)</span>我们有<span class="math notranslate nohighlight">\(\pi^j \models \psi\)</span>;或者对任意的<span class="math notranslate nohighlight">\(k \ge 1\)</span>我们有<span class="math notranslate nohighlight">\(\pi^k \models \psi\)</span></p>
+<p>假设<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>是一个模型，<span class="math notranslate nohighlight">\(s \in S\)</span>，且<span class="math notranslate nohighlight">\(\phi\)</span>是一个LTL公式。我们写<span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi\)</span>如果对于<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>的任意以<span class="math notranslate nohighlight">\(s\)</span>开始的可执行路径<span class="math notranslate nohighlight">\(\pi\)</span>，我们有<span class="math notranslate nohighlight">\(\pi \models \phi\)</span></p>
+</section>
+<section id="id4">
+<h3>LTL公式的等价关系<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>如果对于任意的模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>和所有<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>中的路径<span class="math notranslate nohighlight">\(\pi\)</span>有<span class="math notranslate nohighlight">\(\pi \models \phi\)</span>当且仅当<span class="math notranslate nohighlight">\(\pi \models \psi\)</span>，我们称两个LTL公式<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>（语义）等价，写作<span class="math notranslate nohighlight">\(\phi \equiv \psi\)</span>。</p>
+<p>我们已经知道命题逻辑中的等价关系，下面给出LTL特有的等价关系：</p>
+<p><span class="math notranslate nohighlight">\(F\)</span>和<span class="math notranslate nohighlight">\(G\)</span>是对偶的，<span class="math notranslate nohighlight">\(X\)</span>与其自身是对偶的：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\neg G \phi \equiv F \neg \phi\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\neg F \phi \equiv G \neg \phi\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\neg X \phi \equiv X \neg \phi\)</span></p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(U\)</span>和<span class="math notranslate nohighlight">\(R\)</span>是对偶的：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\neg (\phi U \psi) \equiv \neg \phi R \neg \psi\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\neg (\phi R \psi) \equiv \neg \phi U \neg \psi\)</span></p></li>
+</ul>
+<p>另外，<span class="math notranslate nohighlight">\(F\)</span>和<span class="math notranslate nohighlight">\(G\)</span>分别关于<span class="math notranslate nohighlight">\(\vee\)</span>和<span class="math notranslate nohighlight">\(\wedge\)</span>是分配的，即：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(F (\phi \vee \psi) \equiv F \phi \vee F \psi\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(G (\phi \wedge \psi) \equiv G \phi \wedge G \psi\)</span></p></li>
+</ul>
+<p>“直到”与“弱直到”是具有关联性的，<span class="math notranslate nohighlight">\(U\)</span>可以看作<span class="math notranslate nohighlight">\(W\)</span>附加了“终止必须出现的限制”的条件：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\phi U \psi \equiv \phi W \psi \wedge F \psi\)</span></p></li>
+</ul>
+<p>或者说，<span class="math notranslate nohighlight">\(W\)</span>是<span class="math notranslate nohighlight">\(U\)</span>放宽了“终止可以永远不出现”的条件：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\phi W \psi \equiv \phi U \psi \vee G \phi\)</span></p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(W\)</span>和<span class="math notranslate nohighlight">\(R\)</span>在表述上也有一定的近似，可以将其使用等价关系联系起来：</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\phi W \psi \equiv \psi R (\phi \vee \psi)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi R \psi \equiv \psi W (\phi \wedge \psi)\)</span></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>LTL 连接词充分集合<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h3>
+<p>LTL 连接词充分集合指的是集合内的连接词可以表达全部公式，而无需冗余的连接词。在命题逻辑中，如<span class="math notranslate nohighlight">\(\{\bot,\wedge,\neg\}\)</span>、<span class="math notranslate nohighlight">\(\{\vee,\rightarrow,\top\}\)</span>等都是连接词充分集合。</p>
+<p>在LTL中，<span class="math notranslate nohighlight">\(X\)</span>与其他连接词完全正交，因此在充分集合中必须含有<span class="math notranslate nohighlight">\(X\)</span>，我们给出三个完备集合<span class="math notranslate nohighlight">\(\{U,X\}、\{R,X\}、\{W,X\}\)</span>。</p>
+<ul class="simple">
+<li><p>对于<span class="math notranslate nohighlight">\(\{U,X\}\)</span>，<span class="math notranslate nohighlight">\(R\)</span>和<span class="math notranslate nohighlight">\(W\)</span>可以被<span class="math notranslate nohighlight">\(U\)</span>定义，即<span class="math notranslate nohighlight">\(\phi R \psi \equiv \neg (\neg \phi U \neg \psi)\)</span>和<span class="math notranslate nohighlight">\(\phi W \psi \equiv \psi R (\phi \vee \psi)\)</span>（后者需要进一步使用前者化归）</p></li>
+<li><p>对于<span class="math notranslate nohighlight">\(\{R,X\}\)</span>，<span class="math notranslate nohighlight">\(U\)</span>和<span class="math notranslate nohighlight">\(W\)</span>可以被<span class="math notranslate nohighlight">\(R\)</span>定义，即<span class="math notranslate nohighlight">\(\phi U \psi \equiv \neg (\neg \phi U \neg \psi)\)</span>和<span class="math notranslate nohighlight">\(\phi W \psi \equiv \psi R (\phi \vee \psi)\)</span></p></li>
+<li><p>对于<span class="math notranslate nohighlight">\(\{W,X\}\)</span>，<span class="math notranslate nohighlight">\(R\)</span>和<span class="math notranslate nohighlight">\(U\)</span>可以被<span class="math notranslate nohighlight">\(W\)</span>定义，即<span class="math notranslate nohighlight">\(\phi R \psi \equiv \psi W (\phi \wedge \psi)\)</span>和<span class="math notranslate nohighlight">\(\phi U \psi \equiv \neg (\neg \psi R \neg \psi)\)</span>（后者需要进一步使用前者化归）</p></li>
+</ul>
+<p><strong>定理</strong> 等价关系<span class="math notranslate nohighlight">\(\phi U \psi \equiv \neg (\neg \psi U (\neg \phi \wedge \neg \psi)) \wedge F \psi\)</span>成立对任意的LTL公式<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>。</p>
+<blockquote>
+<div><p>提示： 实际上，右侧使用等价替换后记为<span class="math notranslate nohighlight">\((\phi W \psi) \wedge \psi\)</span>，即“弱直到”加强了终止出现的条件，也就是“直到”</p>
+</div></blockquote>
+</section>
+<section id="id6">
+<h3>LTL 模型检验：系统，工具与性质<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+</section>
+</section>
+<section id="ctl">
+<h2>计算树逻辑 CTL<a class="headerlink" href="#ctl" title="此标题的永久链接"></a></h2>
+<p>在LTL中，我们知道LTL公式依赖于路径计算，我们定义一个系统的状态满足一个LTL公式，如果从该状态出发的所有路径都满足这个公式。因此LTL隐式地在路径上使用了全称量化。这也导致了对于存在性路径我们无法通过LTL进行表示。</p>
+<p><em><strong>计算树逻辑(Computation Tree Logic, CTL)</strong></em> 允许对路径显式使用量词。在CTL中除了LTL中特有连接词<span class="math notranslate nohighlight">\(U,F,G,X\)</span>外，还增加了<span class="math notranslate nohighlight">\(A,E\)</span>分别表示“全部路径”和“存在一个路径”。</p>
+<section id="id7">
+<h3>CTL 语法<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+<p>CTL公式的BNF形式如下：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\phi ::= &amp;\bot \ | \ \top \ | \ p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ (\phi \vee \phi) \ | \ (\phi \rightarrow \phi) \ | \\&amp; A X \phi \ | \ EX \phi \ | \ AF \phi \ | \ EF \phi \ | \ AG \phi \ | \ EG \phi \ | \ A [\phi U \phi] \ | \ E [\phi U \phi]    \end{split}\]</div>
+<blockquote>
+<div><p>CTL 连接词的集合优先级与命题逻辑和谓词逻辑比较相似，首先一元连接词结合最紧密(<span class="math notranslate nohighlight">\(\neg,AG,EG,AF,EF,AX,EX\)</span>)，其次是<span class="math notranslate nohighlight">\(\wedge,\vee\)</span>，最后是<span class="math notranslate nohighlight">\(\rightarrow,AU,EU\)</span></p>
+</div></blockquote>
+<p>值得注意的是，CTL语法中的量词与谓词逻辑中量词行为并不完全类似，在定义中， <span class="math notranslate nohighlight">\(A\)</span>和<span class="math notranslate nohighlight">\(E\)</span>后必须跟随<span class="math notranslate nohighlight">\(G,F,X,U\)</span>其中之一.这也表示CTL也不允许直接嵌套路径连接词，例如不能存在<span class="math notranslate nohighlight">\(F G p\)</span>;同时也不允许对路径使用布尔连接词，例如<span class="math notranslate nohighlight">\(A [F p \vee F q]\)</span>是不合法的。</p>
+<blockquote>
+<div><p>提示： 我们后面将介绍CTL的加强版CTL*，其去除了CTL的诸多限制</p>
+</div></blockquote>
+</section>
+<section id="id8">
+<h3>CTL 语义<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h3>
+<p>令<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>是CTL的一个模型，<span class="math notranslate nohighlight">\(s\)</span>在<span class="math notranslate nohighlight">\(S\)</span>中，<span class="math notranslate nohighlight">\(\phi\)</span>是一个CTL公式。则CTL语义由如下结构归纳定义：</p>
+<p>1 . <span class="math notranslate nohighlight">\(\mathcal{M}, s \models \top \)</span> 以及 <span class="math notranslate nohighlight">\(\mathcal{M},s \not \models \bot\)</span></p>
+<p>2 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models p\)</span> iff <span class="math notranslate nohighlight">\(p \in L(s)\)</span></p>
+<p>3 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models \neg \phi\)</span> iff <span class="math notranslate nohighlight">\(\mathcal{M},s \not \models \phi\)</span></p>
+<p>4 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_1 \wedge \phi_2\)</span> iff <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_1\)</span> 且 <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_2\)</span></p>
+<p>5 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_1 \vee \phi_2\)</span> iff <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_1\)</span>或者<span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_2\)</span></p>
+<p>6 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_1 \rightarrow \phi_2\)</span>iff <span class="math notranslate nohighlight">\(\mathcal{M},s \not \models \phi_1\)</span>或者<span class="math notranslate nohighlight">\(\mathcal{M},s \models \phi_2\)</span></p>
+<p>7 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models AX \phi\)</span>iff 对于任意的<span class="math notranslate nohighlight">\(s_1\)</span>满足<span class="math notranslate nohighlight">\(s \rightarrow s_1\)</span>，我们有<span class="math notranslate nohighlight">\(\mathcal{M},s_1 \models \phi\)</span> （即对于任意的下一个状态，满足<span class="math notranslate nohighlight">\(\phi\)</span>）</p>
+<p>8 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models EX \phi\)</span>iff 对于某个<span class="math notranslate nohighlight">\(s_1\)</span>满足<span class="math notranslate nohighlight">\(s \rightarrow s_1\)</span>，我们有<span class="math notranslate nohighlight">\(\mathcal{M},s_1 \models \phi\)</span> （即存在某个下一个状态，满足<span class="math notranslate nohighlight">\(\phi\)</span>）</p>
+<p>9 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models AG \phi\)</span>iff对于每个路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中沿途的<span class="math notranslate nohighlight">\(s_i\)</span>均与<span class="math notranslate nohighlight">\(s\)</span>相等，我们有<span class="math notranslate nohighlight">\(\mathcal{M},s_i \models \phi\)</span></p>
+<p>10 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models EG \phi\)</span>iff存在一个路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中沿途的<span class="math notranslate nohighlight">\(s_i\)</span>均与<span class="math notranslate nohighlight">\(s\)</span>相等，我们有<span class="math notranslate nohighlight">\(\mathcal{M},s_i \models \phi\)</span></p>
+<p>11 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models AF \phi\)</span>iff对于任意的路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中<span class="math notranslate nohighlight">\(s_1\)</span>与<span class="math notranslate nohighlight">\(s\)</span>相等，且存在一个<span class="math notranslate nohighlight">\(s_i\)</span>使得<span class="math notranslate nohighlight">\(\mathcal{M},s_i \models \phi\)</span></p>
+<p>12 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models EF \phi\)</span>iff存在一个路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中<span class="math notranslate nohighlight">\(s_1\)</span>与<span class="math notranslate nohighlight">\(s\)</span>相等，且对某个沿途的<span class="math notranslate nohighlight">\(s_i\)</span>有<span class="math notranslate nohighlight">\(\mathcal{M},s_i \models \phi\)</span></p>
+<p>13 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models A[\phi_1 U \phi_2]\)</span>iff对于任意的路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中<span class="math notranslate nohighlight">\(s_1\)</span>与<span class="math notranslate nohighlight">\(s\)</span>相等，且这个路径满足<span class="math notranslate nohighlight">\(\phi_1 U \phi_2\)</span></p>
+<p>14 . <span class="math notranslate nohighlight">\(\mathcal{M},s \models E[\phi_1 U \phi_2]\)</span>iff存在一个路径<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow s_3 \rightarrow ...\)</span>，其中<span class="math notranslate nohighlight">\(s_1\)</span>与<span class="math notranslate nohighlight">\(s\)</span>相等，且这条路径满足<span class="math notranslate nohighlight">\(\phi_1 U \phi_2\)</span></p>
+</section>
+<section id="id9">
+<h3>CTL 公式的等价关系<a class="headerlink" href="#id9" title="此标题的永久链接"></a></h3>
+<p>对于两个CTL公式<span class="math notranslate nohighlight">\(\phi\)</span>和<span class="math notranslate nohighlight">\(\psi\)</span>，如果任意模型下的任意状态满足其中之一必然满足其中的另一个，则称他们语义等价，写作<span class="math notranslate nohighlight">\(\phi \equiv \psi\)</span>。</p>
+<p>本节给出一些重要的CTL等价公式:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp; \neg AF \phi \equiv EG \neg \phi  \\ 
+&amp; \neg EF \phi \equiv AG \neg \phi \\ 
+&amp; \neg AX \phi \equiv EX \neg \phi \end{split}\]</div>
+<p>以及</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp; AF \phi \equiv A [\top U \phi] \\ 
+&amp; EF \phi \equiv E [\top U \phi]\end{split}\]</div>
+</section>
+<section id="id10">
+<h3>CTL 连接词充分集合<a class="headerlink" href="#id10" title="此标题的永久链接"></a></h3>
+<p><strong>定理</strong> 一个CTL的时序连接词集合是充分的，当且仅当，这个集合至少包含了<span class="math notranslate nohighlight">\(\{AX,EX\}\)</span>其中之一，以及<span class="math notranslate nohighlight">\(\{EG,AF,AU\}\)</span>其中之一和<span class="math notranslate nohighlight">\(EU\)</span>。</p>
+<p>我们给出其中之一的充分集合<span class="math notranslate nohighlight">\(\{AU,EU,AX\}\)</span>并展示其他的连接词如何化归到这些连接词上：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp; A[\phi R \psi] = \neg E [\neg \phi U \neg \psi] \\ 
+&amp; E[\phi R \psi] = \neg A [\neg \phi U \neg \psi] \\ 
+&amp; A[\phi W \psi] = A [\psi R (\phi \vee \psi)] \\ 
+&amp; E[\phi W \psi] = E [\psi R (\phi \vee \psi)]\end{split}\]</div>
+<p>读者可以自行通过定义验证这些等式。</p>
+</section>
+</section>
+<section id="ctl-ltlctl">
+<h2>CTL* 和 LTL与CTL的表达力<a class="headerlink" href="#ctl-ltlctl" title="此标题的永久链接"></a></h2>
+<p>在CTL中，其允许对路径使用量词，因而其表达力比LTL更强，然而它不允许像LTL一样通过一个公式选择一系列路径。例如对于任意有<span class="math notranslate nohighlight">\(p\)</span>的路径，也会有<span class="math notranslate nohighlight">\(q\)</span>在LTL中可以写为<span class="math notranslate nohighlight">\(F p \rightarrow F q\)</span>，但在CTL中由于每一个时序连接词必须与量词绑定的限制，并不能表达这个内容。</p>
+<p>为此，我们提出CTL*，其将CTL中的限制解除，以便获得更强大的表达力。</p>
+<p>下面给出CTL*语法：</p>
+<ul class="simple">
+<li><p>状态公式</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\phi ::= \top \ | \ p \ | \ (\neg \phi) \ | \ (\phi \wedge \phi) \ | \ A[\alpha] \ | \ E[\alpha]\]</div>
+<p>其中<span class="math notranslate nohighlight">\(p\)</span>式任意原子公式，<span class="math notranslate nohighlight">\(\alpha\)</span>式任意的路径公式。</p>
+<ul class="simple">
+<li><p>路径公式</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\alpha ::= \phi \ | \ (\neg \alpha) \ | \ (\alpha \wedge \alpha) \ | \ (\alpha U \alpha) \ | \ (G \alpha) \ | \ (G \alpha) \ | \ (F \alpha) \ | \ (X \alpha) \]</div>
+<p>其中<span class="math notranslate nohighlight">\(\phi\)</span>式任意的状态公式。</p>
+<blockquote>
+<div><p>补充： 这个定义很有趣，因为其第一次展示了一种特殊但不失常见的递归方式–相互递归，它们的定义需要相互调用，递归的基础情形是<span class="math notranslate nohighlight">\(p\)</span>和<span class="math notranslate nohighlight">\(\top\)</span>。</p>
+</div></blockquote>
+<section id="id11">
+<h3>CTL时序公式中的布尔连接词<a class="headerlink" href="#id11" title="此标题的永久链接"></a></h3>
+<p>在前面讨论CTL中，我们提到了CTL的两大限制，一是不允许使用布尔连接词；二是不允许嵌套路径公式。然而对于前者，我们仍然有办法将其转化为CTL的合法公式。</p>
+<p>例如在CTL*中的公式<span class="math notranslate nohighlight">\(E [ F p \wedge F q]\)</span>可以转化为<span class="math notranslate nohighlight">\(EF [p \wedge EF q] \vee EF [q \wedge EF p]\)</span>；如果我们有<span class="math notranslate nohighlight">\(F p \wedge F q\)</span>，那么要么<span class="math notranslate nohighlight">\(p\)</span>在<span class="math notranslate nohighlight">\(q\)</span>之前出现，要么<span class="math notranslate nohighlight">\(q\)</span>在<span class="math notranslate nohighlight">\(p\)</span>之前出现，这对应了CTL公式中析取的两部分。</p>
 </section>
 </section>
 </section>
