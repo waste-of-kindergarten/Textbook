@@ -28,6 +28,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="模型检验与时序逻辑" href="%E6%A8%A1%E5%9E%8B%E6%A3%80%E9%AA%8C%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91.html" />
     <link rel="prev" title="命题逻辑" href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" /> 
 </head>
 
@@ -80,6 +81,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#id17">全称二阶逻辑</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="%E6%A8%A1%E5%9E%8B%E6%A3%80%E9%AA%8C%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91.html">模型检验与时序逻辑</a></li>
 </ul>
 </li>
 </ul>
@@ -287,7 +289,8 @@
 <p>为一个对<span class="math notranslate nohighlight">\((\mathcal{F},\mathcal{P})\)</span>给定一个模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>并给出一个环境<span class="math notranslate nohighlight">\(l\)</span>，我们为每个逻辑公式<span class="math notranslate nohighlight">\(\phi\)</span>定义满足关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>。如果<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \phi\)</span>满足，我们称<span class="math notranslate nohighlight">\(\phi\)</span>对于环境<span class="math notranslate nohighlight">\(l\)</span>在模型<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>下计算为真。</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\bot\)</span>: <span class="math notranslate nohighlight">\(\mathcal{M} \models_l \bot\)</span>永不成立</p></li>
-<li><p><span class="math notranslate nohighlight">\(P\)</span>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>形式为<span class="math notranslate nohighlight">\(P(t_1,t_2,\dots,t_n)\)</span>，那么我们通过将其中所有变量替换为它们对应的值来解释项<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span>（设解释后的具体值为<span class="math notranslate nohighlight">\(a_1,a_2,\dots,a_n\)</span>）；即<span class="math notranslate nohighlight">\(\mathcal{M} \models_l P(t_1,\dots,t_n)\)</span>成立当且仅当<span class="math notranslate nohighlight">\((a_1,\dots,a_n) \in P^\mathcal{M}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(P(..)\)</span>: 如果<span class="math notranslate nohighlight">\(\phi\)</span>形式为<span class="math notranslate nohighlight">\(P(t_1,t_2,\dots,t_n)\)</span>，那么我们通过将其中所有变量替换为它们对应的值来解释项<span class="math notranslate nohighlight">\(t_1,t_2,\dots,t_n\)</span>（设解释后的具体值为<span class="math notranslate nohighlight">\(a_1,a_2,\dots,a_n\)</span>）；即<span class="math notranslate nohighlight">\(\mathcal{M} \models_l P(t_1,\dots,t_n)\)</span>成立当且仅当<span class="math notranslate nohighlight">\((a_1,\dots,a_n) \in P^\mathcal{M}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(=\)</span>: <span class="math notranslate nohighlight">\(\mathcal{M} \models_l t_1 = t_2\)</span>成立当且仅当<span class="math notranslate nohighlight">\(t1,t2\)</span>的解释<span class="math notranslate nohighlight">\(a_1,a_2\)</span>在<span class="math notranslate nohighlight">\(A\)</span>中</p></li>
 <li><p><span class="math notranslate nohighlight">\(\forall x\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \forall x \ \psi\)</span>成立当且仅当对于所有的<span class="math notranslate nohighlight">\(a \in A\)</span>，<span class="math notranslate nohighlight">\(\mathcal{M} \models_{l[x \mapsto a]} \psi\)</span>成立</p></li>
 <li><p><span class="math notranslate nohighlight">\(\exists x\)</span>: 同样地，<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \exists x \ \psi\)</span>满足当且仅当存在<span class="math notranslate nohighlight">\(a \in A\)</span>使得<span class="math notranslate nohighlight">\(\mathcal{M} \models_{l[x \mapsto a]} \ \psi\)</span>也满足</p></li>
 <li><p><span class="math notranslate nohighlight">\(\neg\)</span>: 关系<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ \neg \psi\)</span>满足当且仅当<span class="math notranslate nohighlight">\(\mathcal{M} \models_l \ \psi\)</span>不成立</p></li>
@@ -378,6 +381,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91.html" class="btn btn-neutral float-left" title="命题逻辑" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="%E6%A8%A1%E5%9E%8B%E6%A3%80%E9%AA%8C%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91.html" class="btn btn-neutral float-right" title="模型检验与时序逻辑" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
