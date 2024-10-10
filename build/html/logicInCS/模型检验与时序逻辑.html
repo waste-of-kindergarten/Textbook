@@ -157,8 +157,14 @@
 <h3>LTL 语义<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
 <p>下面给出LTL的模型（即转移系统）：</p>
 <p>一个转移系统<span class="math notranslate nohighlight">\(\mathcal{M} = （S,\rightarrow,L）\)</span>是一组状态<span class="math notranslate nohighlight">\(S\)</span>、转移关系<span class="math notranslate nohighlight">\(\rightarrow\)</span>（使得对于每个<span class="math notranslate nohighlight">\(s \in S\)</span>，总有某个<span class="math notranslate nohighlight">\(s' \in S\)</span>满足<span class="math notranslate nohighlight">\(s \rightarrow s'\)</span>）以及一个标记函数<span class="math notranslate nohighlight">\(L : S \rightarrow \mathcal{P}(Atoms)\)</span>。</p>
+<blockquote>
+<div><p>注意： 这里<span class="math notranslate nohighlight">\(s \rightarrow s'\)</span> 意味着系统中没有状态会进入到“死锁”状态</p>
+</div></blockquote>
 <p>在一个模型<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>中，<em><strong>路径(path)</strong></em> 是一个<span class="math notranslate nohighlight">\(S\)</span>中无限的状态序列<span class="math notranslate nohighlight">\(s_1,s_2,s_3,...\)</span>，对于每个<span class="math notranslate nohighlight">\(i \ge 1\)</span>，有<span class="math notranslate nohighlight">\(s_i \rightarrow s_{i + 1}\)</span>。我们将路径写为<span class="math notranslate nohighlight">\(s_1 \rightarrow s_2 \rightarrow ...\)</span>。</p>
 <p>特别的，我们<span class="math notranslate nohighlight">\(\pi^i\)</span>表示从<span class="math notranslate nohighlight">\(s^i\)</span>开始的后缀，即<span class="math notranslate nohighlight">\(\pi^i = s_3 \rightarrow s_4 \rightarrow ....\)</span>。</p>
+<blockquote>
+<div><p>补充： 或者<span class="math notranslate nohighlight">\(\pi^i(n) = \pi(i + n)\)</span></p>
+</div></blockquote>
 <p>通过将状态系统延展为路径，我们可以很清晰看到模型的执行过程。</p>
 <p>令<span class="math notranslate nohighlight">\(\mathcal{M} = (S,\rightarrow,L)\)</span>为一个模型，并且<span class="math notranslate nohighlight">\(\pi = s_1 \rightarrow ...\)</span>为一个<span class="math notranslate nohighlight">\(\mathcal{M}\)</span>的一个路径。那么路径<span class="math notranslate nohighlight">\(\pi\)</span>是否满足LTL公式由满足性关系<span class="math notranslate nohighlight">\(\models\)</span>定义：</p>
 <p>1 . <span class="math notranslate nohighlight">\(\pi \models \top\)</span></p>
