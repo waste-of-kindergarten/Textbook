@@ -158,7 +158,7 @@ $ `
 
 在进行操作时,经常会遇到绑定变量重名的情况, 这可能会造成一定的困惑,Barendregt 规约(Barendregt convention)给出了一种方式使表达式更容易阅读.
 
-> (Barendregt convention ) 我们为一个$\lambda$-项中绑定变量选择名字,使它们互不相同且不同于任何出现过的自由变量.
+> (Barendregt convention ) 我们为一个` $\lambda$ `-项中绑定变量选择名字,使它们互不相同且不同于任何出现过的自由变量.
 > 示例: ` $(\lambda xy \ . \ xz) (\lambda xz \ . \ z) \rightarrow (\lambda xy \ . \ xz) (\lambda uv \ . \ v)$ `
 
 ## Beta-归约 (Beta reduction)
