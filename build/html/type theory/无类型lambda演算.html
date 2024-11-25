@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>无类型lambda演算(Untyped lambda calculus) &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="Type Theory and Formal Proof" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logicInCS/index.html">Logic In Computer Science</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Type Theory and Formal Proof</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">无类型lambda演算(Untyped lambda calculus)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lambda-lambda-terms">lambda-项(lambda-terms)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#free-variables-bound-variables-and-binding-variables">自由变量,约束变量和绑定变量(Free variables,bound variables and binding variables)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alpha-alpha-conversion">Alpha 转换 (Alpha conversion)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#substitution">替换(Substitution)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lambda-alpha-lambda-terms-modulo-alpha-equivalence">Lambda-项 模 alpha-等价 (lambda-terms modulo alpha-equivalence)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#beta-beta-reduction">Beta-归约 (Beta reduction)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normal-forms-and-confluence">范式与合流性(Normal forms and confluence)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed-point-theorem">不动点理论 (Fixed Point Theorem)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Type Theory and Formal Proof</a></li>
+      <li class="breadcrumb-item active">无类型lambda演算(Untyped lambda calculus)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/type theory/无类型lambda演算.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lambda-untyped-lambda-calculus">
+<h1>无类型lambda演算(Untyped lambda calculus)<a class="headerlink" href="#lambda-untyped-lambda-calculus" title="此标题的永久链接"></a></h1>
+<section id="lambda-lambda-terms">
+<h2>lambda-项(lambda-terms)<a class="headerlink" href="#lambda-lambda-terms" title="此标题的永久链接"></a></h2>
+<p>在lambda计算中,各种表达式被称为<span class="math notranslate nohighlight">\(\lambda-terms\)</span> (<span class="math notranslate nohighlight">\(\lambda\)</span> -项).设 <span class="math notranslate nohighlight">\(\Lambda\)</span> 为所有 <span class="math notranslate nohighlight">\(\lambda\)</span> -项的集合,并假设存在一个无穷集合<span class="math notranslate nohighlight">\(V\)</span>,其中的元素称为变量(variables).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (\lambda-term) \\ &amp; (1) (变量) \ 如果 \ u \in V , 那么 \ u \in \Lambda.  \\ &amp; (2) (应用) \ 如果 \ M 和 N \in \Lambda , 那么 \ (M N) \in \Lambda. \\ &amp; (3) (抽象) \ 如果 \ u \in V 且 M \in \Lambda , 那么 \ (\lambda u \ . \ M) \in \Lambda. \end{aligned} \)</span></p>
+<p>以上定义使用抽象语法(abstract syntax)也可以写成 <span class="math notranslate nohighlight">\(\Lambda = V | (\Lambda \Lambda) | (\lambda V. \Lambda) \)</span>.</p>
+<p>由<span class="math notranslate nohighlight">\(\lambda-项\)</span> 的定义自然引入了子项(subterms)的概念.对于任意一个<span class="math notranslate nohighlight">\(\lambda\)</span> -项,其全部子项构成了一个多重集(multiset).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (Multiset \  of \ subterms; Sub) \\ &amp;(1) (基本) \ 对任意的x \in V , 有Sub(x) = \{x\}. \\ &amp;(2) (应用) \ Sub(M N) = Sub(M) \cup Sub(N) \cup \{M N\}. \\ &amp;(3) (抽象) \ Sub(\lambda \  x \ . M ) = Sub(M) \cup \{\lambda \ x \ . M\} \end{aligned} \)</span></p>
+<p>如果<span class="math notranslate nohighlight">\(L \in Sub(M)\)</span>,则称 <span class="math notranslate nohighlight">\(L\)</span> 是 <span class="math notranslate nohighlight">\(M\)</span> 的一个子项.根据子项定义,可以得出以下性质:</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \\ &amp; (1) (自反性) \ 对于任意的\lambda-项 \ M,都有 M \in Sub(M). \\ &amp; (2) (传递性) \ 如果 L \in Sub(M) 且 M \in Sub(N),则 L \in Sub(N).  \end{aligned} \)</span></p>
+<p>类似子集的概念,如果一个 <span class="math notranslate nohighlight">\(\lambda\)</span>-项的子项不是它本身,那么称为真子项(proper subterm).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} 定义 \ \ \ (proper \ subterm)  \ \  如果 L 是 M 的一个子项,但 L \not \equiv M,则称L是M的真子项.  \end{aligned} \)</span></p>
+<blockquote>
+<div><p>规定:</p>
+<ul class="simple">
+<li><p>表达式最外层括号可以省略.</p></li>
+<li><p>应用操作是<strong>左结合</strong>的,因此 <span class="math notranslate nohighlight">\( (M N) L \)</span> 可以化为 <span class="math notranslate nohighlight">\(M N L\)</span> .</p></li>
+<li><p>抽象操作是<strong>右结合</strong>的,因此 <span class="math notranslate nohighlight">\(\lambda x \ . \ (\lambda y  \ . \ M)\)</span> 可以化为 <span class="math notranslate nohighlight">\(\lambda xy \ . \ M\)</span>.</p></li>
+<li><p>应用的优先级高于抽象,因此<span class="math notranslate nohighlight">\(\lambda x \ . \ M N\)</span>表示的含义是 <span class="math notranslate nohighlight">\(\lambda x \ . \ (M N)\)</span></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="free-variables-bound-variables-and-binding-variables">
+<h2>自由变量,约束变量和绑定变量(Free variables,bound variables and binding variables)<a class="headerlink" href="#free-variables-bound-variables-and-binding-variables" title="此标题的永久链接"></a></h2>
+<p>在<span class="math notranslate nohighlight">\(\lambda\)</span>-项中,变量的情形可以分为三类, 自由情形(free occurrences)、约束情形(bound occurrences)、绑定情形(binding occurrences).</p>
+<p>通过<span class="math notranslate nohighlight">\(\lambda\)</span>-项的构造来说明这三种变量情形,</p>
+<ul class="simple">
+<li><p>单独的变量是自由的(如 <span class="math notranslate nohighlight">\(x\)</span>),因此属于自由变量.</p></li>
+<li><p>通过抽象操作,可以将表达式中的一个自由变量变成约束变量( 如 <span class="math notranslate nohighlight">\(x\)</span> 在 <span class="math notranslate nohighlight">\(M\)</span> 中是自由的 , 但 <span class="math notranslate nohighlight">\(\lambda x \ . \ M\)</span> 使 M中的 <span class="math notranslate nohighlight">\(x\)</span>变为受约束的).</p></li>
+<li><p>在第二点中,紧跟随 <span class="math notranslate nohighlight">\(\lambda\)</span> 的变量被称为绑定变量(对 <span class="math notranslate nohighlight">\(M\)</span>中的 <span class="math notranslate nohighlight">\(x\)</span> 进行抽象绑定了$M$中所有自由的 <span class="math notranslate nohighlight">\(x\)</span>).</p></li>
+</ul>
+<p>在以上三种情形中,自由变量的情形比较重要,约定 <span class="math notranslate nohighlight">\(FV(L)\)</span> 表示$L$中的自由变量组成的集合.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (FV , \ the \ set \ of \ free \ variables \ of \ a \ \lambda-term) \\ &amp; (1) (变量) \ FV(x) = \{x\}. \\ &amp; (2) (应用) \ FV(MN) = FV(M) \cup FV(N). \\ &amp; (3) (抽象) \ FV(\lambda x \ . \ M) = FV(M) \setminus \{x\}. \end{aligned}  \)</span></p>
+<p>根据自由变量的数目,可以划分出<span class="math notranslate nohighlight">\(\lambda\)</span>-项中一类特殊的子集,该子集中的元素被称为结合子(combinator).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} 定义 \ \ \ (Closed \ \lambda-term; combinator ; \Lambda^0) \ \  对于给定的 \lambda-项 M, \\ 如果FV(M) = \emptyset , 则称M为闭的.一个封闭的\lambda-项也被称为结合子. \end{aligned} \)</span></p>
+</section>
+<section id="alpha-alpha-conversion">
+<h2>Alpha 转换 (Alpha conversion)<a class="headerlink" href="#alpha-alpha-conversion" title="此标题的永久链接"></a></h2>
+<p>对于不同的 <span class="math notranslate nohighlight">\(\lambda\)</span> -项,其表达的语法可能是相同的,例如<span class="math notranslate nohighlight">\(\lambda x \ . \ x \equiv \lambda u \ . \ u\)</span>.为了描述这种关系,我们定义了<span class="math notranslate nohighlight">\(\alpha\)</span> -转换(alpha-conversion)或者<span class="math notranslate nohighlight">\(alpha\)</span> -等价(alpha-equivalence).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (Renaming ; M^{x \rightarrow y} ; =_\alpha) \\ &amp;对于一个表达式M,将M中的所有自由变量 x 替换成 y \ (其中\ y \not \in FV(M) 且 y 在 M 中不是绑定变量), \\ &amp; 设结果为M^{x \rightarrow y}, 则有\lambda x \ . \ M =_\alpha \lambda y \ . \ M^{x \rightarrow y}. \end{aligned} \)</span></p>
+<p>我们称这种情形为<span class="math notranslate nohighlight">\(\lambda x \ . \ M\)</span> 被重命名为 <span class="math notranslate nohighlight">\(\lambda y \ . \ M^{x \rightarrow y}\)</span>.</p>
+<p>根据基本的定义,可将其更一般化,定义如下.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (\alpha-conversion or \alpha-equivalence, =_\alpha) \\ &amp;(1) (重命名) \ \lambda x \ . \ M =_\alpha \lambda y \ . \ M^{x \rightarrow y},条件与上面的定义相同 \\ &amp;(2) (兼容性) \ 如果 M =_\alpha N, 那么 M L =_\alpha N L, L M =_\alpha L N 且,对任意的z, \lambda z \ . \ M =_\alpha \lambda z \ . \ N, \\ &amp;(3) (自反性) \ M =_\alpha M, \\ &amp;(4) (对称性) \ 如果 M =_\alpha N , 那么 N =_\alpha M, \\ &amp;(5) (传递性) \ 如果 L =_\alpha M 且 M =_\alpha N 成立, 那么 L =_\alpha N 成立. \end{aligned} \)</span></p>
+<blockquote>
+<div><p>总之,这种变换不允许表达式中其他变量的状态发生变化,比如从自由变量变成了约束变量.</p>
+</div></blockquote>
+<p>因此,重命名被视为 <span class="math notranslate nohighlight">\(\alpha\)</span>-等价的一种情形.由于自反性,对称性,传递性均成立,因此<span class="math notranslate nohighlight">\(\alpha\)</span>-等价是一种等价关系,通过这种等价关系可以将表达式分为许多等价类,每个等价类之间的元素均是<span class="math notranslate nohighlight">\(\alpha\)</span>-等价的,也被称为是<span class="math notranslate nohighlight">\(\alpha\)</span>-可转换的(<span class="math notranslate nohighlight">\(\alpha-convertible\)</span>)或者说其中一个元素是另一个元素的<span class="math notranslate nohighlight">\(\alpha\)</span>-变体(<span class="math notranslate nohighlight">\(\alpha-variant\)</span>).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (\alpha-convertible;\alpha-equivalent;\alpha-variant) \\ &amp; 如果 M =_\alpha N,那么M和N称为 \alpha-可转换的 或者 \alpha-等价的. M被称为N的一个\alpha-变体(反之亦然). \end{aligned} \)</span></p>
+</section>
+<section id="substitution">
+<h2>替换(Substitution)<a class="headerlink" href="#substitution" title="此标题的永久链接"></a></h2>
+<p>替换顾名思义就是将表达式中的变量替换成其他的变量和表达式.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (Substitution) \\ &amp; (1a) \ x [x := N] \equiv N, \\ &amp; (1b) \ 设 x \not \equiv y ,  有y[x := N] \equiv y, \\ &amp; (2) \ (PQ)[x := N] \equiv (P[x := N]) (Q [x := N]), \\ &amp;(3) \ 如果 \lambda z \ . \ P^{y \rightarrow z} 是\lambda y \ . \ P 的\alpha-变体,且z \not \in FV(N), 则(\lambda y \ . \ P)[x := N] \equiv \lambda z \ . \ (P ^{y \rightarrow z}[x := N]) \end{aligned} \)</span></p>
+<blockquote>
+<div><p>当<span class="math notranslate nohighlight">\(y \not \in FV(N)\)</span>时,有<span class="math notranslate nohighlight">\((\lambda y \ . \ P)[x := N] \equiv \lambda y \ . \ (P^{y -&gt; y}[x := N]) \equiv \lambda y \ . \ (P[x := N])\)</span>.</p>
+</div></blockquote>
+<p>替换的顺序在交换后满足某种等价关系.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ 设 x \not \equiv y 且 x \not \in FV(L). 则有  M [x := N] [y := L] \equiv M[y := L] [x:=N[y := L]].  \end{aligned} \)</span></p>
+</section>
+<section id="lambda-alpha-lambda-terms-modulo-alpha-equivalence">
+<h2>Lambda-项 模 alpha-等价 (lambda-terms modulo alpha-equivalence)<a class="headerlink" href="#lambda-alpha-lambda-terms-modulo-alpha-equivalence" title="此标题的永久链接"></a></h2>
+<p><span class="math notranslate nohighlight">\(\alpha\)</span>-等价关系不随着基本操作而发生改变.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ 设 M_1 =_\alpha N_1 且 M_2 =_\alpha N_2. 则有 \\ &amp; (1) \ M_1 N_1 =_\alpha M_2 N_2, \\ &amp; (2) \ \lambda x \ . \ M_1 =_\alpha \lambda x \ . \ N1 ,  \\ &amp; (3) \ M_1[x := N_1] =_\alpha M_2[x := N_2]. \end{aligned} \)</span></p>
+<p>规定<span class="math notranslate nohighlight">\(\alpha\)</span>-等价的项是语法等同的,即若<span class="math notranslate nohighlight">\(M =_\alpha N\)</span>有 <span class="math notranslate nohighlight">\(M \equiv N\)</span>.</p>
+<p>在进行操作时,经常会遇到绑定变量重名的情况, 这可能会造成一定的困惑,Barendregt 规约(Barendregt convention)给出了一种方式使表达式更容易阅读.</p>
+<blockquote>
+<div><p>(Barendregt convention ) 我们为一个$\lambda$-项中绑定变量选择名字,使它们互不相同且不同于任何出现过的自由变量.
+示例: <span class="math notranslate nohighlight">\((\lambda xy \ . \ xz) (\lambda xz \ . \ z) \rightarrow (\lambda xy \ . \ xz) (\lambda uv \ . \ v)\)</span></p>
+</div></blockquote>
+</section>
+<section id="beta-beta-reduction">
+<h2>Beta-归约 (Beta reduction)<a class="headerlink" href="#beta-beta-reduction" title="此标题的永久链接"></a></h2>
+<p>对于一个表达式,提供了一种化简方法,称为<span class="math notranslate nohighlight">\(\beta\)</span>-归约(Beta reductoin).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (One-step \ \beta-reduction, \rightarrow_\beta) \\ &amp; (1) (基本) \ (\lambda x \ . \ M) N \rightarrow_\beta M[x := N], \\ &amp; (2) (兼容性) \ 如果 M \rightarrow_\beta N , 则 M L \rightarrow_\beta N L , L M \rightarrow_\beta L N 且 \lambda x \ . \ M \rightarrow_\beta \lambda x \ . \ N . \end{aligned} \)</span></p>
+<p>一个单步<span class="math notranslate nohighlight">\(\beta\)</span>-归约可以表示如下:
+<span class="math notranslate nohighlight">\( \dots ((\lambda x \ . \ M) N) \dots \ \ \rightarrow_\beta \ \ \dots (M[x := N]) \dots \)</span>
+上式中左侧”<span class="math notranslate nohighlight">\((\lambda x \ . \ M ) N\)</span>”子项称为可约表达式(redex , reducible expression);右侧”<span class="math notranslate nohighlight">\(M[x := N]\)</span>”子项称为矛盾统(contractum).</p>
+<p>对于某些表达式,使用单步<span class="math notranslate nohighlight">\(\beta\)</span>-归约可以导致不同的结果,但多次使用单步$\beta$-归约并不一定会得到相同的结果”公约式”.</p>
+<p>例如
+<span class="math notranslate nohighlight">\( (\lambda x \ . \ x x)(\lambda x \ . \ x x) \rightarrow_\beta (\lambda x \ . \ x x) (\lambda x \ . \ x x) \)</span>
+在归约过程中,往往需要不止一次单步<span class="math notranslate nohighlight">\(\beta\)</span>-归约,由此引出了更一般的<span class="math notranslate nohighlight">\(\beta\)</span>-归约(记为<span class="math notranslate nohighlight">\(\twoheadrightarrow_\beta\)</span>).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (\beta-reduction \ (zero-or-more-step),\twoheadrightarrow_\beta)  \\ &amp; 如果存在一个n \ge 0 \ 且 存在若干项\ M_0 \ 到\ M_n \ 使得\ M_0 \equiv M, M_n \equiv N  , M \twoheadrightarrow_\beta N \\  &amp; 且对任意的 0 \le i \lt n ,  M_i \rightarrow_\beta  M_{i+1} , 则有  \ M \twoheadrightarrow_\beta N. \end{aligned} \)</span></p>
+<p>下面给出 <span class="math notranslate nohighlight">\(\beta\)</span>-归约的性质.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \\ &amp; (1) \ \twoheadrightarrow_\beta 是 \rightarrow_\beta的延伸,如果M \rightarrow_\beta N ,则 M \twoheadrightarrow_\beta N \\ &amp; (2) \ \twoheadrightarrow_\beta 是自反的和传递的, \\ &amp; \  (自反性) \ 对于任意的M : M \twoheadrightarrow_\beta M , \\ &amp; \ (传递性) \ 对于任意的L , M 和 N : 如果 L \twoheadrightarrow_\beta M 且 M \twoheadrightarrow_\beta N , 则 L \twoheadrightarrow_\beta N.  \end{aligned} \)</span></p>
+<p>通过对<span class="math notranslate nohighlight">\(\beta\)</span>-归约进行扩展得到<span class="math notranslate nohighlight">\(\beta\)</span>-转换,记为<span class="math notranslate nohighlight">\(=_\beta\)</span>.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (\beta-conversion, \beta-equality ; =_\beta )\\ &amp; 若存在 n \ge 0 且 存在若干项 M_0 到 M_n 使得 M_0 \equiv M , M_n \equiv N 以及 对于任意的0 \le i \lt n , 以下关系之一成立: \\ &amp;M_i \rightarrow_\beta M_{i+1} 或者 M_{i+1} \rightarrow_\beta M_i, \\  &amp; 则称 M =_\beta N . \end{aligned} \)</span></p>
+<p>以上关系又可读作”M 和 N 是 <span class="math notranslate nohighlight">\(\beta\)</span>-可转换的 或 <span class="math notranslate nohighlight">\(\beta\)</span>-相等”.</p>
+<p><span class="math notranslate nohighlight">\(\beta\)</span>-转换有如下性质:</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \\ &amp; (1) =_\beta 是  \twoheadrightarrow_\beta 在双向上的延伸,即 如果 M \twoheadrightarrow_\beta N 或 N \twoheadrightarrow_\beta M , 则 M =_\beta N. \\ &amp; (2) \ =_\beta 是一个等价关系,因此有自反性,对称性和传递性 \\ &amp; \ (自反性) \ 对于任意的M : M =_\beta M, \\ &amp; \ (对称性) \ 对于任意的M和N : 如果 M =_\beta N , 则 N =_\beta M, \\ &amp; \ (传递性) \ 对于所有的L , M 及 N : 如果 L =_\beta M 且 M =_\beta N , 则 L =_\beta N. \end{aligned} \)</span></p>
+</section>
+<section id="normal-forms-and-confluence">
+<h2>范式与合流性(Normal forms and confluence)<a class="headerlink" href="#normal-forms-and-confluence" title="此标题的永久链接"></a></h2>
+<p><span class="math notranslate nohighlight">\(\beta\)</span>-化归过程相当于对函数带入值得过程,对于一般的数值计算往往都会得到一个数字结果,但对于<span class="math notranslate nohighlight">\(\lambda\)</span>-项来说是不一定的,由此我们引出 <span class="math notranslate nohighlight">\(\beta\)</span>-范式的概念.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (\beta-normal \ form; \beta-nf; \beta-normalising) \\ &amp; (1) \ 若M不含有任何的可约表达式,则称M为\beta-范式(in \ \beta-normal \ form \ or \ in \ \beta-nf) \\ &amp; (2) \ 若存在一个\beta-范式 N,使得 M =_\beta N , 则称M有一个\beta-范式(has \ a \ \beta-normal \ form \ or \ has \ a \ \beta-nf) \\ &amp; 或者可\beta-标准化(is \ \beta-normalising), 并称N是M的一个\beta-范式. \end{aligned} \)</span></p>
+<p>我们将<span class="math notranslate nohighlight">\(\beta\)</span>-范式视为<span class="math notranslate nohighlight">\(\lambda\)</span>-项的输出结果.因此一个<span class="math notranslate nohighlight">\(\beta\)</span>-范式必然是其自身的一个结果,即一个<span class="math notranslate nohighlight">\(\beta\)</span>-范式,必然通过0次<span class="math notranslate nohighlight">\(beta\)</span>-归约得到结果.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ 当M是\beta-范式时,则 M \twoheadrightarrow_\beta N 意味着 M \equiv N. \end{aligned} \)</span></p>
+<blockquote>
+<div><p>几个特殊的示例:</p>
+<ul class="simple">
+<li><p>定义 <span class="math notranslate nohighlight">\(\Omega := (\lambda x \ . \ x x)(\lambda x \ . \ x x)\)</span>,则<span class="math notranslate nohighlight">\(\Omega\)</span>不是<span class="math notranslate nohighlight">\(\beta\)</span>-范式,因为它本身是一个可约式.而且它不可能归约到一个<span class="math notranslate nohighlight">\(\beta\)</span>-范式,因为它只能归约到自身.</p></li>
+<li><p>定义 <span class="math notranslate nohighlight">\(\Delta := \lambda x . x x x\)</span>,则有<span class="math notranslate nohighlight">\(\Delta \Delta \rightarrow_\beta \Delta \Delta \Delta \rightarrow_\beta \Delta \Delta \Delta \Delta \rightarrow_\beta \dots \)</span>. 因此<span class="math notranslate nohighlight">\(\Delta\Delta\)</span>既不是<span class="math notranslate nohighlight">\(\beta\)</span> -范式,也不可归约到一个 <span class="math notranslate nohighlight">\(\beta\)</span> -范式.</p></li>
+<li><p><span class="math notranslate nohighlight">\((\lambda u \ . \ v)\Omega\)</span>包含了两个可约表达式,因此有两种归约路线,第一种直接归约到<span class="math notranslate nohighlight">\(v\)</span>,即<span class="math notranslate nohighlight">\((\lambda u \ . \ v)\Omega =_\beta  v\)</span>,另一种路线则从<span class="math notranslate nohighlight">\(\Omega\)</span>出发,无论如何都得不到范式.因此<span class="math notranslate nohighlight">\((\lambda u \ . \ v)\Omega\)</span>为可标准化的.</p></li>
+</ul>
+</div></blockquote>
+<p>从以上示例中,归约路径之间可能存在关联.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (Reduction \ path) \\ &amp; 一个从M出发的有穷的归约路径是一个由有限项组成的序列 N_0,N_1,N_2,\dots,N_n, \\ &amp; 使得 N_0 \equiv M 且 对于任意的0 \le i \lt n , 有N_i \rightarrow_\beta N_{i+1}.  \\ &amp; 一个从M出发的无穷的归约路径是一个由无限项组成的序列 N_0,N_1,N_2,\dots, \\ &amp; 满足 N_0 \equiv M 且 对任意 i \in \mathbb{N} 均有 N_i \rightarrow_\beta N_{i+1}. \end{aligned} \)</span></p>
+<p>可以定义两个性质良好的子集——只存在一条归约到范式路径的项组成的集合;任意路径均可归约到范式的项集合.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (Weak \ normalisation, strong \ normalisation) \\ &amp; (1) \ 若存在一个N是\beta-范式,使得M \twoheadrightarrow_\beta N , 则称M 是弱可标准化. \\ &amp; (2) \ 若从M出发没有无穷归约路径,则称M是强可标准化.  \end{aligned} \)</span></p>
+<p>下面介绍著名的合流性原理,该原理将弱标准化和范式联系起来.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定理 \ \ \ (Church-Rosser ; CR ; Confluence) \\ &amp; 假设对于给定的一个项M,有M \twoheadrightarrow_\beta N_1 且 M \twoheadrightarrow_\beta N_2,   则必存在一个项N_3使得 N_1 \twoheadrightarrow_\beta N_3 且 N_2 \twoheadrightarrow_\beta N_3. \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 推论 \ \ \  &amp; 假设 M =_\beta N , 则存在L使得M \twoheadrightarrow_\beta L 且 N \twoheadrightarrow_\beta L. \end{aligned} \)</span></p>
+<blockquote>
+<div><p>提示: 该推论可以通过归纳法进行证明.</p>
+</div></blockquote>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \\ &amp; (1) \ 如果 N 是 M的\beta-范式,则M \twoheadrightarrow_\beta N \\ &amp; (2) \ 一个\lambda-项有至多一个\beta-范式. \end{aligned} \)</span></p>
+<blockquote>
+<div><p>以上引理表明如果一个<span class="math notranslate nohighlight">\(\lambda\)</span>-项存在结果,那么就可以通过<span class="math notranslate nohighlight">\(\beta\)</span>-归约得到,且这个结果是唯一的.</p>
+</div></blockquote>
+</section>
+<section id="fixed-point-theorem">
+<h2>不动点理论 (Fixed Point Theorem)<a class="headerlink" href="#fixed-point-theorem" title="此标题的永久链接"></a></h2>
+<p>无类型的lambda演算中,每一个<span class="math notranslate nohighlight">\(\lambda\)</span>-项都有一个不动点,也就是说对于任意的L,存在一个<span class="math notranslate nohighlight">\(\lambda\)</span>-项M,使得<span class="math notranslate nohighlight">\(L M =_\beta M\)</span>.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定理 \ \ \  对于任意的L \in \Lambda , 存在 M \in \Lambda , 使得 LM =_\beta M. \end{aligned} \)</span></p>
+<blockquote>
+<div><p>存在一个Y结合子(<span class="math notranslate nohighlight">\(Y := \lambda y \ . \ (\lambda x \ . \ y (x x))(\lambda x \ . \ y ( x x))\)</span>),使得对任意的项L,YL是L的一个不动点,即<span class="math notranslate nohighlight">\(L(Y L) =_\beta Y L\)</span>.因此这个结合子又称为不动点结合子.</p>
+</div></blockquote>
+<p><strong>求不动点方法</strong></p>
+<p>是否存在一个<span class="math notranslate nohighlight">\(\lambda\)</span>-项使得 <span class="math notranslate nohighlight">\(Mx =_\beta xMx\)</span>?</p>
+<p>定义 <span class="math notranslate nohighlight">\(L := \lambda y \ . \ (\lambda x \ . \ xyx)\)</span>,则有 <span class="math notranslate nohighlight">\(LM \rightarrow_\beta \lambda x \ . \ xMx\)</span>.因此只要找到$M$使得<span class="math notranslate nohighlight">\(M=_\beta LM\)</span>即可.使用Y结合子,构造<span class="math notranslate nohighlight">\(M := YL\)</span>即为不动点.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="Type Theory and Formal Proof" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

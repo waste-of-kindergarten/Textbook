@@ -12,4 +12,4 @@ Welcome to Alfred's Textbook !
 
    haskell/index
    logicInCS/index
-
+   type theory/index

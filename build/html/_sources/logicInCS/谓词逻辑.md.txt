@@ -248,7 +248,7 @@ t ::= \ x \ | \ c \ | \ f(t,\dots,t)
 
 - 一个非空集合` $A$ `，具体值宇宙
 
-- 对于每个非零元的函数符号` $f \in \mathcal{F}$ `，A的一个具体的元素` $f^{\mathcal{M}}$ `
+- 对于每个零元的函数符号` $f \in \mathcal{F}$ `，A的一个具体的元素` $f^{\mathcal{M}}$ `
 
 - 对于每个变元数大于零的函数符号` $f \in \mathcal{F}$ `，一个具体的元素` $f^\mathcal{M} : A^n \rightarrow A$ `，其中` $A^n$ `是` $A$ `上的n元组
 
