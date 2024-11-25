@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>简单类型的lambda演算(Simple typed lambda calculus) &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="无类型lambda演算(Untyped lambda calculus)" href="%E6%97%A0%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../haskell/index.html">Haskell TextBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logicInCS/index.html">Logic In Computer Science</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Type Theory and Formal Proof</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="%E6%97%A0%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97.html">无类型lambda演算(Untyped lambda calculus)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">简单类型的lambda演算(Simple typed lambda calculus)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-types">简单类型(simple types)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#church-curry-church-typing-and-curry-typing">Church 定型 与 Curry 定型 (Church-typing and Curry-typing)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#church-lambda-rightarrow-derivation-rules-for-church-s-lambda-rightarrow">Church <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>的派生规则(Derivation rules for Church’s <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#different-formats-for-a-derivation-in-lambda-rightarrow">派生的不同格式(Different formats for a derivation in <span class="math notranslate nohighlight">\(\lambda \rightarrow\)</span>)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tree-structure">树状结构(tree structure)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linear-order">线性结构(linear order)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flag-notation">旗子标注(flag notation)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#kinds-of-problems-to-be-solved-in-type-theory">类型论中需要解决的几类问题(Kinds of problems to be solved in type theory)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lambda-rightarrow-well-typedness-in-lambda-rightarrow"><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>中的良类型性(Well-typedness in <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lambda-rightarrow"><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>中的类型检查</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>项的寻找</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#lambda-rightarrow-general-properties-of-lambda-rightarrow"><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>的性质(General properties of <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lambda-rightarrow-reduction-and-lambda-rightarrow">归约与<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>(Reduction and <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Type Theory and Formal Proof</a></li>
+      <li class="breadcrumb-item active">简单类型的lambda演算(Simple typed lambda calculus)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/type theory/简单类型lambda演算.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lambda-simple-typed-lambda-calculus">
+<h1>简单类型的lambda演算(Simple typed lambda calculus)<a class="headerlink" href="#lambda-simple-typed-lambda-calculus" title="此标题的永久链接"></a></h1>
+<blockquote>
+<div><p>无类型的lambda演算过于自由,为了更好控制函数的行为,我们引入类型</p>
+</div></blockquote>
+<section id="simple-types">
+<h2>简单类型(simple types)<a class="headerlink" href="#simple-types" title="此标题的永久链接"></a></h2>
+<p>类型的定义与 <span class="math notranslate nohighlight">\(\lambda-\)</span> 项的定义类似,都是从一个无穷集合变量出发,通过生成规则,得到更复杂的元素.不同的是,简单类型的初始集合中的元素称为类型变量(type variables).设这个类型变量集合为<span class="math notranslate nohighlight">\(V = \{\alpha , \beta , \gamma , \dots \}\)</span>,生成的简单类型的集合为 <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (The \ set \ T \ of \ all \ simple \ types) \\ &amp; (1) (类型变量) \ 如果 \ \alpha \in V , 那么 \ \alpha \in T ,  \\ &amp; (2) (箭头类型) \ 如果 \ \sigma , \tau \in T , 那么 \ (\sigma \rightarrow \tau ) \in T. \\ \end{aligned} \)</span></p>
+<p>使用抽象语法也可以写成<span class="math notranslate nohighlight">\(T = V | T \rightarrow T\)</span>.</p>
+<blockquote>
+<div><p>规定:</p>
+<ul class="simple">
+<li><p>表达式最外层括号可以省略.</p></li>
+<li><p>箭头类型是右结合的,例如<span class="math notranslate nohighlight">\(\alpha_1 \rightarrow \alpha_2 \rightarrow \alpha_3 \equiv \alpha_1 \rightarrow (\alpha_2 \rightarrow \alpha_3)\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<p>为了表达项<span class="math notranslate nohighlight">\(M\)</span>拥有类型<span class="math notranslate nohighlight">\(\sigma\)</span>’,我们引入了定型陈述(typing statements),写作 ‘<span class="math notranslate nohighlight">\(M:\sigma\)</span>’.</p>
+<p>我们假定对于每个类型<span class="math notranslate nohighlight">\(\sigma\)</span>都有无穷个变量,且不同类型间的变量不会重复, 即唯一性——<span class="math notranslate nohighlight">\(若 \ x : \sigma \ 且 \ x : \tau , 则 \ \sigma \equiv \tau\)</span>.</p>
+<p>回顾无类型lambda演算,其<span class="math notranslate nohighlight">\(\lambda-\)</span>项的构造方法有应用和抽象,对于含有类型的项来说,需要规则来指定应用和抽象后的类型.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (typing \ of \ applications \ and \ abstractions) \\ &amp; (1) (应用) \ 如果 \ M : \sigma \rightarrow \tau \ 且 \ N : \sigma , 那么 \ MN : \tau ,  \\ &amp; (2) (抽象) \ 如果 \ x : \sigma \ 且 \ M : \tau , 那么 \ \lambda x \ .  M : \sigma \rightarrow \tau  \\ \end{aligned} \)</span></p>
+<blockquote>
+<div><p>注意:</p>
+<ul class="simple">
+<li><p>类型给<span class="math notranslate nohighlight">\(\lambda-\)</span>项的构造增添了附加条件,对于应用<span class="math notranslate nohighlight">\(y x\)</span>而言,只有在<span class="math notranslate nohighlight">\(y\)</span>是一个箭头类型,且<span class="math notranslate nohighlight">\(x\)</span>的类型与<span class="math notranslate nohighlight">\(y\)</span>类型中第一个类型变量一致时,<span class="math notranslate nohighlight">\(y x\)</span>才可以被定型.</p></li>
+<li><p>这也导致了不允许自我应用(self-application),若不然,设 <span class="math notranslate nohighlight">\(x:\sigma\)</span>,则由于<span class="math notranslate nohighlight">\(xx\)</span>可定型,则又有<span class="math notranslate nohighlight">\(x : \sigma \rightarrow \tau\)</span>,但是这样就违反了前面的唯一性假设.</p></li>
+</ul>
+</div></blockquote>
+<p>显然,不是所有的<span class="math notranslate nohighlight">\(\lambda-\)</span>项都可定型(typable).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ (Typable \ term) \ \ \  &amp; 对于一个项M,如果存在一个类型\sigma,使得M:\sigma,那么称这个项为可定型的. \end{aligned} \)</span></p>
+</section>
+<section id="church-curry-church-typing-and-curry-typing">
+<h2>Church 定型 与 Curry 定型 (Church-typing and Curry-typing)<a class="headerlink" href="#church-curry-church-typing-and-curry-typing" title="此标题的永久链接"></a></h2>
+<p>对<span class="math notranslate nohighlight">\(\lambda-项\)</span>定型首先需要对其变量进行定型,这里介绍两种的定型方法.</p>
+<ul class="simple">
+<li><p>Church 定型: 在引入变量时就为其规定唯一的类型,这种定型又称为显式定型(explicit typing).</p></li>
+<li><p>Curry 定型: 不提供变量的类型, 通过搜索过程’猜测’变量的类型,又称为隐式定型(implicit typing).</p></li>
+</ul>
+<blockquote>
+<div><p>示例:</p>
+<ul>
+<li><p>(显式定型) 设<span class="math notranslate nohighlight">\(x\)</span>的类型为 <span class="math notranslate nohighlight">\(\alpha \rightarrow \alpha\)</span>, <span class="math notranslate nohighlight">\(y\)</span>的类型为 <span class="math notranslate nohighlight">\((\alpha \rightarrow \alpha) \rightarrow \beta\)</span>, <span class="math notranslate nohighlight">\(z\)</span>的类型为 <span class="math notranslate nohighlight">\(\beta\)</span>, u的类型为 <span class="math notranslate nohighlight">\(\gamma\)</span>, 则 <span class="math notranslate nohighlight">\(yx\)</span>的类型为<span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\lambda zu \ . z\)</span>的类型为 <span class="math notranslate nohighlight">\(\beta \rightarrow \gamma \rightarrow \beta\)</span>,因此 <span class="math notranslate nohighlight">\((\lambda zu \ . z) (yx)\)</span>的类型为 <span class="math notranslate nohighlight">\(\gamma \rightarrow \beta\)</span> .</p></li>
+<li><p>(隐式定型)  仍然考虑 <span class="math notranslate nohighlight">\(M \equiv(\lambda zu \ . z) (yx)\)</span>, 变量<span class="math notranslate nohighlight">\(x,y,z,u\)</span>的类型尚未给出.</p>
+<p>首先, M是<span class="math notranslate nohighlight">\((\lambda zu \ . z) \)</span> 对 <span class="math notranslate nohighlight">\((yx)\)</span>的应用, 所以<span class="math notranslate nohighlight">\(\lambda zu \ . z\)</span>是一个箭头类型,设为<span class="math notranslate nohighlight">\(A \rightarrow B\)</span>,且<span class="math notranslate nohighlight">\(yz\)</span>类型必须为<span class="math notranslate nohighlight">\(A\)</span>,此时<span class="math notranslate nohighlight">\(M\)</span>类型为<span class="math notranslate nohighlight">\(B\)</span>.</p>
+<p>对于  <span class="math notranslate nohighlight">\(\lambda zu \ . z : A \rightarrow B\)</span>,可以推断出<span class="math notranslate nohighlight">\(z : A\)</span>且 <span class="math notranslate nohighlight">\(\lambda u \ . z : B\)</span>.对于后者,其仍然是一个箭头类型, 因此 <span class="math notranslate nohighlight">\(B \equiv (C \rightarrow D)\)</span>, 且 <span class="math notranslate nohighlight">\(u : C , \ z : D\)</span>.</p>
+<p>对于  <span class="math notranslate nohighlight">\(yz\)</span>,可以推断出<span class="math notranslate nohighlight">\(y : E \rightarrow F\)</span>且 <span class="math notranslate nohighlight">\(x : E\)</span> , 因此 <span class="math notranslate nohighlight">\(yz : F\)</span>.</p>
+<p>综上,有:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x : E\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(y : E \rightarrow F\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(z : A , \ z : D\)</span> (所以 <span class="math notranslate nohighlight">\(A \equiv D\)</span>)</p></li>
+<li><p><span class="math notranslate nohighlight">\(u : C\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(B \equiv (C \rightarrow D)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(yx : A , \ yz : F\)</span> (所以 <span class="math notranslate nohighlight">\(A \equiv F\)</span>)</p></li>
+</ul>
+<p>最终结果为</p>
+<p>(*) <span class="math notranslate nohighlight">\(x : E , y : E \rightarrow A , z : A , u : C\)</span></p>
+</li>
+</ul>
+</div></blockquote>
+<p>为了清晰的表述, 我们将约束变量的类型标注在首次引入改变量的后面(即<span class="math notranslate nohighlight">\(\lambda后对应的变量\)</span>),而自由变量的类型则由上下文(context)给出,其顺序可以随意选择,最终得到的表述称为推断(judgement). 如Church定型示例写为   <span class="math notranslate nohighlight">\(x : \alpha \rightarrow \alpha , y : (\alpha \rightarrow \alpha) \rightarrow \beta \ \vdash \ (\lambda z : \beta \ . \lambda u : \gamma \ . z)(y x)\)</span> 就是一个推断.</p>
+</section>
+<section id="church-lambda-rightarrow-derivation-rules-for-church-s-lambda-rightarrow">
+<h2>Church <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>的派生规则(Derivation rules for Church’s <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)<a class="headerlink" href="#church-lambda-rightarrow-derivation-rules-for-church-s-lambda-rightarrow" title="此标题的永久链接"></a></h2>
+<p>添加了类型信息后,需要对<span class="math notranslate nohighlight">\(\lambda-\)</span>项的定义稍加修改.对于类型集合<span class="math notranslate nohighlight">\(T\)</span>,设新的<span class="math notranslate nohighlight">\(\lambda-\)</span>项的集合为<span class="math notranslate nohighlight">\(\Lambda_T\)</span>,我们称这个集合为预标注类型<span class="math notranslate nohighlight">\(\lambda-\)</span>项(pre-typed <span class="math notranslate nohighlight">\(\lambda-\)</span>terms).使用抽象语法描述如下:</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ (Pre-typed \ \lambda-terms,\Lambda_T) \ \ \ \Lambda_T = V | (\Lambda_T \Lambda_T) | (\lambda V : T \ . \Lambda_T )  \\ \end{aligned} \)</span></p>
+<blockquote>
+<div><p>提示: 之所以称为预标注类型,是因为集合中的元素带有类型信息,但不一定是可定型的,后面通过派生规则将解决这个问题</p>
+</div></blockquote>
+<p>我们在前面已经提到过陈述和上下文的概念,下面正式给出相关概念.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (Statement,\ declaration,\ context,\ judgement) \\ &amp; (1) \ 陈述具有\ M : \sigma 的形式,其中 M \in\Lambda_T 且 \sigma \in T. 在陈述中,M称为主体(subject),\sigma 称为类型(type). \\ &amp; (2) \ 声明是以变量为主体的陈述.   \\ &amp; (3) \  上下文是主体不同的声明组成的列表. \\ &amp;(4) \ 推断具有 \ \Gamma \vdash M : \sigma ,\ 其中 \Gamma为上下文 ,\ M : \sigma为陈述.  \end{aligned} \)</span></p>
+<p>为了判定在某个上下文<span class="math notranslate nohighlight">\(\Gamma\)</span>中一个项<span class="math notranslate nohighlight">\(M : \sigma\)</span>是否是可定型的,即推断  <span class="math notranslate nohighlight">\(\Gamma \vdash M : \sigma\)</span> 是否可派生(derivable), 我们引入了派生规则,通过派生规则形成了派生系统(derivation system).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 前提-结论格式 \ \ \ (premiss-conclusion \ format) \\ &amp; \frac{前提1 \ 前提2 \ \dots \ 前提n}{结论} \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (Derivation \ rules \ for  \ \lambda \rightarrow) \\ &amp; (变量) \ 如果 x : \sigma \in \Gamma , \ 则 \Gamma \vdash x : \sigma  \\  &amp; (应用) \ \frac{\Gamma \vdash M : \sigma \rightarrow \tau \ \ \ \ \ \ \Gamma \vdash N : \sigma}{\Gamma \vdash \lambda x : \sigma \ . M : \sigma \rightarrow \tau}\\ &amp; (抽象) \ \frac{\Gamma , x:\sigma \vdash M : \tau}{\Gamma \vdash \lambda x : \sigma \ . M : \sigma \rightarrow \tau}\\ \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ (Legal \ \lambda\rightarrow-terms) \ \ \ 在\lambda\rightarrow中,对于一个预标注类型的项M,如果存在上下文\Gamma以及类型\rho, \\ &amp; 使得 \Gamma \vdash M : \rho , 则称M为合法的.  \\ \end{aligned} \)</span></p>
+</section>
+<section id="different-formats-for-a-derivation-in-lambda-rightarrow">
+<h2>派生的不同格式(Different formats for a derivation in <span class="math notranslate nohighlight">\(\lambda \rightarrow\)</span>)<a class="headerlink" href="#different-formats-for-a-derivation-in-lambda-rightarrow" title="此标题的永久链接"></a></h2>
+<section id="tree-structure">
+<h3>树状结构(tree structure)<a class="headerlink" href="#tree-structure" title="此标题的永久链接"></a></h3>
+<p>遵循派生规则的派生拥有天然的树状结构.</p>
+<p>考虑以下示例:
+<span class="math notranslate nohighlight">\( \begin{array}{c} (i) \ y : \alpha \rightarrow \beta , z : \alpha \vdash y : \alpha \rightarrow \beta \ \ \ \ \ \ (ii)\  y : \alpha \rightarrow \beta . z : \alpha \vdash z : \alpha \ (var)  \\ \hline (iii) \ y : \alpha \rightarrow \beta , z : \alpha \vdash y z : \beta \ \ (appl)  \\ \hline (iv) \ y : \alpha \rightarrow \beta \vdash \lambda z : \alpha \ . yz : \alpha \rightarrow \beta  \ \ (abst) \\ \hline (v) \ \emptyset \vdash \lambda y : \alpha \rightarrow \beta \ . \lambda z : \alpha \ . y z : (\alpha \rightarrow \beta) \rightarrow \alpha \rightarrow \beta \ \ (abst)  \end{array} \)</span></p>
+<p>其对应的树状结构为</p>
+<center><p><img alt="../_images/t2-1.png" src="../_images/t2-1.png" /></p>
+</center><p>尽管树状结构很好地展示了派生的形成,但对于更复杂的情形,树可能过大而难以阅读.</p>
+</section>
+<section id="linear-order">
+<h3>线性结构(linear order)<a class="headerlink" href="#linear-order" title="此标题的永久链接"></a></h3>
+<p>线性结构一定程度上解决树状结构的问题.以上示例用线性结构书写为:
+<span class="math notranslate nohighlight">\( \begin{aligned} (i) \  &amp; y : \alpha \rightarrow \beta , \ z : \alpha \vdash y : \alpha \rightarrow \beta \ &amp; (var) \\ (ii) \ &amp; y : \alpha \rightarrow \beta , \ z : \alpha \vdash z : \alpha \ &amp; (var) \\ (iii) \ &amp; y : \alpha \rightarrow \beta , \ z : \alpha \vdash yz : \beta &amp; (appl) \ on \ (i) \ and \ (ii) \\ (iv) \ &amp; y : \alpha \rightarrow \alpha , \ \vdash \lambda z : \alpha \ . yz : \alpha \rightarrow \beta &amp; (abst) \ on \ (iii)  \\ (v) \ &amp; \emptyset \vdash \lambda y : \alpha \rightarrow \beta \ . \lambda z : \alpha \ . yz : (\alpha \rightarrow \beta) \rightarrow \alpha \rightarrow \beta  &amp; (abst) on (iv) \end{aligned} \)</span></p>
+<p>通过线性结构,容易发现派生实际上是一种严格偏序关系,即遵循反自反性,反对称性以及传递性.</p>
+</section>
+<section id="flag-notation">
+<h3>旗子标注(flag notation)<a class="headerlink" href="#flag-notation" title="此标题的永久链接"></a></h3>
+<p>在线性结构中,每一行都需要书写上下文,这些上下文中有很多重复内容,对于更复杂的派生将会很麻烦.可以使用旗子标注替换线性结构.</p>
+<p>在旗子标注中,我们需要将声明放在矩形框内(flag),并假定这个声明是其对应旗杆(flag pole)后所有声明的上下文.</p>
+<center><p><img alt="../_images/t2-2.png" src="../_images/t2-2.png" /></p>
+</center><p>通常情况下我们可以省略掉(var)过程使其更简洁.</p>
+<center><p><img alt="../_images/t2-3.png" src="../_images/t2-3.png" /></p>
+</center></section>
+</section>
+<section id="kinds-of-problems-to-be-solved-in-type-theory">
+<h2>类型论中需要解决的几类问题(Kinds of problems to be solved in type theory)<a class="headerlink" href="#kinds-of-problems-to-be-solved-in-type-theory" title="此标题的永久链接"></a></h2>
+<p>总体来说,与推断相关的问题可分为三类.</p>
+<ol>
+<li><p>良类型性(well-typedness)或可定型性(typability)</p>
+<p><span class="math notranslate nohighlight">\(? \vdash term : ?\)</span></p>
+<p>如果term合法,找出恰当的上下文和类型使得term是合法的;否则找出出错的地方.</p>
+<p>良类型性问题的一种变体是类型赋值.</p>
+<ol>
+<li><p>类型赋值(type assignment)</p>
+<p><span class="math notranslate nohighlight">\(context \vdash term : ?\)</span></p>
+</li>
+</ol>
+</li>
+<li><p>类型检查(type checking)</p>
+<p><span class="math notranslate nohighlight">\(context \overset{?}{\vdash} term : type\)</span></p>
+<p>给定上下文、项和类型,检查在某个上下文下,某个项是否具有某个类型.</p>
+</li>
+<li><p>项的寻找(type finding/term construction/inhabitation)</p>
+<p><span class="math notranslate nohighlight">\(context \vdash ? : type\)</span></p>
+<p>在给定上下文情况下,找出是否有具有给定类型的项.</p>
+<p>特别地,当<span class="math notranslate nohighlight">\(content \equiv \emptyset\)</span>时,此时寻找一个具有类型<span class="math notranslate nohighlight">\(\sigma\)</span>的项与<span class="math notranslate nohighlight">\(\sigma\)</span>的可证明性等价.本章中我们主要考虑这种情况,对于许多更复杂的情况,没有一种通用的方法来进行项的寻找.</p>
+</li>
+</ol>
+<section id="lambda-rightarrow-well-typedness-in-lambda-rightarrow">
+<h3><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>中的良类型性(Well-typedness in <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)<a class="headerlink" href="#lambda-rightarrow-well-typedness-in-lambda-rightarrow" title="此标题的永久链接"></a></h3>
+<p>沿用派生风格一段中的示例,我们要证明 <span class="math notranslate nohighlight">\(M \equiv \lambda y : \alpha \rightarrow \beta \ . \lambda z : \alpha \ . y z\)</span>是合法的.即需要找到上下文 <span class="math notranslate nohighlight">\(\Gamma\)</span>和类型<span class="math notranslate nohighlight">\(\rho\)</span>.</p>
+<p>首先M中没有自由变量,所以推测上下文是<span class="math notranslate nohighlight">\(\emptyset\)</span>. 因此任务变为了<span class="math notranslate nohighlight">\(\lambda y : \alpha \rightarrow \beta \ . \lambda z : \alpha \ . yz : ?\)</span>.</p>
+<p>根据派生规则,只有抽象规则可以使用, 此时任务变为<span class="math notranslate nohighlight">\(y : \alpha \rightarrow \beta \vdash \lambda z : \alpha : \alpha \ . yz : ?\)</span>.</p>
+<p>继续使用抽象规则,得到<span class="math notranslate nohighlight">\(y : \alpha \rightarrow \beta , z : \alpha \vdash yz:?\)</span>.</p>
+<p>yz是一个应用,使用抽象规则,得到<span class="math notranslate nohighlight">\(y : \alpha \rightarrow \beta , z : \alpha \vdash y : ?_1\)</span>和<span class="math notranslate nohighlight">\(y : \alpha \rightarrow \beta , z : \alpha \vdash z : ?_2\)</span>.</p>
+<p>使用变量规则,可知<span class="math notranslate nohighlight">\(?_1 \equiv \alpha \rightarrow \beta , ?_2 \equiv \alpha\)</span>.</p>
+<p>接下来进行回代,最终得到<span class="math notranslate nohighlight">\(\rho \equiv (\alpha \rightarrow \beta) \rightarrow \alpha \rightarrow \beta\)</span>.</p>
+<p>至此得到<span class="math notranslate nohighlight">\(\Gamma \equiv \emptyset ,  \rho \equiv (\alpha \rightarrow \beta) \rightarrow \alpha \rightarrow \beta\)</span>.</p>
+<p>以上推导写成旗子标注格式为:</p>
+<center><p><img alt="../_images/t2-4.png" src="../_images/t2-4.png" /></p>
+</center></section>
+<section id="lambda-rightarrow">
+<h3><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>中的类型检查<a class="headerlink" href="#lambda-rightarrow" title="此标题的永久链接"></a></h3>
+<p>沿用两种定型中的示例<span class="math notranslate nohighlight">\(M \equiv x : \alpha \rightarrow \alpha , y : (\alpha \rightarrow \alpha) \rightarrow \beta \vdash (\lambda z : \beta \ . \lambda u : \gamma \ . z)(yx) : \gamma \rightarrow \beta\)</span>,我们要验证这个推断是否正确.</p>
+<p>使用应用规则得到</p>
+<p><span class="math notranslate nohighlight">\(x : \alpha \rightarrow \alpha , y : (\alpha \rightarrow \alpha) \rightarrow \beta \vdash \lambda z : \beta \ . \lambda u : \gamma \ . z : ?_1\)</span></p>
+<p>和</p>
+<p><span class="math notranslate nohighlight">\(x : \alpha \rightarrow \alpha , y : (\alpha \rightarrow \alpha) \rightarrow \beta \vdash yx : ?_2\)</span>.</p>
+<p>对于<span class="math notranslate nohighlight">\(?_2\)</span>使用两次变量规则即可解决<span class="math notranslate nohighlight">\((\equiv \beta)\)</span>.下面解决<span class="math notranslate nohighlight">\(?_1\)</span>.</p>
+<p>对推断不断使用抽象规则,得到<span class="math notranslate nohighlight">\(x : \alpha \rightarrow \alpha , y : (\alpha \rightarrow \alpha) \rightarrow \beta , z : \beta , u : \gamma \vdash z : ?\)</span>.</p>
+<p>再使用变量规则,就解决了<span class="math notranslate nohighlight">\(?_2 (\equiv \beta \rightarrow \gamma \rightarrow \beta)\)</span>.</p>
+<p>最后,检验$M$成立的条件满足.</p>
+<p>自此我们得到这个推断的完整派生,即这个推断是正确的.</p>
+<p>以上推导写成旗子标注为:</p>
+<center><p><img alt="../_images/t2-5.png" src="../_images/t2-5.png" /></p>
+</center></section>
+<section id="id1">
+<h3><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>项的寻找<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h3>
+<p>当一个项属于某个类型的时候,我们说这个项是这个类型的居民(inhabitant).因此,我们的目标就是寻找给定类型的一个居民.</p>
+<p>考虑一个来源于逻辑表达式的类型,我们称这种类型为命题,此时该类型中的每个居民就编码了该命题的一个证明,即证明类型(命题)是正确的.</p>
+<p>在逻辑表达式中, <span class="math notranslate nohighlight">\( A \rightarrow B \rightarrow A\)</span>为重言式(若A则(若B则A),亦永真式). 我们用<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>形式化这个重言式的证明, 即将<span class="math notranslate nohighlight">\(A \rightarrow B \rightarrow A\)</span>作为一个类型, 尝试找到一个在空上下文中的居民.</p>
+<p>初始我们的目标为</p>
+<p><span class="math notranslate nohighlight">\(? : A \rightarrow B \rightarrow A\)</span></p>
+<p>首先使用抽象规则,得</p>
+<p><span class="math notranslate nohighlight">\(x : A \vdash ? : B \rightarrow A\)</span></p>
+<p>再次使用抽象规则,得</p>
+<p><span class="math notranslate nohighlight">\(x : A , y : B \vdash ? : A\)</span></p>
+<p>使用变量规则,得</p>
+<p><span class="math notranslate nohighlight">\(x : A , y : B \vdash x : A\)</span>.</p>
+<p>对上式进行两次抽象操作,最终得到:</p>
+<p><span class="math notranslate nohighlight">\(\lambda x : A \ . \lambda y : B \ . x : A \rightarrow B \rightarrow A\)</span></p>
+<p>整个派生过程用旗子标注为:</p>
+<center><p><img alt="../_images/t2-6.png" src="../_images/t2-6.png" /></p>
+</center><p>用命题和证明的语言书写:</p>
+<p>(a) 假设x是命题A的证明</p>
+<p>(b)假设y是命题B的证明</p>
+<p>(1)那么x仍然是A的证明</p>
+<p>(2)因此将y映射到x的函数将A的证明映射到B的证明(比如 <span class="math notranslate nohighlight">\(\lambda y : B \ . x\)</span>证明了蕴含式<span class="math notranslate nohighlight">\(B \rightarrow A\)</span>)</p>
+<p>(3)最终,<span class="math notranslate nohighlight">\(\lambda x : A \ . \lambda y : B \ . x\)</span>证明了<span class="math notranslate nohighlight">\(A \rightarrow B \rightarrow A\)</span>.</p>
+<p>这样我们就将证明和逻辑表达式分别解释为了项和类型.这种解释叫做PAT-解释(PAT-interpretation,’propersitions as types ‘ and ‘proofs as terms’).</p>
+</section>
+</section>
+<section id="lambda-rightarrow-general-properties-of-lambda-rightarrow">
+<h2><span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>的性质(General properties of <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)<a class="headerlink" href="#lambda-rightarrow-general-properties-of-lambda-rightarrow" title="此标题的永久链接"></a></h2>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (Domain,dom,subcontext,\subseteq,permutation,projection,\upharpoonright) \\ &amp; (1) (域) \ 如果 \ \Gamma \equiv x_1 : \sigma_1, \dots,x_n : \sigma_n, \ 则 \Gamma 的域或dom(\Gamma) 是 列表 (x_1,\dots,x_n).  \\ &amp; (2) (子上下文) \ 如果上下文\Gamma' 出现的全部声明都在\Gamma 中,\ 则称\Gamma'为\Gamma的子上下文.  \\ &amp; (3) (置换)\ 如果 上下文\Gamma'的全部声明都在\Gamma中,且\Gamma中的全部声明也在\Gamma'中,则称\Gamma' 是 \Gamma 的一个置换. \\ &amp; (4) (投影) \  如果 \Gamma 是一个上下文,且\Phi是一个变量的集合, 那么\Gamma在\Phi上的投影, \\ &amp; 或者 \Gamma \upharpoonright \Phi(\equiv \Gamma') 是 \Gamma的一个子上下文,且满足 dom(\Gamma') = dom(\Gamma)\cap \Phi. \\ \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ (Free \ Variables \ Lemma) \ \ \ 如果 \Gamma \vdash L : \sigma , 则 FV(L) \subseteq dom(\Gamma) \end{aligned} \)</span></p>
+<blockquote>
+<div><p>提示 : 证明采用结构归纳法,对派生规则三种情况分别尝试归纳</p>
+</div></blockquote>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ (Thinning,Condensing,Permutation) \\ &amp; (1) (稀释) \ 设 \Gamma' 和 \Gamma'' 为上下文,且满足 \Gamma' \subseteq \Gamma'';如果 \ \Gamma' \vdash M : \sigma , \ 则 \Gamma'' \vdash M : \sigma 也成立.  \\ &amp; (2) (压缩) \ 如果 \ \Gamma \vdash M : \sigma , 则 \Gamma \upharpoonright FV(M) \vdash M : \sigma 也成立.  \\ &amp; (3) (置换)\ 如果 \ \Gamma \vdash M : \gamma , 且 \Gamma' 是 \Gamma 的一个置换,则\Gamma'也是一个上下文,且满足\Gamma' \vdash M : \sigma .  \end{aligned} \)</span></p>
+<blockquote>
+<div><p>置换引理告诉我们,在<span class="math notranslate nohighlight">\(\lambda \rightarrow\)</span>中上线文声明的顺序并不重要,因此也可以用集合替代列表,这个集合被称为基(bases).之所以使用列表是因为后续更复杂的类型系统中存在依赖声明,此时顺序就变得非常重要.</p>
+</div></blockquote>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ (Generation \ Lemma) \\ &amp; (1)  \ 如果 \ \Gamma \vdash x : \sigma , \ 那么 x : \sigma \in \Gamma.  \\ &amp; (2)  \ 如果 \Gamma \vdash M N : \tau , \ 那么存在一个类型\sigma使得\Gamma \vdash M : \gamma \rightarrow \tau 且 \Gamma \vdash N : \gamma .  \\ &amp; (3) \ 如果 \Gamma \vdash \lambda x : \sigma \ . M : \rho , \ 那么存在\tau使得\Gamma, x : \sigma \vdash M : \tau 且 \rho \equiv \sigma \rightarrow \tau  .  \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ (Subterm \ Lemma) \ \ \ 如果M是合法的,那么M的每个子项都是合法的. \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ (Uniqueness \ of \ Types) \ \ \ 假设\Gamma \vdash M : \sigma 且 \Gamma \vdash M : \tau , \ 那么 \sigma \equiv \tau. \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ \ \ (Decidability \ of \ Well-typedness, \ Type \ Assignment, \ Type \ Checking \ and \ Term \ Finding   ) \\  &amp; 在 \lambda\rightarrow 中,以下问题是可判定的,\\ &amp; (1)  \ (良类型性) \ ? \vdash term : ?.  \\ &amp; (1a)  \ (类型赋值) \ context \vdash term : ?  .  \\ &amp; (2) \ (类型检查) \ context \overset{?}{\vdash} term : type . \\ &amp; (3) \ (类型寻找) \ context \vdash ? : type. \end{aligned} \)</span></p>
+</section>
+<section id="lambda-rightarrow-reduction-and-lambda-rightarrow">
+<h2>归约与<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>(Reduction and <span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>)<a class="headerlink" href="#lambda-rightarrow-reduction-and-lambda-rightarrow" title="此标题的永久链接"></a></h2>
+<p>为了在<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>进行归约,需要对相关概念进行调整.</p>
+<p>在归约中,最核心的操作是替换,新的定义仅仅对(3)进行了调整,如下:</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (Substitution \ in \ \lambda\rightarrow) \\ &amp; (1a) \ x [x := N] \equiv N, \\ &amp; (1b) \ 设 x \not \equiv y ,  有y[x := N] \equiv y, \\ &amp; (2) \ (PQ)[x := N] \equiv (P[x := N]) (Q [x := N]), \\ &amp;(3) \ 如果 \lambda z : \sigma \ . \ P^{y \rightarrow z} 是\lambda y : \sigma \ . \ P 的\alpha-变体,且z \not \in FV(N), 则(\lambda y : \sigma \ . \ P)[x := N] \equiv \lambda z : \sigma \ . \ (P ^{y \rightarrow z}[x := N]) \end{aligned} \)</span></p>
+<p>据此,我们有替换引理:</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 引理 \ (Substitution \ Lemma) \ \ \ 假设\Gamma' , x : \sigma , \Gamma'' \vdash M : \tau 且 \Gamma' \vdash N : \sigma , \ 则 \Gamma',\Gamma'' \vdash M[x:=N]:\tau. \end{aligned} \)</span></p>
+<p>下面给出单步归约的定义</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp;定义 \ \ \ (One-step \ \ \beta-reduction,\ \rightarrow_\beta, \ for \ \Lambda_T) \\ &amp; (基本) \ (\lambda x : \sigma \ . M) N \rightarrow_\beta M[x:=N] \\ &amp; (兼容性) \  如果 M \rightarrow_\beta N , 则 M L \rightarrow_\beta N L , L M \rightarrow_\beta L N 且 \lambda x : \tau \ . \ M \rightarrow_\beta \lambda x : \tau \ . \ N . \end{aligned} \)</span></p>
+<p>对于多步归约以及<span class="math notranslate nohighlight">\(\beta-\)</span>转换(<span class="math notranslate nohighlight">\(=_\beta\)</span>),其定义沿用无类型lambda演算中的定义.</p>
+<blockquote>
+<div><p>注意: 单步归约的 ‘基本’ 并没有要求N和x类型相同</p>
+</div></blockquote>
+<p>CR定理对于<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>系统来说仍然成立.</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定理 \ (Church-Rosser \ Theorem; \ CR ; \ Confluence) \ \ \  Church-Rosser 性质仍然适用于 \lambda\rightarrow. \end{aligned} \)</span></p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 推论 \ \ \  设 M =_\beta N , 则存在L,使得M \twoheadrightarrow_\beta L 且 N \twoheadrightarrow_\beta L. \end{aligned} \)</span></p>
+<p>在归约过程中,我们更关心类型的变化,即主体归约(Subject Recution).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定理 \ (Subject \ Reduction) \ \ \  如果\Gamma \vdash L : \rho 且 \ L \twoheadrightarrow_\beta L', 那么 \Gamma \vdash L' : \rho. \end{aligned} \)</span></p>
+<p>主体归约定理告诉我们在归约过程中,主体的类型不会改变(也就不会改变可定型性).</p>
+<p>最后, 我们可以证明在$\lambda\rightarrow$中不存在无穷归约序列——强标准化定理或终止定理(Strong Normalisation Theorem or Termination Theorem).</p>
+<p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定理 \ (Strong \ Normalisation \ Theorem \ or \ Termination \ Theorem) \ \ \  每个合法的M都是强标准化的. \end{aligned} \)</span></p>
+</section>
+<section id="id2">
+<h2>总结<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>在无类型lambda演算中有一些不好的特性,这些特性在简单类型的lambda演算中已经消失.</p>
+<ol>
+<li><p>在<span class="math notranslate nohighlight">\(\lambda\rightarrow\)</span>中, 不存在自我应用(self-application)的项.</p>
+<p>若不然,假设<span class="math notranslate nohighlight">\(MM\)</span>是一个合法的项,于是根据定义,存在<span class="math notranslate nohighlight">\(\Gamma 和 \tau\)</span>使得  <span class="math notranslate nohighlight">\(\Gamma \vdash M M : \tau\)</span>.由生成引理可知,存在一个类型<span class="math notranslate nohighlight">\(\gamma\)</span>, 使得<span class="math notranslate nohighlight">\(\Gamma \vdash M : \gamma \rightarrow \tau\)</span>且<span class="math notranslate nohighlight">\(\Gamma \vdash M : \gamma\)</span>. 因此根据唯一性引理,只能有<span class="math notranslate nohighlight">\(\gamma \rightarrow \tau \equiv \gamma\)</span>.但根据规定这是不可能的.</p>
+</li>
+<li><p>一定存在<span class="math notranslate nohighlight">\(\beta-\)</span>标准型</p>
+<p>这是强标准化定理的直接推论.</p>
+</li>
+<li><p>不是所有合法的<span class="math notranslate nohighlight">\(\lambda-\)</span>项都有不动点</p></li>
+</ol>
+<p>设在上下文<span class="math notranslate nohighlight">\(\Gamma\)</span>中,存在某个函数<span class="math notranslate nohighlight">\(F\)</span>,以及两个类型<span class="math notranslate nohighlight">\(\sigma , \ \tau (\sigma \not \equiv \tau)\)</span>, 满足<span class="math notranslate nohighlight">\(\Gamma \vdash F:\sigma \rightarrow \tau\)</span>.如若不然,则存在<span class="math notranslate nohighlight">\(M\)</span>使得<span class="math notranslate nohighlight">\(FM =_\beta M\)</span>.根据主体归约定理,<span class="math notranslate nohighlight">\(FM\)</span>与<span class="math notranslate nohighlight">\(M\)</span>的类型相同,从而<span class="math notranslate nohighlight">\(M\)</span>具有类型<span class="math notranslate nohighlight">\(\sigma\)</span>,同时还具有类型<span class="math notranslate nohighlight">\(\tau\)</span>.于是根据唯一性引理,只能<span class="math notranslate nohighlight">\(\sigma \equiv \tau\)</span>,这与前提<span class="math notranslate nohighlight">\(\sigma \not \equiv \tau\)</span>矛盾.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="%E6%97%A0%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97.html" class="btn btn-neutral float-left" title="无类型lambda演算(Untyped lambda calculus)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

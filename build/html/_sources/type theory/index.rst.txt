@@ -6,3 +6,4 @@ Type Theory and Formal Proof
    :caption: 目录:
 
    无类型lambda演算
+   简单类型lambda演算
