@@ -127,7 +127,7 @@
 <li><p>通过抽象操作,可以将表达式中的一个自由变量变成约束变量( 如 <span class="math notranslate nohighlight">\(x\)</span> 在 <span class="math notranslate nohighlight">\(M\)</span> 中是自由的 , 但 <span class="math notranslate nohighlight">\(\lambda x \ . \ M\)</span> 使 M中的 <span class="math notranslate nohighlight">\(x\)</span>变为受约束的).</p></li>
 <li><p>在第二点中,紧跟随 <span class="math notranslate nohighlight">\(\lambda\)</span> 的变量被称为绑定变量(对 <span class="math notranslate nohighlight">\(M\)</span>中的 <span class="math notranslate nohighlight">\(x\)</span> 进行抽象绑定了$M$中所有自由的 <span class="math notranslate nohighlight">\(x\)</span>).</p></li>
 </ul>
-<p>在以上三种情形中,自由变量的情形比较重要,约定 <span class="math notranslate nohighlight">\(FV(L)\)</span> 表示$L$中的自由变量组成的集合.</p>
+<p>在以上三种情形中,自由变量的情形比较重要,约定 <span class="math notranslate nohighlight">\(FV(L)\)</span> 表示<span class="math notranslate nohighlight">\(L\)</span>中的自由变量组成的集合.</p>
 <p><span class="math notranslate nohighlight">\( \begin{aligned} &amp; 定义 \ \ \ (FV , \ the \ set \ of \ free \ variables \ of \ a \ \lambda-term) \\ &amp; (1) (变量) \ FV(x) = \{x\}. \\ &amp; (2) (应用) \ FV(MN) = FV(M) \cup FV(N). \\ &amp; (3) (抽象) \ FV(\lambda x \ . \ M) = FV(M) \setminus \{x\}. \end{aligned}  \)</span></p>
 <p>根据自由变量的数目,可以划分出<span class="math notranslate nohighlight">\(\lambda\)</span>-项中一类特殊的子集,该子集中的元素被称为结合子(combinator).</p>
 <p><span class="math notranslate nohighlight">\( \begin{aligned} 定义 \ \ \ (Closed \ \lambda-term; combinator ; \Lambda^0) \ \  对于给定的 \lambda-项 M, \\ 如果FV(M) = \emptyset , 则称M为闭的.一个封闭的\lambda-项也被称为结合子. \end{aligned} \)</span></p>
