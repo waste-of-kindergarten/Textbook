@@ -466,7 +466,7 @@ $ `
 
 主体归约定理告诉我们在归约过程中,主体的类型不会改变(也就不会改变可定型性).
 
-最后, 我们可以证明在$\lambda\rightarrow$中不存在无穷归约序列——强标准化定理或终止定理(Strong Normalisation Theorem or Termination Theorem).
+最后, 我们可以证明在` $\lambda\rightarrow$ `中不存在无穷归约序列——强标准化定理或终止定理(Strong Normalisation Theorem or Termination Theorem).
 
 ` $
 \begin{aligned}
