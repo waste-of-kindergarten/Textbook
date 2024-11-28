@@ -148,9 +148,8 @@ $ `
 ` $
 \begin{aligned}
 & 引理 \ \ \ 设 M_1 =_\alpha N_1 且 M_2 =_\alpha N_2. 则有 \\
-& (1) \ M_1 N_1 =_\alpha M_2 N_2, \\
-& (2) \ \lambda x \ . \ M_1 =_\alpha \lambda x \ . \ N1 ,  \\
-& (3) \ M_1[x := N_1] =_\alpha M_2[x := N_2].
+& (1) \ M_1 M_2 =_\alpha N_1 N_2, \\
+& (2) \ M_1[x := N_1] =_\alpha M_2[x := N_2].
 \end{aligned}
 $ `
 
