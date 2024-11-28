@@ -149,7 +149,7 @@ $ `
 \begin{aligned}
 & 引理 \ \ \ 设 M_1 =_\alpha N_1 且 M_2 =_\alpha N_2. 则有 \\
 & (1) \ M_1 M_2 =_\alpha N_1 N_2, \\
-& (2) \ M_1[x := N_1] =_\alpha M_2[x := N_2].
+& (2) \ M_1[x := M_2] =_\alpha N_1[x := N_2].
 \end{aligned}
 $ `
 
