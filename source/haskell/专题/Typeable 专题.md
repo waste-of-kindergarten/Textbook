@@ -38,7 +38,7 @@ data TypeRep a where
 
 - `TrTyCon`用来表示类型构造器，`trTyCon`表示构造器本身，`trKindVars`表示在应用构造器时的种类参数，`trTyConKind`表示类型构造器的种类信息。例如对于`Just :: Bool -> Maybe Bool`来说，`trTyCon`将会是`Just`，而`trKindVars`会是`[Bool]`
 
--  `TrApp`用来表示类型构造器对类型参数的应用，`trAppFun`用来表示应用的函数，`trAppArg`表示参数，`trAppKind`表示应用结果的宗磊信息。例如对于`Maybe Int`来说，`trAppFun`为`Maybe`，`trAppArg`为`Int`
+-  `TrApp`用来表示类型构造器对类型参数的应用，`trAppFun`用来表示应用的函数，`trAppArg`表示参数，`trAppKind`表示应用结果的种类信息。例如对于`Maybe Int`来说，`trAppFun`为`Maybe`，`trAppArg`为`Int`
 
 - `TrFun`表示函数类型，`trFunArg`和`trFunRes`分别表示函数箭头的参数与结果，例如对于函数`Int -> Bool`，有`trFunArg`为`Int`而`trFunRes`为`Bool`
 
