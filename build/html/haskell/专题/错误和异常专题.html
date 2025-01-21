@@ -145,9 +145,18 @@ CallStack<span class="w"> </span><span class="o">(</span>from<span class="w"> </
 <h3>“纯”异常<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
 <p>我们可以通过特定的数据类型对纯的异常进行处理。</p>
 <p>一个自然的想法就是使用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>表示异常，在未发生异常时，使用<code class="docutils literal notranslate"><span class="pre">Just</span></code>返回结果；而在发生异常时用<code class="docutils literal notranslate"><span class="pre">Nothing</span></code>将异常抛出。</p>
-<p>例如我们取一个列表的头部<code class="docutils literal notranslate"><span class="pre">head</span></code>，这个操作不能应用在空列表上，否则：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>head<span class="w"> </span><span class="o">[]</span>
-***<span class="w"> </span>Exception:<span class="w"> </span>Prelude.head:<span class="w"> </span>empty<span class="w"> </span>list
+<p>例如取列表头部操作<code class="docutils literal notranslate"><span class="pre">head</span></code>不能处理空列表的情形，我们可以使用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>数据类型构造一个“安全”的函数<code class="docutils literal notranslate"><span class="pre">safeHead</span></code>:</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
+<span class="nf">safeHead</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span>
+<span class="nf">safeHead</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span>
+<span class="nf">safeHead</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>除了<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>我们还可以使用表现力更强的<code class="docutils literal notranslate"><span class="pre">Either</span></code>类型,<code class="docutils literal notranslate"><span class="pre">Either</span></code>类型在抛出异常时还会添加相应的异常信息。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
+<span class="nf">safeHead&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Either</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">safeHead&#39;</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Left</span><span class="w"> </span><span class="s">&quot;Cannot cope with emptyList&quot;</span>
+<span class="nf">safeHead&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Right</span><span class="w"> </span><span class="n">x</span>
 </pre></div>
 </div>
 <hr class="docutils" />
