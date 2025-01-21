@@ -22,6 +22,7 @@ Haskell TextBook
    专题/Typeable 专题
    专题/GADTs 专题
    专题/Generics 专题
+   专题/错误和异常专题
    专题/工程专题/index
    资源
 

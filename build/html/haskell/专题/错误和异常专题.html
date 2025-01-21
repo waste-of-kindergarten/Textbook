@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>错误和异常专题 &mdash; TextBook v0.1 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/general.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/dark.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="Haskell 工程专题" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html" />
+    <link rel="prev" title="Generics 专题" href="Generics%20%E4%B8%93%E9%A2%98.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TextBook
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Haskell TextBook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8.html">Haskell 安装与入门</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%87%BD%E6%95%B0.html">数据类型与函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E9%80%92%E5%BD%92%E4%B8%8E%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0.html">递归与高阶函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B%E7%B1%BB.html">类型类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%87%BD%E5%AD%90%E4%B8%93%E9%A2%98.html">函子专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Monad%E4%B8%93%E9%A2%98.html">Monad专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IO%20%E4%B8%93%E9%A2%98.html">IO 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Haskell%20%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F.html">Haskell 的类型系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Typeable%20%E4%B8%93%E9%A2%98.html">Typeable 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Generics%20%E4%B8%93%E9%A2%98.html">Generics 专题</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">错误和异常专题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">错误处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">异常处理</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">“纯”异常</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html">Haskell 工程专题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../%E8%B5%84%E6%BA%90.html">资源</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logicInCS/index.html">Logic In Computer Science</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../type%20theory/index.html">Type Theory and Formal Proof</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TextBook</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Haskell TextBook</a></li>
+      <li class="breadcrumb-item active">错误和异常专题</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/haskell/专题/错误和异常专题.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>错误和异常专题<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p>在Haskell的使用中，离不开对错误(<strong>Error</strong>)和异常(<strong>Exception</strong>)的处理，但两者应当被谨慎对待和区分。具体来说，异常应当是运行时预料之中但不规则的情况；而错误则是运行程序中的失误，这些失误只能靠调试和修复程序来解决<a class="reference external" href="#ref1">[1]</a>。一个异常可以是“超出磁盘空间”、“读取受保护的文件”，“在读取文件时移除磁盘”等<a class="reference external" href="#ref2">[2]</a>;而一个错误则是必须由程序员来修复的问题，除了程序员外别无其他修复的方法。</p>
+<p>例如，一个常见的异常是<code class="docutils literal notranslate"><span class="pre">divide</span> <span class="pre">by</span> <span class="pre">zero</span></code>,当我们尝试在ghci中将整除的除数设为0时，会触发这个异常：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span>
+***<span class="w"> </span>Exception:<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+</pre></div>
+</div>
+<p>在Haskell中，错误几乎和未定义(<code class="docutils literal notranslate"><span class="pre">undefined</span></code>)是同义词，或者说错误是<code class="docutils literal notranslate"><span class="pre">undefined</span></code>的语法糖<a class="reference external" href="#ref1">[1]</a>,因此：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>undefined
+***<span class="w"> </span>Exception:<span class="w"> </span>Prelude.undefined
+CallStack<span class="w"> </span><span class="o">(</span>from<span class="w"> </span>HasCallStack<span class="o">)</span>:
+<span class="w">  </span>error,<span class="w"> </span>called<span class="w"> </span>at<span class="w"> </span>libraries/base/GHC/Err.hs:78:14<span class="w"> </span><span class="k">in</span><span class="w"> </span>base:GHC.Err
+<span class="w">  </span>undefined,<span class="w"> </span>called<span class="w"> </span>at<span class="w"> </span>&lt;interactive&gt;:5:7<span class="w"> </span><span class="k">in</span><span class="w"> </span>interactive:Ghci1
+</pre></div>
+</div>
+<blockquote>
+<div><p>至于为什么上面同时出现了Exception还有Error,我们将在后面解释，这是CallStack的作用</p>
+</div></blockquote>
+<section id="id2">
+<h2>错误处理<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>当我们需要手动处理错误时，我们可以使用<code class="docutils literal notranslate"><span class="pre">error</span></code>函数，但这只是一种语法糖函数，其本质仍然是<code class="docutils literal notranslate"><span class="pre">undefined</span></code>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">main</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="ne">error</span><span class="w"> </span><span class="s">&quot;undefined&quot;</span>
+<span class="c1">-- main = undefined </span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>runghc<span class="w"> </span>main.hs
+main.hs:<span class="w"> </span>undefined
+CallStack<span class="w"> </span><span class="o">(</span>from<span class="w"> </span>HasCallStack<span class="o">)</span>:
+<span class="w">  </span>error,<span class="w"> </span>called<span class="w"> </span>at<span class="w"> </span>test.hs:1:8<span class="w"> </span><span class="k">in</span><span class="w"> </span>main:Main
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>异常处理<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
+<section id="id4">
+<h3>“纯”异常<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+<p>我们可以通过特定的数据类型对纯的异常进行处理。</p>
+<p>一个自然的想法就是使用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>表示异常，在未发生异常时，使用<code class="docutils literal notranslate"><span class="pre">Just</span></code>返回结果；而在发生异常时用<code class="docutils literal notranslate"><span class="pre">Nothing</span></code>将异常抛出。</p>
+<p>例如我们取一个列表的头部<code class="docutils literal notranslate"><span class="pre">head</span></code>，这个操作不能应用在空列表上，否则：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>head<span class="w"> </span><span class="o">[]</span>
+***<span class="w"> </span>Exception:<span class="w"> </span>Prelude.head:<span class="w"> </span>empty<span class="w"> </span>list
+</pre></div>
+</div>
+<hr class="docutils" />
+<p id="ref1">[1] Error vs. Exception. (2019, July 23). HaskellWiki. Retrieved 19:56, January 21, 2025 from https://wiki.haskell.org/index.php?title=Error_vs._Exception&oldid=62969.</p>
+<p id="ref1">[1] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p></section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="Generics%20%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="Generics 专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html" class="btn btn-neutral float-right" title="Haskell 工程专题" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, Alfred Xiang.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
