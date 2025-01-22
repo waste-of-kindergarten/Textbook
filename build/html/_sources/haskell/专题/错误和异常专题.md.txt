@@ -42,7 +42,7 @@ CallStack (from HasCallStack):
 
 ### “纯”异常
 
-我们可以通过特定的数据类型对纯的异常进行处理。
+我们可以通过特定的数据类型来应对纯代码中的异常，使其仍然不涉及任何副作用。
 
 一个自然的想法就是使用`Maybe`表示异常，在未发生异常时，使用`Just`返回结果；而在发生异常时用`Nothing`将异常抛出。
 
@@ -52,17 +52,104 @@ CallStack (from HasCallStack):
 -- code'7.hs
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
-safeHead (x:_) = x
+safeHead (x:_) = Just x
 ```
 
 除了`Maybe`我们还可以使用表现力更强的`Either`类型,`Either`类型在抛出异常时还会添加相应的异常信息。
 
 ```hs
 -- code'7.hs
-safeHead' :: [a] -> Either String [a]
+safeHead' :: [a] -> Either String a 
 safeHead' [] = Left "Cannot cope with emptyList"
 safeHead' (x:_) = Right x
 ```
+
+在`mtl`包中`Control.Monad.Except`已经内置了基于Either的异常类型`Except`类型，其定义类似：
+
+```hs
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+newtype Except e a = Except (Either e a) 
+  deriving (Functor,Applicative,Monad,Show)
+```
+
+在连续的函数操作中，我们可以使用其Monad的特性来抛出其中的异常。
+
+```hs
+-- code'7.hs
+safeTail :: [a] -> Except String [a]
+safeTail [] = Except $ Left "Cannot extract a tail from an empty list"
+safeTail (_:xs) = return xs
+
+safeDrop3 :: [a] -> Except String [a]
+safeDrop3 xs = do 
+  xsdrop1 <- safeTail xs
+  xsdrop2 <- safeTail xsdrop1
+  safeTail xsdrop2
+```
+
+我们定义`safeTail`函数作为`tail`的安全版本，当遇到空列表时抛出异常；`safeDrop3`函数连续使用了三次`safeTail`以便丢弃列表的前三个元素，当列表元素少于三个时就会抛出异常。
+
+```bash
+Prelude> :l "code'7.hs"
+[1 of 1] Compiling Main             ( code'7.hs, interpreted )
+Ok, one module loaded.
+Prelude> safeDrop3 [1,2,3]
+Except (Right [])
+Prelude> safeDrop3 [1,2]
+safeDrop3 [1,2]
+Except (Left "Cannot extract a tail from an empty list")
+```
+
+> 注意： 实际上`Control.Monad.Except`中的`Except`类型仅仅是`ExceptT`转换器的一个实例的别名.
+> ```
+> newtype ExceptT e (m :: * -> *) a = ExceptT (m (Either e a))
+> type Except e = ExceptT e Data.Functor.Identity.Identity :: * -> *
+> ```
+
+异常的抛出往往与异常的捕获联合使用，当有异常抛出时执行某个处理函数回到正常的执行中；否则保持上一个动作结束时的状态。
+
+```hs
+-- code'7.hs
+capture :: Except e a -> (e -> Except e a) -> Except e a 
+capture ex@(Except e) = case e of 
+  Right t ->  const ex 
+  Left e' -> \f -> f e'
+```
+
+例如我们希望丢弃列表前三个元素，如果失败了则反转列表。
+
+```hs
+-- code'7.hs
+safeDrop3OrRev :: [a] -> Except String [a]
+safeDrop3OrRev xs = capture (safeDrop3 xs) (\_ -> return $ reverse xs)
+```
+
+```bash
+Prelude> safeDrop3OrRev [1,2,3]
+Except (Right [])
+Prelude> safeDrop3OrRev [1,2,3,4]
+Except (Right [4])
+Prelude> safeDrop3OrRev [1,2]
+Except (Right [2,1])
+```
+
+在`Control.Monad.Except`中，已经封装了异常的抛出和捕获到`MonadError`类型类中，其定义如下：
+
+```hs
+class Monad m => MonadError e m | m -> e where 
+  throwError :: e -> m a 
+  catchError :: m a -> (e -> m a) -> m a
+  {-# MINIMAL throwError, catchError #-}
+```
+
+其中`throwError`为抛出异常函数；而`catchError`为捕获异常函数，其第一个参数中可以包含异常抛出（即`throwError`），而第二个参数则是用来恢复异常的函数。
+
+> 注意： 最好不要使用`fail`来抛出异常，一方面在旧版本中，部分`fail`函数使用`error`来定义（这导致了中断）；另一方面`fail`函数本身的意义是用来在`do-notation`中`<-`左侧匹配失败后进行调用，而不是针对用户的异常抛出
+
+
+
+
+
 
 
 

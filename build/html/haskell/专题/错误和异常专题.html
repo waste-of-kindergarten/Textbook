@@ -143,22 +143,92 @@ CallStack<span class="w"> </span><span class="o">(</span>from<span class="w"> </
 <h2>异常处理<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h2>
 <section id="id4">
 <h3>“纯”异常<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
-<p>我们可以通过特定的数据类型对纯的异常进行处理。</p>
+<p>我们可以通过特定的数据类型来应对纯代码中的异常，使其仍然不涉及任何副作用。</p>
 <p>一个自然的想法就是使用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>表示异常，在未发生异常时，使用<code class="docutils literal notranslate"><span class="pre">Just</span></code>返回结果；而在发生异常时用<code class="docutils literal notranslate"><span class="pre">Nothing</span></code>将异常抛出。</p>
 <p>例如取列表头部操作<code class="docutils literal notranslate"><span class="pre">head</span></code>不能处理空列表的情形，我们可以使用<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>数据类型构造一个“安全”的函数<code class="docutils literal notranslate"><span class="pre">safeHead</span></code>:</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
 <span class="nf">safeHead</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="n">a</span>
 <span class="nf">safeHead</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Nothing</span>
-<span class="nf">safeHead</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">x</span>
+<span class="nf">safeHead</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Just</span><span class="w"> </span><span class="n">x</span>
 </pre></div>
 </div>
 <p>除了<code class="docutils literal notranslate"><span class="pre">Maybe</span></code>我们还可以使用表现力更强的<code class="docutils literal notranslate"><span class="pre">Either</span></code>类型,<code class="docutils literal notranslate"><span class="pre">Either</span></code>类型在抛出异常时还会添加相应的异常信息。</p>
 <div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
-<span class="nf">safeHead&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Either</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">safeHead&#39;</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Either</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
 <span class="nf">safeHead&#39;</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Left</span><span class="w"> </span><span class="s">&quot;Cannot cope with emptyList&quot;</span>
 <span class="nf">safeHead&#39;</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Right</span><span class="w"> </span><span class="n">x</span>
 </pre></div>
 </div>
+<p>在<code class="docutils literal notranslate"><span class="pre">mtl</span></code>包中<code class="docutils literal notranslate"><span class="pre">Control.Monad.Except</span></code>已经内置了基于Either的异常类型<code class="docutils literal notranslate"><span class="pre">Except</span></code>类型，其定义类似：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="cm">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span>
+<span class="kr">newtype</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span>
+<span class="w">  </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Functor</span><span class="p">,</span><span class="kt">Applicative</span><span class="p">,</span><span class="kt">Monad</span><span class="p">,</span><span class="kt">Show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在连续的函数操作中，我们可以使用其Monad的特性来抛出其中的异常。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
+<span class="nf">safeTail</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">safeTail</span><span class="w"> </span><span class="kt">[]</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="kt">Left</span><span class="w"> </span><span class="s">&quot;Cannot extract a tail from an empty list&quot;</span>
+<span class="nf">safeTail</span><span class="w"> </span><span class="p">(</span><span class="kr">_</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="n">xs</span>
+
+<span class="nf">safeDrop3</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">safeDrop3</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">  </span><span class="n">xsdrop1</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">safeTail</span><span class="w"> </span><span class="n">xs</span>
+<span class="w">  </span><span class="n">xsdrop2</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">safeTail</span><span class="w"> </span><span class="n">xsdrop1</span>
+<span class="w">  </span><span class="n">safeTail</span><span class="w"> </span><span class="n">xsdrop2</span>
+</pre></div>
+</div>
+<p>我们定义<code class="docutils literal notranslate"><span class="pre">safeTail</span></code>函数作为<code class="docutils literal notranslate"><span class="pre">tail</span></code>的安全版本，当遇到空列表时抛出异常；<code class="docutils literal notranslate"><span class="pre">safeDrop3</span></code>函数连续使用了三次<code class="docutils literal notranslate"><span class="pre">safeTail</span></code>以便丢弃列表的前三个元素，当列表元素少于三个时就会抛出异常。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt; :l &quot;code&#39;7.hs&quot;
+[1 of 1] Compiling Main             ( code&#39;7.hs, interpreted )
+Ok, one module loaded.
+Prelude&gt; safeDrop3 [1,2,3]
+Except (Right [])
+Prelude&gt; safeDrop3 [1,2]
+safeDrop3 [1,2]
+Except (Left &quot;Cannot extract a tail from an empty list&quot;)
+</pre></div>
+</div>
+<blockquote>
+<div><p>注意： 实际上<code class="docutils literal notranslate"><span class="pre">Control.Monad.Except</span></code>中的<code class="docutils literal notranslate"><span class="pre">Except</span></code>类型仅仅是<code class="docutils literal notranslate"><span class="pre">ExceptT</span></code>转换器的一个实例的别名.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">newtype</span> <span class="n">ExceptT</span> <span class="n">e</span> <span class="p">(</span><span class="n">m</span> <span class="p">::</span> <span class="o">*</span> <span class="o">-&gt;</span> <span class="o">*</span><span class="p">)</span> <span class="n">a</span> <span class="o">=</span> <span class="n">ExceptT</span> <span class="p">(</span><span class="n">m</span> <span class="p">(</span><span class="n">Either</span> <span class="n">e</span> <span class="n">a</span><span class="p">))</span>
+<span class="nb">type</span> <span class="n">Except</span> <span class="n">e</span> <span class="o">=</span> <span class="n">ExceptT</span> <span class="n">e</span> <span class="n">Data</span><span class="o">.</span><span class="n">Functor</span><span class="o">.</span><span class="n">Identity</span><span class="o">.</span><span class="n">Identity</span> <span class="p">::</span> <span class="o">*</span> <span class="o">-&gt;</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>异常的抛出往往与异常的捕获联合使用，当有异常抛出时执行某个处理函数回到正常的执行中；否则保持上一个动作结束时的状态。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
+<span class="nf">capture</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="nf">capture</span><span class="w"> </span><span class="n">ex</span><span class="o">@</span><span class="p">(</span><span class="kt">Except</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">case</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kr">of</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Right</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w">  </span><span class="n">const</span><span class="w"> </span><span class="n">ex</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">Left</span><span class="w"> </span><span class="n">e&#39;</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="nf">\</span><span class="n">f</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">e&#39;</span>
+</pre></div>
+</div>
+<p>例如我们希望丢弃列表前三个元素，如果失败了则反转列表。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;7.hs</span>
+<span class="nf">safeDrop3OrRev</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Except</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="nf">safeDrop3OrRev</span><span class="w"> </span><span class="n">xs</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">capture</span><span class="w"> </span><span class="p">(</span><span class="n">safeDrop3</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">\</span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">reverse</span><span class="w"> </span><span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>safeDrop3OrRev<span class="w"> </span><span class="o">[</span><span class="m">1</span>,2,3<span class="o">]</span>
+Except<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span><span class="o">[])</span>
+Prelude&gt;<span class="w"> </span>safeDrop3OrRev<span class="w"> </span><span class="o">[</span><span class="m">1</span>,2,3,4<span class="o">]</span>
+Except<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span><span class="o">[</span><span class="m">4</span><span class="o">])</span>
+Prelude&gt;<span class="w"> </span>safeDrop3OrRev<span class="w"> </span><span class="o">[</span><span class="m">1</span>,2<span class="o">]</span>
+Except<span class="w"> </span><span class="o">(</span>Right<span class="w"> </span><span class="o">[</span><span class="m">2</span>,1<span class="o">])</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">Control.Monad.Except</span></code>中，已经封装了异常的抛出和捕获到<code class="docutils literal notranslate"><span class="pre">MonadError</span></code>类型类中，其定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="kt">Monad</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">MonadError</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">throwError</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span>
+<span class="w">  </span><span class="n">catchError</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="n">a</span>
+<span class="w">  </span><span class="cm">{-# MINIMAL throwError, catchError #-}</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">throwError</span></code>为抛出异常函数；而<code class="docutils literal notranslate"><span class="pre">catchError</span></code>为捕获异常函数，其第一个参数中可以包含异常抛出（即<code class="docutils literal notranslate"><span class="pre">throwError</span></code>），而第二个参数则是用来恢复异常的函数。</p>
+<blockquote>
+<div><p>注意： 最好不要使用<code class="docutils literal notranslate"><span class="pre">fail</span></code>来抛出异常，一方面在旧版本中，部分<code class="docutils literal notranslate"><span class="pre">fail</span></code>函数使用<code class="docutils literal notranslate"><span class="pre">error</span></code>来定义（这导致了中断）；另一方面<code class="docutils literal notranslate"><span class="pre">fail</span></code>函数本身的意义是用来在<code class="docutils literal notranslate"><span class="pre">do-notation</span></code>中<code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>左侧匹配失败后进行调用，而不是针对用户的异常抛出</p>
+</div></blockquote>
 <hr class="docutils" />
 <p id="ref1">[1] Error vs. Exception. (2019, July 23). HaskellWiki. Retrieved 19:56, January 21, 2025 from https://wiki.haskell.org/index.php?title=Error_vs._Exception&oldid=62969.</p>
 <p id="ref1">[1] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p></section>
