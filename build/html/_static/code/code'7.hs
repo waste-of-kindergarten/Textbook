@@ -1,6 +1,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE InstanceSigs #-}
 import Control.Applicative (Applicative)
+import GHC.Exception hiding (throw)
+import Control.Exception(catch,try,evaluate,throw) 
 
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
@@ -30,3 +32,4 @@ capture ex@(Except e) = case e of
 
 safeDrop3OrRev :: [a] -> Except String [a]
 safeDrop3OrRev xs = capture (safeDrop3 xs) (\_ -> return $ reverse xs)
+

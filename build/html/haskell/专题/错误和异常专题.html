@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">错误处理</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id3">异常处理</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id4">“纯”异常</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#io">IO异常</a></li>
 </ul>
 </li>
 </ul>
@@ -229,9 +230,86 @@ Except<span class="w"> </span><span class="o">(</span>Right<span class="w"> </sp
 <blockquote>
 <div><p>注意： 最好不要使用<code class="docutils literal notranslate"><span class="pre">fail</span></code>来抛出异常，一方面在旧版本中，部分<code class="docutils literal notranslate"><span class="pre">fail</span></code>函数使用<code class="docutils literal notranslate"><span class="pre">error</span></code>来定义（这导致了中断）；另一方面<code class="docutils literal notranslate"><span class="pre">fail</span></code>函数本身的意义是用来在<code class="docutils literal notranslate"><span class="pre">do-notation</span></code>中<code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>左侧匹配失败后进行调用，而不是针对用户的异常抛出</p>
 </div></blockquote>
+</section>
+<section id="io">
+<h3>IO异常<a class="headerlink" href="#io" title="此标题的永久链接"></a></h3>
+<p>IO异常指通过封装在IO中的异常，这通常位于<code class="docutils literal notranslate"><span class="pre">Control.Exception</span></code>模块中。</p>
+<section id="exception">
+<h4><code class="docutils literal notranslate"><span class="pre">Exception</span></code>类型类<a class="headerlink" href="#exception" title="此标题的永久链接"></a></h4>
+<p>在<code class="docutils literal notranslate"><span class="pre">Control.Exception</span></code>模块中，有关的异常的操作被封装在<code class="docutils literal notranslate"><span class="pre">Exception</span></code>类型类中，因此任何内置的异常均实现了该类型类的实例，同时用户自定义的异常也应当实现其实例。</p>
+<p><code class="docutils literal notranslate"><span class="pre">Exception</span></code>类型类定义如下：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">class</span><span class="w"> </span><span class="p">(</span><span class="kt">Typeable</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="kt">Show</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="ow">=&gt;</span><span class="w"> </span><span class="kt">Exception</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="kr">where</span><span class="w"> </span>
+<span class="w">  </span><span class="n">toException</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">SomeException</span>
+<span class="w">  </span><span class="n">fromException</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">SomeException</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="n">e</span><span class="w"> </span>
+<span class="w">  </span><span class="n">displayException</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">toException</span></code>将异常类型转换到<code class="docutils literal notranslate"><span class="pre">SomeException</span></code>类型;<code class="docutils literal notranslate"><span class="pre">fromException</span></code>则是与<code class="docutils literal notranslate"><span class="pre">toException</span></code>相反的操作，将异常从<code class="docutils literal notranslate"><span class="pre">SomeException</span></code>类型中转换出来；最后<code class="docutils literal notranslate"><span class="pre">displayException</span></code>将异常转换为字符串以便输出给用户。</p>
+<blockquote>
+<div><p>提示： 定义中出现的<code class="docutils literal notranslate"><span class="pre">SomeException</span></code>类型是一切异常的“根”，其他异常被抛出时会被封装( <em><strong>encapsulated</strong></em> )到它内部</p>
+</div></blockquote>
+<p>在<code class="docutils literal notranslate"><span class="pre">Control.Exception</span></code>中已经内置了一些常用的异常，详情参考<a class="reference external" href="https://hackage.haskell.org/package/base-4.21.0.0/docs/Control-Exception.html#t:IOException">文档</a>。</p>
+</section>
+<section id="id5">
+<h4>异常抛出与捕获<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h4>
+<p><strong>throw :: forall a e. (HasCallStack, Exception e) =&gt; e -&gt; a</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">throw</span></code>函数将异常抛出，该函数允许在纯代码中抛出异常，但只能够在<code class="docutils literal notranslate"><span class="pre">IO</span></code>中捕获这些异常。一般地，我们会使用<code class="docutils literal notranslate"><span class="pre">throwIO</span></code>函数保持纯代码中无异常。</p>
+<p><strong>throwIO :: (HasCallStack, Exception e) =&gt; e -&gt; IO a</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">throwIO</span></code>使<code class="docutils literal notranslate"><span class="pre">throw</span></code>的一个变种，受到类型签名的限制，该函数只能在IO中使用。</p>
+<p><strong>catch :: Exception e =&gt; IO a -&gt; (e -&gt; IO a) -&gt; IO a</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">catch</span></code>函数可以捕获抛出的异常，并在有异常抛出时执行一个处理函数；否则返回正常的结果。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span><span class="nv">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>const<span class="w"> </span>$<span class="w"> </span>print<span class="w"> </span><span class="s2">&quot;div by 0&quot;</span><span class="w"> </span>::<span class="w"> </span>ArithException<span class="w"> </span>-&gt;<span class="w"> </span>IO<span class="w"> </span><span class="o">()</span>
+Prelude&gt;<span class="w"> </span>catch<span class="w"> </span><span class="o">(</span>throwIO<span class="w"> </span>DivideByZero<span class="o">)</span><span class="w"> </span>f
+<span class="s2">&quot;div by 0&quot;</span>
+Prelude&gt;<span class="w"> </span>catch<span class="w"> </span><span class="o">(</span>throw<span class="w"> </span>DivideByZero<span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">())</span><span class="w"> </span>f
+<span class="s2">&quot;div by 0&quot;</span>
+</pre></div>
+</div>
+<p><strong>handle :: Exception e =&gt; (e -&gt; IO a) -&gt; IO a -&gt; IO a</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">handle</span></code>函数是<code class="docutils literal notranslate"><span class="pre">catch</span></code>函数的参数翻转版本，适合处理函数很短的情况，例如<code class="docutils literal notranslate"><span class="pre">do</span> <span class="pre">handle</span> <span class="pre">(\NonTermination</span> <span class="pre">-&gt;</span> <span class="pre">exitWith</span> <span class="pre">(ExitFailure</span> <span class="pre">1))</span> <span class="pre">$</span> <span class="pre">...</span></code>.</p>
+<p><strong>try :: Exception e =&gt; IO a -&gt; IO (Either e a)</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">try</span></code>函数类似<code class="docutils literal notranslate"><span class="pre">catch</span></code>函数，但通过返回类型的<code class="docutils literal notranslate"><span class="pre">Either</span></code>类型来区分是否抛出了异常。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>print<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span>Int<span class="o">)</span><span class="w"> </span>
+<span class="m">1</span>
+Right<span class="w"> </span><span class="o">()</span>
+Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>print<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">))</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span>Int<span class="o">)</span>
+Left<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+</pre></div>
+</div>
+<p>值得注意的是，<code class="docutils literal notranslate"><span class="pre">try</span></code>函数对于惰性的处理让人困惑，例如</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span><span class="k">return</span><span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span>Int<span class="o">)</span>
+Right<span class="w"> </span><span class="m">1</span><span class="w"> </span>
+Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span><span class="k">return</span><span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">))</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span>Int<span class="o">)</span>
+Right<span class="w"> </span>***<span class="w"> </span>Exception:<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span><span class="k">return</span><span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>print<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span><span class="o">())</span>
+<span class="m">1</span>
+Right<span class="w"> </span><span class="o">()</span>
+</pre></div>
+</div>
+<p>对于第二条语句，<code class="docutils literal notranslate"><span class="pre">return</span></code>没有强制<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">`div`</span> <span class="pre">0</span></code>求值，因而结果应当是<code class="docutils literal notranslate"><span class="pre">Right</span> <span class="pre">(1</span> <span class="pre">`div`</span> <span class="pre">0)</span></code>，因此ghci首先打印了<code class="docutils literal notranslate"><span class="pre">Right</span></code>，但<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">`div`</span> <span class="pre">0</span></code>无法打印，从而导致了异常；应当注意这个异常来自ghci而非程序本身，如果我们在此之后添加一个无异常的IO动作（第三条语句），那么我们将不会看到任何错误（程序本身没有异常抛出，ghci打印也无异常抛出）。</p>
+<p>相比之下，<code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">(print</span> <span class="pre">(1</span> <span class="pre">`div`</span> <span class="pre">0))</span></code>中<code class="docutils literal notranslate"><span class="pre">print</span></code>强制内部参数执行，从而及时探测到异常。</p>
+<p><strong>evaluate :: a -&gt; IO a</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">evaluate</span></code> 通常用于发现延迟求值中存在的异常，使用<code class="docutils literal notranslate"><span class="pre">evaluate</span></code>替代上面中的<code class="docutils literal notranslate"><span class="pre">return</span></code>可以修正上面未探测到异常的错误。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>evaluate<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">))</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span>Int<span class="o">)</span>
+Left<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>evaluate<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>print<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span><span class="o">())</span>
+Left<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+</pre></div>
+</div>
+<blockquote>
+<div><p>注意： 然而，对于再深层次的求值要求，<code class="docutils literal notranslate"><span class="pre">evaluate</span></code>也无能为力，此时应当使用<code class="docutils literal notranslate"><span class="pre">Control.DeepSeq</span></code>中的<code class="docutils literal notranslate"><span class="pre">force</span></code>函数强制求值<a class="reference external" href="#ref3">3</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>evaluate<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">))))</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span><span class="o">(</span>Maybe<span class="w"> </span><span class="o">(</span>Maybe<span class="w"> </span>Int<span class="o">)))</span>
+Right<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span>***<span class="w"> </span>Exception:<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+Prelude&gt;<span class="w"> </span>try<span class="w"> </span><span class="o">(</span>evaluate<span class="w"> </span>$<span class="w"> </span>force<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="o">(</span>Just<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span><span class="sb">`</span>div<span class="sb">`</span><span class="w"> </span><span class="m">0</span><span class="o">))))</span><span class="w"> </span>::<span class="w"> </span>IO<span class="w"> </span><span class="o">(</span>Either<span class="w"> </span>ArithException<span class="w"> </span><span class="o">(</span>Maybe<span class="w"> </span><span class="o">(</span>Maybe<span class="w"> </span>Int<span class="o">)))</span>
+Left<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </span>zero
+</pre></div>
+</div>
+</div></blockquote>
 <hr class="docutils" />
 <p id="ref1">[1] Error vs. Exception. (2019, July 23). HaskellWiki. Retrieved 19:56, January 21, 2025 from https://wiki.haskell.org/index.php?title=Error_vs._Exception&oldid=62969.</p>
-<p id="ref1">[1] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p></section>
+<p id="ref2">[2] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p>
+<p id="ref3">[3] O’Sullivan, B., Goerzen, J., & Stewart, D. (2008). Real World Haskell (1st ed.). O’Reilly Media, Inc.</p></section>
+</section>
 </section>
 </section>
 

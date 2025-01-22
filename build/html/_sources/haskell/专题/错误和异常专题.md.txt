@@ -146,23 +146,108 @@ class Monad m => MonadError e m | m -> e where
 
 > 注意： 最好不要使用`fail`来抛出异常，一方面在旧版本中，部分`fail`函数使用`error`来定义（这导致了中断）；另一方面`fail`函数本身的意义是用来在`do-notation`中`<-`左侧匹配失败后进行调用，而不是针对用户的异常抛出
 
+### IO异常
+
+IO异常指通过封装在IO中的异常，这通常位于`Control.Exception`模块中。
+
+#### `Exception`类型类
+
+在`Control.Exception`模块中，有关的异常的操作被封装在`Exception`类型类中，因此任何内置的异常均实现了该类型类的实例，同时用户自定义的异常也应当实现其实例。
+
+`Exception`类型类定义如下：
+
+```hs
+class (Typeable e, Show e) => Exception e where 
+  toException :: e -> SomeException
+  fromException :: SomeException -> Maybe e 
+  displayException :: e -> String 
+```
+
+其中`toException`将异常类型转换到`SomeException`类型;`fromException`则是与`toException`相反的操作，将异常从`SomeException`类型中转换出来；最后`displayException`将异常转换为字符串以便输出给用户。
+
+> 提示： 定义中出现的`SomeException`类型是一切异常的“根”，其他异常被抛出时会被封装( ***encapsulated*** )到它内部
+
+在`Control.Exception`中已经内置了一些常用的异常，详情参考[文档](https://hackage.haskell.org/package/base-4.21.0.0/docs/Control-Exception.html#t:IOException)。
+
+#### 异常抛出与捕获
+
+**throw :: forall a e. (HasCallStack, Exception e) => e -> a**
+
+`throw`函数将异常抛出，该函数允许在纯代码中抛出异常，但只能够在`IO`中捕获这些异常。一般地，我们会使用`throwIO`函数保持纯代码中无异常。
+
+**throwIO :: (HasCallStack, Exception e) => e -> IO a**
+
+`throwIO`使`throw`的一个变种，受到类型签名的限制，该函数只能在IO中使用。
+
+**catch :: Exception e => IO a -> (e -> IO a) -> IO a**
+
+`catch`函数可以捕获抛出的异常，并在有异常抛出时执行一个处理函数；否则返回正常的结果。
+
+```bash
+Prelude> f = const $ print "div by 0" :: ArithException -> IO ()
+Prelude> catch (throwIO DivideByZero) f
+"div by 0"
+Prelude> catch (throw DivideByZero :: IO ()) f
+"div by 0"
+```
+
+**handle :: Exception e => (e -> IO a) -> IO a -> IO a**
+
+`handle`函数是`catch`函数的参数翻转版本，适合处理函数很短的情况，例如`do handle (\NonTermination -> exitWith (ExitFailure 1)) $ ...`.
+
+**try :: Exception e => IO a -> IO (Either e a)**
+
+`try`函数类似`catch`函数，但通过返回类型的`Either`类型来区分是否抛出了异常。
+
+```bash
+Prelude> try (print 1) :: IO (Either ArithException Int) 
+1
+Right ()
+Prelude> try (print (1 `div` 0)) :: IO (Either ArithException Int)
+Left divide by zero
+```
+
+值得注意的是，`try`函数对于惰性的处理让人困惑，例如
+
+```bash
+Prelude> try (return 1) :: IO (Either ArithException Int)
+Right 1 
+Prelude> try (return (1 `div` 0)) :: IO (Either ArithException Int)
+Right *** Exception: divide by zero
+Prelude> try (return (1 `div` 0) >> print 1) :: IO (Either ArithException ())
+1
+Right ()
+```
 
 
 
+对于第二条语句，`return`没有强制```1 `div` 0```求值，因而结果应当是```Right (1 `div` 0)```，因此ghci首先打印了`Right`，但```1 `div` 0```无法打印，从而导致了异常；应当注意这个异常来自ghci而非程序本身，如果我们在此之后添加一个无异常的IO动作（第三条语句），那么我们将不会看到任何错误（程序本身没有异常抛出，ghci打印也无异常抛出）。
+
+相比之下，```try (print (1 `div` 0))```中`print`强制内部参数执行，从而及时探测到异常。
 
 
+**evaluate :: a -> IO a**
 
+`evaluate` 通常用于发现延迟求值中存在的异常，使用`evaluate`替代上面中的`return`可以修正上面未探测到异常的错误。
 
+```bash
+Prelude> try (evaluate (1 `div` 0)) :: IO (Either ArithException Int)
+Left divide by zero
+Prelude> try (evaluate (1 `div` 0) >> print 1) :: IO (Either ArithException ())
+Left divide by zero
+```
 
-
-
-
-
-
-
+> 注意： 然而，对于再深层次的求值要求，`evaluate`也无能为力，此时应当使用`Control.DeepSeq`中的`force`函数强制求值[3](#ref3)
+> ```bash
+> Prelude> try (evaluate (Just (Just (1 `div` 0)))) :: IO (Either ArithException (Maybe (Maybe Int)))
+> Right (Just (Just *** Exception: divide by zero
+> Prelude> try (evaluate $ force (Just (Just (1 `div` 0)))) :: IO (Either ArithException (Maybe (Maybe Int)))
+> Left divide by zero
+> ```
 
 
 ------------------------------------------
 
 <p id="ref1">[1] Error vs. Exception. (2019, July 23). HaskellWiki. Retrieved 19:56, January 21, 2025 from https://wiki.haskell.org/index.php?title=Error_vs._Exception&oldid=62969.</p>
-<p id="ref1">[1] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p>
+<p id="ref2">[2] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p>
+<p id="ref3">[3] O’Sullivan, B., Goerzen, J., & Stewart, D. (2008). Real World Haskell (1st ed.). O’Reilly Media, Inc.</p>
