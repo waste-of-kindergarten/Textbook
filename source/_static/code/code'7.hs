@@ -1,8 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE InstanceSigs #-}
 import Control.Applicative (Applicative)
-import GHC.Exception hiding (throw)
-import Control.Exception(catch,try,evaluate,throw) 
+
+
 
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
