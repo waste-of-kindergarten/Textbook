@@ -72,6 +72,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#io">IO异常</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">小记：错误与异常的转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#callstack">调用栈 <code class="docutils literal notranslate"><span class="pre">CallStack</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="%E5%B7%A5%E7%A8%8B%E4%B8%93%E9%A2%98/index.html">Haskell 工程专题</a></li>
@@ -123,9 +125,6 @@ CallStack<span class="w"> </span><span class="o">(</span>from<span class="w"> </
 <span class="w">  </span>undefined,<span class="w"> </span>called<span class="w"> </span>at<span class="w"> </span>&lt;interactive&gt;:5:7<span class="w"> </span><span class="k">in</span><span class="w"> </span>interactive:Ghci1
 </pre></div>
 </div>
-<blockquote>
-<div><p>至于为什么上面同时出现了Exception还有Error,我们将在后面解释，这是CallStack的作用</p>
-</div></blockquote>
 <section id="id2">
 <h2>错误处理<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
 <p>当我们需要手动处理错误时，我们可以使用<code class="docutils literal notranslate"><span class="pre">error</span></code>函数，但这只是一种语法糖函数，其本质仍然是<code class="docutils literal notranslate"><span class="pre">undefined</span></code>。</p>
@@ -305,12 +304,28 @@ Left<span class="w"> </span>divide<span class="w"> </span>by<span class="w"> </s
 </pre></div>
 </div>
 </div></blockquote>
+</section>
+</section>
+</section>
+<section id="id6">
+<h2>小记：错误与异常的转换<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h2>
+<p>值得注意的是，有时错误和异常会相互转化。</p>
+<blockquote>
+<div><p>该部分来自于<a class="reference external" href="#ref1">1</a>.</p>
+</div></blockquote>
+<p><strong>异常=&gt;错误</strong></p>
+<p>对于一个文件无法打开，这应当是异常，虽然我们仍然可以像打开文件一样操作，然而这样做的结果将导致程序崩溃并被系统终止；因此，没有处理的异常就变成了错误。</p>
+<p><strong>错误=&gt;异常</strong></p>
+<p>对于大型软件来说，一部分发生了错误不一定会导致整个软件崩溃，即当跨越软件的层次后，错误就可以转化为异常；然而，发生错误的部分仍然不能依靠自身来恢复，同时也不能依靠更高层次的部分修复它（只能限制错误带来的损坏）。</p>
+</section>
+<section id="callstack">
+<h2>调用栈 <code class="docutils literal notranslate"><span class="pre">CallStack</span></code><a class="headerlink" href="#callstack" title="此标题的永久链接"></a></h2>
+<p>为了帮助程序员或用户理解问题所在，通常会提供某种<code class="docutils literal notranslate"><span class="pre">CallStack</span></code>。然而程序员用于调试的调用栈信息和用户因异常而看到的调用栈信息有明显区别<a class="reference external" href="#ref1">1</a>。</p>
+<p>在Haskell中我们可以使用<code class="docutils literal notranslate"><span class="pre">GHC.Stack.HasCallStack</span></code>来调用调用栈，具体可以参考<a class="reference external" href="https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/callstack.html">文档</a>.</p>
 <hr class="docutils" />
 <p id="ref1">[1] Error vs. Exception. (2019, July 23). HaskellWiki. Retrieved 19:56, January 21, 2025 from https://wiki.haskell.org/index.php?title=Error_vs._Exception&oldid=62969.</p>
 <p id="ref2">[2] Exception. (2020, January 22). HaskellWiki. Retrieved 20:11, January 21, 2025 from https://wiki.haskell.org/index.php?title=Exception&oldid=63187.</p>
 <p id="ref3">[3] O’Sullivan, B., Goerzen, J., & Stewart, D. (2008). Real World Haskell (1st ed.). O’Reilly Media, Inc.</p></section>
-</section>
-</section>
 </section>
 
 

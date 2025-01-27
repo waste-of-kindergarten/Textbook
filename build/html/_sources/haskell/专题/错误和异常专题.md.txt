@@ -19,8 +19,6 @@ CallStack (from HasCallStack):
   undefined, called at <interactive>:5:7 in interactive:Ghci1
 ```
 
-> 至于为什么上面同时出现了Exception还有Error,我们将在后面解释，这是CallStack的作用
-
 ## 错误处理
 
 当我们需要手动处理错误时，我们可以使用`error`函数，但这只是一种语法糖函数，其本质仍然是`undefined`。
@@ -245,6 +243,25 @@ Left divide by zero
 > Left divide by zero
 > ```
 
+## 小记：错误与异常的转换
+
+值得注意的是，有时错误和异常会相互转化。
+
+> 该部分来自于[1](#ref1).
+
+**异常=>错误**
+
+对于一个文件无法打开，这应当是异常，虽然我们仍然可以像打开文件一样操作，然而这样做的结果将导致程序崩溃并被系统终止；因此，没有处理的异常就变成了错误。
+
+**错误=>异常**
+
+对于大型软件来说，一部分发生了错误不一定会导致整个软件崩溃，即当跨越软件的层次后，错误就可以转化为异常；然而，发生错误的部分仍然不能依靠自身来恢复，同时也不能依靠更高层次的部分修复它（只能限制错误带来的损坏）。
+
+## 调用栈 `CallStack`
+
+为了帮助程序员或用户理解问题所在，通常会提供某种`CallStack`。然而程序员用于调试的调用栈信息和用户因异常而看到的调用栈信息有明显区别[1](#ref1)。 
+
+在Haskell中我们可以使用`GHC.Stack.HasCallStack`来调用调用栈，具体可以参考[文档](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/callstack.html).
 
 ------------------------------------------
 
