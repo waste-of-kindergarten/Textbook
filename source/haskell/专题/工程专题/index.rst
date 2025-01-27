@@ -11,3 +11,4 @@ Haskell 工程专题
    :caption: 目录:
 
    模块、包和项目.md
+   测试.md

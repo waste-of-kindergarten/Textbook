@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Haskell 工程专题 &mdash; TextBook v0.1 文档</title>
+  <title>测试 &mdash; TextBook v0.1 文档</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/dark_mode_css/general.css" />
@@ -27,8 +27,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../../genindex.html" />
     <link rel="search" title="搜索" href="../../../search.html" />
-    <link rel="next" title="模块、包和项目" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html" />
-    <link rel="prev" title="错误和异常专题" href="../%E9%94%99%E8%AF%AF%E5%92%8C%E5%BC%82%E5%B8%B8%E4%B8%93%E9%A2%98.html" /> 
+    <link rel="next" title="资源" href="../../%E8%B5%84%E6%BA%90.html" />
+    <link rel="prev" title="模块、包和项目" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,9 +66,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../GADTs%20%E4%B8%93%E9%A2%98.html">GADTs 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Generics%20%E4%B8%93%E9%A2%98.html">Generics 专题</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E9%94%99%E8%AF%AF%E5%92%8C%E5%BC%82%E5%B8%B8%E4%B8%93%E9%A2%98.html">错误和异常专题</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Haskell 工程专题</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Haskell 工程专题</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html">模块、包和项目</a></li>
-<li class="toctree-l3"><a class="reference internal" href="%E6%B5%8B%E8%AF%95.html">测试</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">测试</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -93,9 +93,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Haskell TextBook</a></li>
-      <li class="breadcrumb-item active">Haskell 工程专题</li>
+          <li class="breadcrumb-item"><a href="index.html">Haskell 工程专题</a></li>
+      <li class="breadcrumb-item active">测试</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/haskell/专题/工程专题/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+            <a href="../../../_sources/haskell/专题/工程专题/测试.md.txt" rel="nofollow"> 查看页面源码</a>
       </li>
   </ul>
   <hr/>
@@ -103,29 +104,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="haskell">
-<h1>Haskell 工程专题<a class="headerlink" href="#haskell" title="此标题的永久链接"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">目录:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html">模块、包和项目</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html#id2">使用模块组织代码</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html#id5">包</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html#id6">从零创建一个简单的项目</a></li>
-<li class="toctree-l2"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html#id7">项目的打包与安装</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="%E6%B5%8B%E8%AF%95.html">测试</a></li>
-</ul>
-</div>
+  <section id="id1">
+<h1>测试<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
-        <a href="../%E9%94%99%E8%AF%AF%E5%92%8C%E5%BC%82%E5%B8%B8%E4%B8%93%E9%A2%98.html" class="btn btn-neutral float-left" title="错误和异常专题" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
-        <a href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html" class="btn btn-neutral float-right" title="模块、包和项目" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html" class="btn btn-neutral float-left" title="模块、包和项目" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../../%E8%B5%84%E6%BA%90.html" class="btn btn-neutral float-right" title="资源" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
