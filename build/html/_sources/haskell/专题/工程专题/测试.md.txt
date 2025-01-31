@@ -1,2 +1,175 @@
 # 测试
 
+由于Haskell与众不同的特性，针对Haskell程序的测试也与常规的编程语言不同。首先，Haskell的类型系统会在编译时检查大量的错误，这减轻了运行时的测试负担；其次，纯代码和副作用的分离使得其更加符合属性测试，这大大简化了测试的复杂度（自动化程度高）；最后，副作用代码可以通过Monad的机制来测试和模拟。
+
+## 纯代码测试
+
+纯代码测试指针对Haskell中的纯计算的部分进行测试，我们希望尽可能地将纯计算的部分从含有副作用的代码中分离，这有助于简化测试成本同时也提高了代码的可维护性。
+
+### 单元测试 `Test.HUnit`
+
+一个测试用例是单元测试的基本单位，这意味着不同的测试用例的执行是相互独立的，一个测试用例的失败并不会导致另一个测试用例的失败；一个测试用例通常由一个单独的或者复合的 ***断言(assertion)*** 组成。
+
+> 注意： 复合的断言内部应当是非独立的，否则我们应该将其拆分，以便在知晓失败来源于哪个独立的部分
+
+**断言(Assertion)**
+
+断言是一个不返回任何计算结果的`IO`操作，具体来讲，断言会在失败时抛出异常。
+
+```hs
+type Assertion = IO ()
+```
+
+在`HUnit`中已经内置了一些断言函数，可以直接使用：
+
+- `assertFailure :: HasCallStack => String -> IO a`  : 无条件的断言失败
+
+- `assertBool :: HasCallStack => String -> Bool -> Assertion` : 条件不成立时断言失败
+
+- `assertEqual :: (HasCallStack,Eq a,Show a) => String -> a -> a -> Assertion` : 当期望值和实际值不相等时断言失败
+
+- `assertString :: HasCallStack => String -> Assertion` : 当字符串非空时断言失败
+
+> 提示： 我们仍然可以对断言进行自定义，具体可以参考hackage的`Assertable`
+
+**测试(Test)**
+
+一个单元测试可以是一个独立的测试用例，一组测试用例，或者前两者的组合（通过标签区分）[[1]](#ref1)。
+
+```hs
+data Test = TestCase Assertion 
+        | TestList [Test]
+        | TestLabel String Test
+```
+
+根据上述定义，我们可以唯一地识别一个测试：
+
+```hs
+data Node = ListItem Int | Label String 
+    deriving (Eq,Show,Read)
+
+type Path = [Node] -- 顺序为从测试用例到根
+```
+
+使用`testCasePaths :: Test -> [Path]`就可以计算出一个测试的路径。
+
+**运行测试**
+
+测试的运行（即一个`Test`值）包含了一系列的IO执行，执行顺序是深度优先且自左向右的；在执行期间，通过`Counts`数据结构记录测试情况。
+
+```hs
+data Counts = Counts { cases, tried, errors, failures :: Int}
+    deriving (Eq,Show,Read)
+```
+
+其中`cases`是测试中包含的测试用例；`tried`是当前执行的测试用例数量；`errors`是测试执行抛出异常的用例数量（这是测试用例的问题，而非被测代码的问题）；`failures`是测试执行断言失败的数量; 可以通过`showCounts :: Counts -> String`查看这个结果。
+
+
+整个测试依靠 ***基于文本的测试控制器(Text-based Test Controller)*** 运行，该控制器将测试结果以文本的形式报告，通常会输出到终端中。
+
+在测试执行过程中，会有三种报告事件与测试控制器交互：
+
+- start: 测试用例开始前执行，报告测试用例的路径和当前测试计数（不包含即将执行的测试用例）
+
+- error: 测试用例因异常终止，报告错误信息，测试用例路径以及当前测试计数（包含当前测试用例）
+
+- failure: 测试用例未通过断言检测，报告失败信息，测试用例路径以及当前测试计数（包含当前测试用例）
+
+通常，一个测试控制器会立即展示error和failure的报告，而使用start报告来更新整体的测试执行进度。
+
+对于测试控制器来说，一方面需要接受测试组件，另一方面我们需要定义其输出的行为；在`HUnit`中，我们使用`PutText`数据结构来控制输出。
+
+```hs
+data PutText st = PutText (String -> Bool -> st -> IO st) st
+```
+
+`PutText`类型包装了一个函数`(String -> Bool -> st -> IO st)`以及一个初始状态`st`。对于函数部分，`String`参数为报告的字符串；`Bool`参数表示报告行的持久性，`True`表示该行将作为最终报告的一部分、`False`则表示该行仅仅显示测试执行的进度；`st`为用户自定义的当前状态，可以存储诸如执行中的临时信息等（例如累积测试结果）。
+
+在`HUnit`中，已经预置了两个报告机制，用来生成相应的`PutText`结构。
+
+```hs
+putTextToHandle :: Handle -> Bool -> PutText Int
+
+putTextToShowS :: PutText ShowS
+```
+
+其中`putTextToHandle` 将报告的行持久性写到给定句柄上，当`Bool`参数为`True`时将进度行也写入句柄，但这种写入是非持久的（即没有换行），可以被下一行覆盖掉。
+
+另外一个函数`putTextToShowS`抛弃掉所有进度行并积累持久行，积累过程由`ShowS`(`type ShowS = String -> String`)这个函数控制。
+
+> 提示： `ShowS`类型定义位于`GHC.Show`,与`Show`类型类一同出现
+
+一旦我们完成了控制结构的构造，我们就可以使用测试控制器对测试用例进行测试`runTestText :: PutText st -> Test -> IO (Counts, st)`。为了方便，`HUnit`还提供了一个标准的控制器`runTestTT :: Test -> IO Count`，该控制器将报告写入了标准错误流（包含进度报告），且为了方便使用，会返回最终的测试计数结果。
+
+### 一个简单的示例
+
+在`code'8.hs`中，我们给出一个关于阶乘函数的单元测试。
+
+```hs
+-- code'8.hs
+import Test.HUnit  
+import Control.Exception
+
+frac :: Int -> Int 
+frac n  
+    | n == 0 = 1 
+    | n > 0 = n * frac (n - 1)
+    | otherwise = undefined 
+
+borderTest :: Test
+borderTest = TestCase $ 
+    assertEqual "0! /= 1" (frac 0) 1
+
+commonTest :: Test
+commonTest = TestList $ TestCase <$> [
+    assertEqual "1! /= 1" (frac 1) 1,
+    assertEqual "2! /= 2" (frac 2) 2,
+    assertEqual "3! /= 6" (frac 3) 6,
+    assertEqual "4! /= 24" (frac 4) 24,
+    assertEqual "5! /= 120" (frac 5) 120]
+
+undefinedTest :: Test 
+undefinedTest = TestCase $ do 
+    result <- try (evaluate (frac (-1))) :: IO (Either SomeException Int)
+    case result of 
+        Left _ -> return ()
+        Right _ -> assertFailure "Tests beyond border pass"
+
+
+testFrac :: Test
+testFrac = TestLabel "testFrac" $ 
+    TestList [
+        TestLabel "borderTest" borderTest,
+        TestLabel "commonTest" commonTest,
+        TestLabel "undefinedTest" undefinedTest 
+    ]
+
+
+main :: IO Counts
+main = runTestTT testFrac 
+```
+
+其中的测试部分包含了常规测试(`commonTest`)，边界测试(`borderTest`)以及无意义输入的测试(`undefinedTest`)。常规测试和边界测试比较好理解；对于`undefinedTest`，由于`frac`函数没有对负整数进行定义，因此执行`frac (-1)`会发生错误，显然我们不能对错误进行比较，因此这里通过`try`对该其进行捕获，当错误被正常捕获，表明测试通过。
+
+```bash
+$ runghc "code'8.hs"
+Cases: 7  Tried: 7  Errors: 0  Failures: 0
+```
+
+> 提示： 读者也可以更改文件观察测试不通过时的输出
+
+### 属性测试
+
+## 非纯代码测试
+
+### 副作用结果属性测试
+
+### 副作用交互行为测试
+
+## 调试模块 `Debug.Trace`
+
+## 性能测试
+
+------------------------------------------------
+
+<p id="ref1">[1] HUnit 1.0 User's Guide. (2020, May 15). HaskellWiki. Retrieved 10:55, January 31, 2025 from https://wiki.haskell.org/index.php?title=HUnit_1.0_User%27s_Guide&oldid=63308.</p>

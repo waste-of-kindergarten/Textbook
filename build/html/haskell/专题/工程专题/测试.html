@@ -68,7 +68,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../%E9%94%99%E8%AF%AF%E5%92%8C%E5%BC%82%E5%B8%B8%E4%B8%93%E9%A2%98.html">错误和异常专题</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Haskell 工程专题</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E9%A1%B9%E7%9B%AE.html">模块、包和项目</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">测试</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">测试</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">纯代码测试</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">非纯代码测试</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#debug-trace">调试模块 <code class="docutils literal notranslate"><span class="pre">Debug.Trace</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">性能测试</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../%E8%B5%84%E6%BA%90.html">资源</a></li>
@@ -106,6 +112,154 @@
              
   <section id="id1">
 <h1>测试<a class="headerlink" href="#id1" title="此标题的永久链接"></a></h1>
+<p>由于Haskell与众不同的特性，针对Haskell程序的测试也与常规的编程语言不同。首先，Haskell的类型系统会在编译时检查大量的错误，这减轻了运行时的测试负担；其次，纯代码和副作用的分离使得其更加符合属性测试，这大大简化了测试的复杂度（自动化程度高）；最后，副作用代码可以通过Monad的机制来测试和模拟。</p>
+<section id="id2">
+<h2>纯代码测试<a class="headerlink" href="#id2" title="此标题的永久链接"></a></h2>
+<p>纯代码测试指针对Haskell中的纯计算的部分进行测试，我们希望尽可能地将纯计算的部分从含有副作用的代码中分离，这有助于简化测试成本同时也提高了代码的可维护性。</p>
+<section id="test-hunit">
+<h3>单元测试 <code class="docutils literal notranslate"><span class="pre">Test.HUnit</span></code><a class="headerlink" href="#test-hunit" title="此标题的永久链接"></a></h3>
+<p>一个测试用例是单元测试的基本单位，这意味着不同的测试用例的执行是相互独立的，一个测试用例的失败并不会导致另一个测试用例的失败；一个测试用例通常由一个单独的或者复合的 <em><strong>断言(assertion)</strong></em> 组成。</p>
+<blockquote>
+<div><p>注意： 复合的断言内部应当是非独立的，否则我们应该将其拆分，以便在知晓失败来源于哪个独立的部分</p>
+</div></blockquote>
+<p><strong>断言(Assertion)</strong></p>
+<p>断言是一个不返回任何计算结果的<code class="docutils literal notranslate"><span class="pre">IO</span></code>操作，具体来讲，断言会在失败时抛出异常。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">type</span><span class="w"> </span><span class="kt">Assertion</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+</pre></div>
+</div>
+<p>在<code class="docutils literal notranslate"><span class="pre">HUnit</span></code>中已经内置了一些断言函数，可以直接使用：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">assertFailure</span> <span class="pre">::</span> <span class="pre">HasCallStack</span> <span class="pre">=&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">a</span></code>  : 无条件的断言失败</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertBool</span> <span class="pre">::</span> <span class="pre">HasCallStack</span> <span class="pre">=&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">Bool</span> <span class="pre">-&gt;</span> <span class="pre">Assertion</span></code> : 条件不成立时断言失败</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertEqual</span> <span class="pre">::</span> <span class="pre">(HasCallStack,Eq</span> <span class="pre">a,Show</span> <span class="pre">a)</span> <span class="pre">=&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Assertion</span></code> : 当期望值和实际值不相等时断言失败</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertString</span> <span class="pre">::</span> <span class="pre">HasCallStack</span> <span class="pre">=&gt;</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">Assertion</span></code> : 当字符串非空时断言失败</p></li>
+</ul>
+<blockquote>
+<div><p>提示： 我们仍然可以对断言进行自定义，具体可以参考hackage的<code class="docutils literal notranslate"><span class="pre">Assertable</span></code></p>
+</div></blockquote>
+<p><strong>测试(Test)</strong></p>
+<p>一个单元测试可以是一个独立的测试用例，一组测试用例，或者前两者的组合（通过标签区分）<a class="reference external" href="#ref1">[1]</a>。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">Test</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">TestCase</span><span class="w"> </span><span class="kt">Assertion</span><span class="w"> </span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="kt">TestList</span><span class="w"> </span><span class="p">[</span><span class="kt">Test</span><span class="p">]</span>
+<span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="kt">TestLabel</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="kt">Test</span>
+</pre></div>
+</div>
+<p>根据上述定义，我们可以唯一地识别一个测试：</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">ListItem</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">Label</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Eq</span><span class="p">,</span><span class="kt">Show</span><span class="p">,</span><span class="kt">Read</span><span class="p">)</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">Path</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">[</span><span class="kt">Node</span><span class="p">]</span><span class="w"> </span><span class="c1">-- 顺序为从测试用例到根</span>
+</pre></div>
+</div>
+<p>使用<code class="docutils literal notranslate"><span class="pre">testCasePaths</span> <span class="pre">::</span> <span class="pre">Test</span> <span class="pre">-&gt;</span> <span class="pre">[Path]</span></code>就可以计算出一个测试的路径。</p>
+<p><strong>运行测试</strong></p>
+<p>测试的运行（即一个<code class="docutils literal notranslate"><span class="pre">Test</span></code>值）包含了一系列的IO执行，执行顺序是深度优先且自左向右的；在执行期间，通过<code class="docutils literal notranslate"><span class="pre">Counts</span></code>数据结构记录测试情况。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">Counts</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">Counts</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">cases</span><span class="p">,</span><span class="w"> </span><span class="n">tried</span><span class="p">,</span><span class="w"> </span><span class="n">errors</span><span class="p">,</span><span class="w"> </span><span class="n">failures</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="p">}</span>
+<span class="w">    </span><span class="kr">deriving</span><span class="w"> </span><span class="p">(</span><span class="kt">Eq</span><span class="p">,</span><span class="kt">Show</span><span class="p">,</span><span class="kt">Read</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">cases</span></code>是测试中包含的测试用例；<code class="docutils literal notranslate"><span class="pre">tried</span></code>是当前执行的测试用例数量；<code class="docutils literal notranslate"><span class="pre">errors</span></code>是测试执行抛出异常的用例数量（这是测试用例的问题，而非被测代码的问题）；<code class="docutils literal notranslate"><span class="pre">failures</span></code>是测试执行断言失败的数量; 可以通过<code class="docutils literal notranslate"><span class="pre">showCounts</span> <span class="pre">::</span> <span class="pre">Counts</span> <span class="pre">-&gt;</span> <span class="pre">String</span></code>查看这个结果。</p>
+<p>整个测试依靠 <em><strong>基于文本的测试控制器(Text-based Test Controller)</strong></em> 运行，该控制器将测试结果以文本的形式报告，通常会输出到终端中。</p>
+<p>在测试执行过程中，会有三种报告事件与测试控制器交互：</p>
+<ul class="simple">
+<li><p>start: 测试用例开始前执行，报告测试用例的路径和当前测试计数（不包含即将执行的测试用例）</p></li>
+<li><p>error: 测试用例因异常终止，报告错误信息，测试用例路径以及当前测试计数（包含当前测试用例）</p></li>
+<li><p>failure: 测试用例未通过断言检测，报告失败信息，测试用例路径以及当前测试计数（包含当前测试用例）</p></li>
+</ul>
+<p>通常，一个测试控制器会立即展示error和failure的报告，而使用start报告来更新整体的测试执行进度。</p>
+<p>对于测试控制器来说，一方面需要接受测试组件，另一方面我们需要定义其输出的行为；在<code class="docutils literal notranslate"><span class="pre">HUnit</span></code>中，我们使用<code class="docutils literal notranslate"><span class="pre">PutText</span></code>数据结构来控制输出。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="kr">data</span><span class="w"> </span><span class="kt">PutText</span><span class="w"> </span><span class="n">st</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">PutText</span><span class="w"> </span><span class="p">(</span><span class="kt">String</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">st</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="n">st</span><span class="p">)</span><span class="w"> </span><span class="n">st</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">PutText</span></code>类型包装了一个函数<code class="docutils literal notranslate"><span class="pre">(String</span> <span class="pre">-&gt;</span> <span class="pre">Bool</span> <span class="pre">-&gt;</span> <span class="pre">st</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">st)</span></code>以及一个初始状态<code class="docutils literal notranslate"><span class="pre">st</span></code>。对于函数部分，<code class="docutils literal notranslate"><span class="pre">String</span></code>参数为报告的字符串；<code class="docutils literal notranslate"><span class="pre">Bool</span></code>参数表示报告行的持久性，<code class="docutils literal notranslate"><span class="pre">True</span></code>表示该行将作为最终报告的一部分、<code class="docutils literal notranslate"><span class="pre">False</span></code>则表示该行仅仅显示测试执行的进度；<code class="docutils literal notranslate"><span class="pre">st</span></code>为用户自定义的当前状态，可以存储诸如执行中的临时信息等（例如累积测试结果）。</p>
+<p>在<code class="docutils literal notranslate"><span class="pre">HUnit</span></code>中，已经预置了两个报告机制，用来生成相应的<code class="docutils literal notranslate"><span class="pre">PutText</span></code>结构。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="nf">putTextToHandle</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Handle</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Bool</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">PutText</span><span class="w"> </span><span class="kt">Int</span>
+
+<span class="nf">putTextToShowS</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">PutText</span><span class="w"> </span><span class="kt">ShowS</span>
+</pre></div>
+</div>
+<p>其中<code class="docutils literal notranslate"><span class="pre">putTextToHandle</span></code> 将报告的行持久性写到给定句柄上，当<code class="docutils literal notranslate"><span class="pre">Bool</span></code>参数为<code class="docutils literal notranslate"><span class="pre">True</span></code>时将进度行也写入句柄，但这种写入是非持久的（即没有换行），可以被下一行覆盖掉。</p>
+<p>另外一个函数<code class="docutils literal notranslate"><span class="pre">putTextToShowS</span></code>抛弃掉所有进度行并积累持久行，积累过程由<code class="docutils literal notranslate"><span class="pre">ShowS</span></code>(<code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">ShowS</span> <span class="pre">=</span> <span class="pre">String</span> <span class="pre">-&gt;</span> <span class="pre">String</span></code>)这个函数控制。</p>
+<blockquote>
+<div><p>提示： <code class="docutils literal notranslate"><span class="pre">ShowS</span></code>类型定义位于<code class="docutils literal notranslate"><span class="pre">GHC.Show</span></code>,与<code class="docutils literal notranslate"><span class="pre">Show</span></code>类型类一同出现</p>
+</div></blockquote>
+<p>一旦我们完成了控制结构的构造，我们就可以使用测试控制器对测试用例进行测试<code class="docutils literal notranslate"><span class="pre">runTestText</span> <span class="pre">::</span> <span class="pre">PutText</span> <span class="pre">st</span> <span class="pre">-&gt;</span> <span class="pre">Test</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">(Counts,</span> <span class="pre">st)</span></code>。为了方便，<code class="docutils literal notranslate"><span class="pre">HUnit</span></code>还提供了一个标准的控制器<code class="docutils literal notranslate"><span class="pre">runTestTT</span> <span class="pre">::</span> <span class="pre">Test</span> <span class="pre">-&gt;</span> <span class="pre">IO</span> <span class="pre">Count</span></code>，该控制器将报告写入了标准错误流（包含进度报告），且为了方便使用，会返回最终的测试计数结果。</p>
+</section>
+<section id="id3">
+<h3>一个简单的示例<a class="headerlink" href="#id3" title="此标题的永久链接"></a></h3>
+<p>在<code class="docutils literal notranslate"><span class="pre">code'8.hs</span></code>中，我们给出一个关于阶乘函数的单元测试。</p>
+<div class="highlight-hs notranslate"><div class="highlight"><pre><span></span><span class="c1">-- code&#39;8.hs</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">Test.HUnit</span><span class="w">  </span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">Control.Exception</span>
+
+<span class="nf">frac</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="nf">frac</span><span class="w"> </span><span class="n">n</span><span class="w">  </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">frac</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">undefined</span><span class="w"> </span>
+
+<span class="nf">borderTest</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Test</span>
+<span class="nf">borderTest</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">TestCase</span><span class="w"> </span><span class="o">$</span><span class="w"> </span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;0! /= 1&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="nf">commonTest</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Test</span>
+<span class="nf">commonTest</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">TestList</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="kt">TestCase</span><span class="w"> </span><span class="o">&lt;$&gt;</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;1! /= 1&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;2! /= 2&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;3! /= 6&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;4! /= 24&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">    </span><span class="n">assertEqual</span><span class="w"> </span><span class="s">&quot;5! /= 120&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="mi">120</span><span class="p">]</span>
+
+<span class="nf">undefinedTest</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Test</span><span class="w"> </span>
+<span class="nf">undefinedTest</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">TestCase</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="kr">do</span><span class="w"> </span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">try</span><span class="w"> </span><span class="p">(</span><span class="n">evaluate</span><span class="w"> </span><span class="p">(</span><span class="n">frac</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="p">(</span><span class="kt">Either</span><span class="w"> </span><span class="kt">SomeException</span><span class="w"> </span><span class="kt">Int</span><span class="p">)</span>
+<span class="w">    </span><span class="kr">case</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="kr">of</span><span class="w"> </span>
+<span class="w">        </span><span class="kt">Left</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="nb">()</span>
+<span class="w">        </span><span class="kt">Right</span><span class="w"> </span><span class="kr">_</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="n">assertFailure</span><span class="w"> </span><span class="s">&quot;Tests beyond border pass&quot;</span>
+
+
+<span class="nf">testFrac</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Test</span>
+<span class="nf">testFrac</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">TestLabel</span><span class="w"> </span><span class="s">&quot;testFrac&quot;</span><span class="w"> </span><span class="o">$</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">TestList</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="kt">TestLabel</span><span class="w"> </span><span class="s">&quot;borderTest&quot;</span><span class="w"> </span><span class="n">borderTest</span><span class="p">,</span>
+<span class="w">        </span><span class="kt">TestLabel</span><span class="w"> </span><span class="s">&quot;commonTest&quot;</span><span class="w"> </span><span class="n">commonTest</span><span class="p">,</span>
+<span class="w">        </span><span class="kt">TestLabel</span><span class="w"> </span><span class="s">&quot;undefinedTest&quot;</span><span class="w"> </span><span class="n">undefinedTest</span><span class="w"> </span>
+<span class="w">    </span><span class="p">]</span>
+
+
+<span class="nf">main</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">Counts</span>
+<span class="nf">main</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">runTestTT</span><span class="w"> </span><span class="n">testFrac</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>其中的测试部分包含了常规测试(<code class="docutils literal notranslate"><span class="pre">commonTest</span></code>)，边界测试(<code class="docutils literal notranslate"><span class="pre">borderTest</span></code>)以及无意义输入的测试(<code class="docutils literal notranslate"><span class="pre">undefinedTest</span></code>)。常规测试和边界测试比较好理解；对于<code class="docutils literal notranslate"><span class="pre">undefinedTest</span></code>，由于<code class="docutils literal notranslate"><span class="pre">frac</span></code>函数没有对负整数进行定义，因此执行<code class="docutils literal notranslate"><span class="pre">frac</span> <span class="pre">(-1)</span></code>会发生错误，显然我们不能对错误进行比较，因此这里通过<code class="docutils literal notranslate"><span class="pre">try</span></code>对该其进行捕获，当错误被正常捕获，表明测试通过。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>runghc<span class="w"> </span><span class="s2">&quot;code&#39;8.hs&quot;</span>
+Cases:<span class="w"> </span><span class="m">7</span><span class="w">  </span>Tried:<span class="w"> </span><span class="m">7</span><span class="w">  </span>Errors:<span class="w"> </span><span class="m">0</span><span class="w">  </span>Failures:<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>提示： 读者也可以更改文件观察测试不通过时的输出</p>
+</div></blockquote>
+</section>
+<section id="id4">
+<h3>属性测试<a class="headerlink" href="#id4" title="此标题的永久链接"></a></h3>
+</section>
+</section>
+<section id="id5">
+<h2>非纯代码测试<a class="headerlink" href="#id5" title="此标题的永久链接"></a></h2>
+<section id="id6">
+<h3>副作用结果属性测试<a class="headerlink" href="#id6" title="此标题的永久链接"></a></h3>
+</section>
+<section id="id7">
+<h3>副作用交互行为测试<a class="headerlink" href="#id7" title="此标题的永久链接"></a></h3>
+</section>
+</section>
+<section id="debug-trace">
+<h2>调试模块 <code class="docutils literal notranslate"><span class="pre">Debug.Trace</span></code><a class="headerlink" href="#debug-trace" title="此标题的永久链接"></a></h2>
+</section>
+<section id="id8">
+<h2>性能测试<a class="headerlink" href="#id8" title="此标题的永久链接"></a></h2>
+<hr class="docutils" />
+<p id="ref1">[1] HUnit 1.0 User's Guide. (2020, May 15). HaskellWiki. Retrieved 10:55, January 31, 2025 from https://wiki.haskell.org/index.php?title=HUnit_1.0_User%27s_Guide&oldid=63308.</p></section>
 </section>
 
 
