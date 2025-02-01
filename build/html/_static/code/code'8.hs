@@ -13,11 +13,11 @@ borderTest = TestCase $
 
 commonTest :: Test
 commonTest = TestList $ TestCase <$> [
-    assertEqual "1! /= 1" (frac 1) 1,
-    assertEqual "2! /= 2" (frac 2) 2,
-    assertEqual "3! /= 6" (frac 3) 6,
-    assertEqual "4! /= 24" (frac 4) 24,
-    assertEqual "5! /= 120" (frac 5) 120]
+    assertEqual "1! /= 1" 1 (frac 1),
+    assertEqual "2! /= 2" 2 (frac 2),
+    assertEqual "3! /= 6" 6 (frac 3),
+    assertEqual "4! /= 24" 24 (frac 4),
+    assertEqual "5! /= 120" 120 (frac 5)]
 
 undefinedTest :: Test 
 undefinedTest = TestCase $ do 

@@ -158,7 +158,129 @@ Cases: 7  Tried: 7  Errors: 0  Failures: 0
 
 > 提示： 读者也可以更改文件观察测试不通过时的输出
 
-### 属性测试
+### 属性测试 `Test.QuickCheck`
+
+属性测试针对函数的性质进行测试。一方面，相比于手动编写单一测试用例，属性测试能够自动生成大量随机数据，从而更全面覆盖可能的数据情况；另一方面，在测试失败时，属性测试还会尝试缩小失败(shrink)案例，以帮助定位最小化反例。
+
+对于属性测试，可以拆解为两个关键部分：随机数据的生成以及属性的定义与验证。
+
+**随机数据生成 `Arbitrary`**
+
+`QuickCheck`中随机数据生成过程由类型类`Arbitrary`控制。
+
+```hs
+class Arbitrary a where 
+    arbitrary :: Gen a 
+    shrink :: a -> [a]
+    {-# MINIMAL arbitrary #-}
+
+newtype Gen a = MkGen {
+    unGen :: QCGen -> Int -> a -- ^ Run the generator on a particular seed and size
+}
+```
+
+`arbitrary`作为数据生成函数，为给定类型生成随机值，其类型`Gen a`表示类型为`a`的生成器。
+
+> 提示： 值得指出的是，应当花一些时间思考什么样的测试数据才是需要的，读者可以使用`sample`、`label`和`classify`检查数据生成质量
+
+`QuickCheck`已经提供了大量的`Arbitrary`实例。
+```bash
+Prelude> sample $ (arbitrary :: Gen Int)
+0
+-2
+3
+...
+Prelude> sample $ (arbitrary :: Gen [Bool])
+[]
+[False,True]
+[True,True]
+[True,True,True,True,True,False]
+[False,False,True,False,False,False]
+...
+```
+
+因此即使我们在定义新类型的生成器时，仍然可以借助已定义的实例，而无需从头定义。例如：
+
+```hs
+-- code'9.hs
+import Test.QuickCheck 
+
+data Person = Person {
+    name :: String,
+    sex :: Bool,
+    age :: Int 
+    } 
+
+instance Arbitrary Person where 
+    arbitrary = do 
+        name <- arbitrary
+        sex <- arbitrary
+        age <- arbitrary
+        return $ Person name sex age 
+```
+
+另外，`QuickCheck`还提供了一些组合子用来组合生成更复杂的生成器，一些常用的组合子如下：
+
+- `choose :: Random a => (a,a) -> Gen a` : 在给定范围内生成一个随机值
+
+- `oneof :: HasCallStack => [Gen a] -> Gen a` : 随机挑选若干生成器中的一个，列表参数不能为空
+
+- `frequency :: HasCallStack => [(Int,Gen a)] -> Gen a` : 根据权重随机选择生成器，列表参数不能为空
+
+- `sized :: (Int -> Gen a) -> Gen a` : 根据大小参数来构造生成器
+
+另外一些函数可以用来生成列表生成器：
+
+- `listOf :: Gen a -> Gen [a]` : 生成随机长度的列表，最长的长度取决于大小参数
+
+- `vectorOf :: Int -> Gen a -> Gen [a]` : 生成一个给定长度的列表
+
+- `vector :: Arbitrary a => Int -> Gen [a]` : 生成一个给定长度的列表
+
+上述函数在递归数据类型生成器函数实例化时非常实用，例如我们给出一个`Rose`类型：
+
+```hs
+-- code'9.hs
+
+data Rose a = MkRose a [Rose a] deriving (Show)
+```
+
+其中`Rose`类型是一个树结构，但是可以有任意个分支，每个分支都是一个类型为`Rose a`的子树。
+
+我们首先尝试构建一个关于`Rose`的构造器：
+
+
+```hs
+-- code'9.hs
+
+arbitrary' :: Arbitrary a => Gen (Rose a)
+arbitrary' = oneof [
+    liftM2 MkRose arbitrary (pure []),
+    liftM2 MkRose arbitrary (liftM2 replicate arbitrary arbitrary') ]
+```
+
+一个`Rose`的构造器从子树为空和子树非空中随机选择一个，对于后者，我们随机生成子树的个数，并对每个子树递归地调用自身(`arbitrary'`)生成。看起来是没什么问题的，然而这样的定义存在某种风险，这样递归的生成器可能无法终止或者生成一个超大的值。因此，为了避免这样的事情发生，我们使用`size`来控制生成数据大小。
+
+
+```hs
+instance Arbitrary a => Arbitrary (Rose a) where
+    arbitrary = sized rose
+        where rose = \n -> case n of
+                0 -> liftM2 MkRose arbitrary (pure [])
+                _ -> do
+                    numtrees <- choose (0, max 0 (n - 1))
+                    if numtrees == 0
+                        then liftM2 MkRose arbitrary (pure [])
+                        else
+                            liftM2 MkRose arbitrary (replicate numtrees <$> rose ((n - 1) `div` numtrees))
+```
+
+`sized`函数使用`rose`函数来控制生成器的大小，`rose`函数在`size`为0时只生成一个孤立节点的树；在`size`不为0时，首先对子树的数量随机生成（当然，这也不能超过要求的大小），当子树数量被随机为0时，直接返回不含子树的树，否则对每个子树递归调用`rose`函数，并对大小进行限制。由于递归调用的部分传入的大小总是小于原来的大小，因此总能够保证收敛。
+
+> 提示： 这里`size`并不是一个固定的大小，而是一个限制，因此当给定一个`size`时，要随机生成介于0~size的数据
+
+**属性定义与验证 `quickCheck`**
+
 
 ## 非纯代码测试
 
